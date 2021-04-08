@@ -1,0 +1,160 @@
+{   
+    "subroutine_name":"calculator",
+    "PromptGrade":"2",
+    "TestGrade":"2",
+    "ECTestGrade":".5",
+    "UserInput":"True",
+    "tests":[
+        {
+            "show":"True",
+            "filelines":[ "1234+4321" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "5555" ]
+        },
+        {
+            "filelines":[ "00+0183" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "183" ]
+        },
+        {
+            "filelines":[ "23+22" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "45" ]
+        },
+        {
+            "filelines":[ "3+21" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "24" ]
+        },
+
+
+        {
+            "filelines":[ "83-9183" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-9100" ]
+        },
+        {
+            "filelines":[ "00-0983" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-983" ]
+        },
+        {
+            "filelines":[ "9999-9" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "9990" ]
+        },
+        {
+            "filelines":[ "19-9" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "10" ]
+        },
+
+
+
+        {
+            "filelines":[ "1*9999" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "9999" ]
+        },
+        {
+            "filelines":[ "1*1" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "1" ]
+        },
+        {
+            "filelines":[ "9999*9999" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "99980001" ]
+        },
+        {
+            "filelines":[ "1*0" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "0" ]
+        },
+        {
+            "filelines":[ "0001*0000" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "0" ]
+        },
+        {
+            "filelines":[ "987*234" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "230958" ]
+        },
+
+
+        {
+            "show":"True",
+            "ExtraCredit":"True",
+            "filelines":[ "-1234+-4321" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-5555" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "-23+22" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-1" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "3+-21" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-18" ]
+        },
+
+
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "-83--9183" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "9100" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "1--1" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "2" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "-9999-9" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-10008" ]
+        },
+
+
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "-1*-9999" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "9999" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "-1*1" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-1" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "9999*-9999" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-99980001" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "-0001*0001" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-1" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "filelines":[ "-987*234" ],
+            "outputs":[ { "reg":"v0", "type":"1"    } ],
+            "ExpectedAnswers":[ "-230958" ]
+        }
+
+
+    ]
+}

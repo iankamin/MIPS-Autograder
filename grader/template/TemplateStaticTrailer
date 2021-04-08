@@ -1,0 +1,52 @@
+
+.text
+zzzneaten:
+	sw $a0, 0($sp)
+	sw $v0, 4($sp)
+	sw $ra, 8($sp)
+	addi $sp, $sp, -12
+
+	lui $a0, 0x9000		# prints new line stuff for neatness
+	addi $a0,$a0,0x0230
+	addi $v0, $0, 4		#syscall string print 
+	syscall
+	
+	addi $sp, $sp, 12
+	lw $a0, 0($sp)
+	lw $v0, 4($sp)
+	lw $ra, 8($sp)
+
+	jr $ra
+	add $0,$0,$0
+
+zzzdivider:
+	sw $a0, 0($sp)
+	sw $v0, 4($sp)
+	sw $ra, 8($sp)
+	addi $sp, $sp, -12
+
+	jal zzzneaten
+
+	lui $a0, 0x9000		# prints new line stuff for neatness
+	addi $a0,$a0,0x0220
+	addi $v0, $0, 4		#syscall string print 
+	syscall
+
+	jal zzzneaten
+
+	addi $sp, $sp, 12
+	lw $a0, 0($sp)
+	lw $v0, 4($sp)
+	lw $ra, 8($sp)
+
+	jr $ra
+	add $0,$0,$0
+	
+main:
+	<TRIALS>
+	
+	addi $v0, $0, 10
+	syscall
+
+	
+

@@ -1,0 +1,79 @@
+{   
+    "subroutine_name":"findOperator",
+    "MessageToStudent":"These test Utilize memory betweeen addresses 0x10000900 - 0x10000A00",
+    "PromptGrade":"0",
+    "TestGrade":"4",
+    "ShowAll":"False",
+    "ShowOutput":"True",
+    "UserInput":"False",
+    "BareMode":"False",
+    "tests":[
+        {
+            "show":"True",
+            "inputs":[ { "reg":"a0", "addr":"0x10000900", "data":"45-333", "type":".asciiz" } ],
+            "outputs":[
+                { "reg":"v0", "type":"1" },
+                { "reg":"v1", "type":"11" }
+            ],
+            "ExpectedAnswers":[ "2", "-" ]
+        },
+        {
+            "inputs":[ { "reg":"a0", "addr":"0x10000920", "data":"232434145-3", "type":".asciiz" } ],
+            "outputs":[ 
+                { "reg":"v0", "type":"1" },
+                { "reg":"v1", "type":"11" }
+            ],
+            "ExpectedAnswers":[ "9", "-" ]
+        },
+        {
+            "inputs":[ { "reg":"a0", "addr":"0x10000940", "data":"1+3", "type":".asciiz" } 
+            ],
+            "outputs":[
+                { "reg":"v0", "type":"1" }, 
+                { "reg":"v1", "type":"11" }
+            ],
+            "ExpectedAnswers":[ "1", "+" ]
+        },
+        {
+            "inputs":[ { "reg":"a0", "addr":"0x10000960", "data":"12341234", "type":".asciiz" } ],
+            "outputs":[ { "reg":"v0", "type":"1" } ],
+            "ExpectedAnswers":[ "-1" ]
+        },
+        {
+            "inputs":[ { "reg":"a0", "val":"0x10000960" } ],
+            "outputs":[ { "reg":"v1", "type":"1" } ],
+            "ExpectedAnswers":[ "-1" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "inputs":[ { "reg":"a0", "addr":"0x10000980", "data":"-1234567--233", "type":".asciiz" } ],
+            "outputs":[ 
+                { "reg":"v0", "type":"1" },
+                { "reg":"v1", "type":"11" }
+            ],
+            "ExpectedAnswers":[ "8", "-" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "inputs":[
+                { "reg":"a0", "addr":"0x100009A0", "data":"-1234+-233", "type":".asciiz" } 
+            ],
+            "outputs":[
+                { "reg":"v0", "type":"1" },
+                { "reg":"v1", "type":"11" }
+            ],
+            "ExpectedAnswers":[ "5", "+" ]
+        },
+        {
+            "ExtraCredit":"True",
+            "inputs":[
+                { "reg":"a0", "addr":"0x100009C0", "data":"-1--2", "type":".asciiz" } 
+            ],
+            "outputs":[ 
+                { "reg":"v0", "type":"1" },
+                { "reg":"v1", "type":"11" }
+            ],
+            "ExpectedAnswers":[ "2", "-" ]
+        }
+    ]
+}

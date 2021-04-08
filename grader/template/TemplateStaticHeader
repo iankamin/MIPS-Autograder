@@ -1,0 +1,7 @@
+
+.kdata 0x90000220
+	.asciiz "XXFFVV3793"
+.kdata 0x90000230
+	.asciiz "\n"
+
+	

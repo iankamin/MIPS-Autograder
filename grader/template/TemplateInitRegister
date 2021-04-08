@@ -1,0 +1,3 @@
+
+lui <reg>, <upper_val>
+addi <reg>, <reg>, <lower_val>
