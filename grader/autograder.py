@@ -309,7 +309,7 @@ def printOutput(test,StudentOutput, _printHeader):
                     print("   FAILED TO PROPERLY RETRIEVE STUDENT OUTPUT")
                     print(StudentOutput[i])
                 except: 
-                    if ("<NO OUTPUT FOUND>") in StudentPrompt:
+                    if ("<NO OUTPUT FOUND>") in StudentOutput:
                         print("   Actual   %s at address %s\n"%(r,Eoutput.addr))
                     else:
                         print(StudentOutput)

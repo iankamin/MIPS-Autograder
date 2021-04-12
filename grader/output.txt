@@ -1,0 +1,43 @@
+
+SPIM Version 8.0 of January 8, 2010
+Copyright 1990-2010, James R. Larus.
+All Rights Reserved.
+See the file README for a full copyright notice.
+Loaded: /usr/lib/spim/exceptions.s
+
+XXFFVV3793
+ENTER A STRING: 
+Your string: 1234+4568
+
+XXFFVV3793
+1234+4568
+
+
+XXFFVV3793
+
+XXFFVV3793
+ENTER A STRING: 
+Your string: 12
+
+XXFFVV3793
+12
+
+
+XXFFVV3793
+
+XXFFVV3793
+ENTER A STRING: 
+Your string: 134-12
+
+XXFFVV3793
+
+
+XXFFVV3793
+
+XXFFVV3793
+ENTER A STRING: 
+Your string: -2321+-3424
+XXFFVV3793
+
+
+XXFFVV3793

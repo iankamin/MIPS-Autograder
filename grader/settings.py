@@ -1,9 +1,13 @@
 import json,os,sys
 
 class settings():
+    def __init__(self):
+        self.io={}
+
     def __init__(self, file):
     
         with open(file, 'r') as f: io = json.load(f)
+        self.io=io
 
         self.SubroutineName=io["subroutine_name"]
         self.PromptGrade=float(io["PromptGrade"])
