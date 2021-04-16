@@ -6,38 +6,11 @@ See the file README for a full copyright notice.
 Loaded: /usr/lib/spim/exceptions.s
 
 XXFFVV3793
-ENTER A STRING: 
-Your string: 1234+4568
-
+Input a calculation up to 11 characters: 
 XXFFVV3793
-1234+4568
-
+5555
 
 XXFFVV3793
 
 XXFFVV3793
-ENTER A STRING: 
-Your string: 12
-
-XXFFVV3793
-12
-
-
-XXFFVV3793
-
-XXFFVV3793
-ENTER A STRING: 
-Your string: 134-12
-
-XXFFVV3793
-
-
-XXFFVV3793
-
-XXFFVV3793
-ENTER A STRING: 
-Your string: -2321+-3424
-XXFFVV3793
-
-
-XXFFVV3793
+Input a calculation up to 11 characters: 

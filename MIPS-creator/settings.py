@@ -1,7 +1,5 @@
 import json,os,sys
-#TODO MAX points need to account for individual tests
-#TODO Prompt Points must ignore extra credit
-#TODO seperate Regular Tests and extra credit Tests
+
 class settings():
     def __init__(self):
         self.io=None
@@ -33,6 +31,9 @@ class settings():
 
         try: self.ShowAll=io["ShowAll"].lower()=="true"
         except: self.ShowAll = False
+        
+        try: self.ShowAllOutput=io["ShowAllOutputs"].lower()=="true"
+        except: self.ShowAllOutput = False
         
         
         try: self.BareMode=io["BareMode"].lower()=="true"
@@ -76,7 +77,7 @@ class settings():
             self.Output=[]
 
 
-        def __init__(self, testjs,io,testGrade,extraCreditTestGrade,testNumber):
+        def __init__(self, parent, testjs,io,testNumber):
             try: self.show=testjs["show"].lower()=="true"
             except: self.show = False
 
@@ -88,15 +89,15 @@ class settings():
             try:    self.ExtraCredit = testjs["ExtraCredit"].lower() == 'true'
             except: self.ExtraCredit = False
         
-            try: self.showOutput = io["ShowOutput"].lower()=="true"
+            try: self.showOutput = (io["ShowOutput"].lower()=="true") or parent.showAllOutputs
             except: 
                 try: self.showOutput = testjs["ShowOutput"].lower() == "true"
                 except: self.showOutput = False
             
             try: self.OutOf = testjs["OutOf"]
             except:
-                if self.ExtraCredit: self.OutOf = extraCreditTestGrade
-                else: self.OutOf = testGrade
+                if self.ExtraCredit: self.OutOf = parent.ECTestGrade
+                else: self.OutOf = parent.TestGrade
             
             try: self.filelines=testjs["filelines"]
             except: self.filelines = []

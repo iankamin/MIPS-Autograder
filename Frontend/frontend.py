@@ -1,6 +1,7 @@
 import os
 import sys
 from tkinter import *
+from tkinter import ttk
 from typing import List
 
 os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
@@ -18,37 +19,40 @@ def SaveCallBack():
 def RunCallBack():
     None
 
+def TarCallBack():
+    None
 
 
 def main():
     global BareMode,ShowAll,UserInput,testPTS,ECtestPTS,promptPTS,MessageToStudents
     io = settings("settings.json")
-    windo=Tk() 
-    windo.title('Helo Python')
-    windo.geometry("1600x800")
-    window=Frame(windo, bg='Gray',height=1080,width=1920)
-    window.pack(fill=BOTH)
-    window.rowconfigure(3, minsize=400)
-    window.columnconfigure(4, minsize=200)
+    window=Tk() 
+    window.title('Helo Python')
+    window.geometry("1600x800")
+    dock=Frame(window, bg='Gray',width=300)
+    dock.pack(anchor=W,fill="y",expand=True)
+
+    
+
+    TopDock(dock)
+    BottomDock(dock)
+
+    window.mainloop()
 
 
-    TopLeft(window)
-    BottomLeft(window)
-    windo.mainloop()
-
-
-def TopLeft(window):
+def TopDock(dock):
     global BareMode,ShowAll,UserInput,testPTS,ECtestPTS,promptPTS,MessageToStudents
-    TL = Frame(window, bg="red", borderwidth=20)
-    Button(TL,width=17, text ="Run Assembly File", command = RunCallBack).grid(row= 0, column=0, sticky="NW",pady=5, padx=5)
-    Entry(TL,width=20).grid(row=1,column=0,sticky="NW",pady=5,padx=5)
-    Button(TL,width=10, text ="Load Settings", command = LoadCallBack).grid(row= 0, column=1, sticky="NW",pady=5, padx=5)
-    Button(TL,width=10, text ="Save Settings", command = SaveCallBack).grid(row=1,column=1,sticky="NW",pady=5,padx=5)
-    TL.grid(row = 0, column = 0, sticky=E+W+N+S)
+    box = Frame(dock, bg="red", borderwidth=10)
+
+    Button(box,width=10, text ="Load Settings", command = LoadCallBack).grid(row=1, column=0, sticky="W",pady=5, padx=5)
+    Button(box,width=10, text ="Save Settings", command = SaveCallBack).grid(row=0,column=0,sticky="W",pady=5,padx=5)
+    Button(box,width=14, text ="Run Assembly File", command = RunCallBack).grid(row=0, column=1, sticky="E",pady=5, padx=5)
+    Button(box,width=14, text ="Create TAR", command = TarCallBack).grid(row=1, column=1, sticky="E",pady=5, padx=5)
+    box.pack(anchor=NW,fill=X)
     
 
 
-def BottomLeft(window):
+def BottomDock(dock):
     global BareMode,ShowAll,UserInput,testPTS,ECtestPTS,promptPTS,MessageToStudents
     BareMode = BooleanVar()
     ShowAll = BooleanVar()
@@ -58,43 +62,67 @@ def BottomLeft(window):
     promptPTS = IntVar()
     MessageToStudents = StringVar()
     SubroutineName = StringVar()
-    
     bg='lightgray'
-    BL = Frame(window ,bg=bg, borderwidth=20, bd=30)
-    BL.grid(row = 1, column = 0, rowspan=2,sticky=NSEW)
     
-    e=Frame(BL,bg=bg)
-    e.pack(side=TOP, fill=X, pady=5)
+    Bot = ScrollableFrame(dock,bg,W,310)
+    
+    
+    e=Frame(Bot,bg=bg)
+    e.pack(side=TOP, fill=X, padx=5)
     Label(e,bg=bg, text=" Subroutine Name").pack( side = TOP, anchor=W)
-    Entry(e,bg='white', bd =3, textvariable=SubroutineName,justify=LEFT).pack( fill=X)
+    Entry(e,bg='white', bd=3, textvariable=SubroutineName,justify=LEFT).pack(fill=X)
     
 
-    Checkbutton(BL,bg=bg, text = "Bare Mode", height=1, \
+    Checkbutton(Bot,bg=bg, text = "Bare Mode", \
                 variable = BareMode, onvalue = True, offvalue = False ).pack(side=TOP,anchor=W, pady=5)
-    Checkbutton(BL,bg=bg, text = "Requires User Input", height=1, \
+    Checkbutton(Bot,bg=bg, text = "Requires User Input",  \
                 variable = UserInput, onvalue = True, offvalue = False ).pack(side=TOP,anchor=W, pady=5)
-    Checkbutton(BL,bg=bg, text = "Show All Results", height=1, \
+    Checkbutton(Bot,bg=bg, text = "Show All Results", \
                 variable = ShowAll,  onvalue = True, offvalue = False ).pack(side=TOP,anchor=W, pady=5)
     
     
-    e=Frame(BL,bg=bg)
+    e=Frame(Bot,bg=bg)
     e.pack(side=TOP, fill=X, pady=5)
-    Entry(e,bg='white', bd =3, textvariable=testPTS, width=4, justify=CENTER).pack( side = LEFT, padx=6)
+    Entry(e,bg='white', bd=3, textvariable=testPTS, width=4, justify=CENTER).pack( side = LEFT, padx=6)
     Label(e,bg=bg, text=" Test Points" ).pack( side = LEFT)
     
-    e=Frame(BL,bg=bg)
+    e=Frame(Bot,bg=bg)
     e.pack(side=TOP, fill=X, pady=5)
-    Entry(e,bg='white', bd =3, textvariable=ECtestPTS,width=4,justify=CENTER).pack( side = LEFT, padx=6)
+    Entry(e,bg='white', bd=3, textvariable=ECtestPTS,width=4,justify=CENTER).pack( side = LEFT, padx=6)
     Label(e,bg=bg, text=" Prompt Points").pack( side = LEFT)
     
-    e=Frame(BL,bg=bg)
+    e=Frame(Bot,bg=bg)
     e.pack(side=TOP, fill=X, pady=5)
-    Entry(e,bg='white', bd =3, textvariable=ECtestPTS,width=4,justify=CENTER).pack( side = LEFT, padx=6)
+    Entry(e,bg='white', bd=3, textvariable=ECtestPTS,width=4,justify=CENTER).pack( side = LEFT, padx=6)
     Label(e,bg=bg, text=" Extra Credit Points").pack( side = LEFT)
     
-    e=Frame(BL,bg=bg)
-    e.pack(side=TOP, pady=5)
-    MessageToStudents=Text(e,bg='white', bd=3, width=30, height=19).pack( side = BOTTOM, fill=BOTH)
+    e=Frame(Bot,bg=bg)
+    e.pack(side=TOP, pady=5,padx=5)
+    MessageToStudents=Text(e,bg='white', bd=3, width=36,height=20).pack( side = BOTTOM, fill=BOTH)
     Label(e,bg=bg, text="General Message").pack( side = LEFT)
+
+
+def ScrollableFrame(dock, bg, anchor,canvas_width=0):
+    container = Frame(dock,bg=bg,pady=3)
+    canvas = Canvas(container,bg=bg,width=canvas_width)
+    scrollbar = Scrollbar(container, orient="vertical", command=canvas.yview,width=20)
+    scrollable_frame = Frame(canvas,bg=bg)
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+
+    container.pack(anchor=anchor,fill="y",expand=True)
+    canvas.pack(side="left", fill="y", expand=True)
+    scrollbar.pack(side="right", fill="y")
+    if canvas_width!=0: canvas.pack_propagate(False)
+
+    return scrollable_frame
+
+class Test:
+    def __init__(self):
+        pass
+
+    def draw(self):
+        pass
+
 
 main()

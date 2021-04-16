@@ -16,8 +16,7 @@
                 } 
             ],
             "outputs":[
-                { "addr":"0x10000300" 
-                } 
+                { "addr":"0x10000300" } 
             ],
             "ExpectedAnswers":[
                 "1234+4568"

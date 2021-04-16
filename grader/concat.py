@@ -179,7 +179,9 @@ def concat(IO=None,sfile="submission.s"):
         with open('template/TemplateTrial','r') as S_Trial:
             body = S_Trial.read()
             body=body.replace("<student_subroutine>",io.SubroutineName)
-        
+            body=body.replace("<TEST NAME>",test.testName)
+            body=body.replace("<TEST NUMBER>",str(test.testNumber))
+
         inputs=CreateAllInputs(test)
         outputs=CreateAllOutputs(test)
 

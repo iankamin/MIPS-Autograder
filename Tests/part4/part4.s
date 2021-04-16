@@ -3,6 +3,26 @@
 
 .text
 main:
+        li $t0, 5
+        li $t1, 5
+        li $t2, 5
+        li $t3, 5
+        li $t4, 5
+        li $t5, 5
+        li $t6, 5
+        li $t7, 5
+        li $s0, 5
+        li $s1, 5
+        li $s2, 5
+        li $s3, 5
+        li $s4, 5
+        li $s5, 5
+        li $s6, 5
+        li $s7, 5
+        li $v1, 5
+        li $a0, 5
+        li $a1, 5
+        li $a2, 5
     jal calculator 
     add $0,$0,$0  # set a breakpoint on this line and check your results
 

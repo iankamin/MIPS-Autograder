@@ -1,9 +1,5 @@
 from subprocess import run
 import sys,os
-os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
-from settings import settings
-from autograder import autograder
-from concat import concat
 
 
 
@@ -16,4 +12,11 @@ def main():
     runMips=concat(IO=io,sfile="submission.s")
     autograder(IO=io,_ShowAll=_ShowAll, runMips=runMips)
 
-main()
+
+if __name__ == "__main__":
+    from settings import settings
+    from autograder import autograder
+    from concat import concat
+    
+    os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
+    main()

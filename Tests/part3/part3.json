@@ -11,64 +11,56 @@
                 { "reg":"a0", "addr":"0x10000900", "data":"6320",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"4"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "6320" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"6320"    } ]
         },
         {
             "inputs":[
                 { "reg":"a0", "addr":"0x10000910", "data":"98765",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"5"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "98765" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"98765"    } ]
         },
         {
             "inputs":[
                 { "reg":"a0", "addr":"0x10000920", "data":"1",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"1"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "1" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"1"    } ]
         },
         {
             "inputs":[
                 { "reg":"a0", "addr":"0x10000930", "data":"0",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"1"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "0" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"0"    } ]
         },
         {
             "inputs":[
                 { "reg":"a0", "addr":"0x10000940", "data":"001",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"3"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "1" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"1"    } ]
         },
         {
             "inputs":[
                 { "reg":"a0", "addr":"0x10000950", "data":"023",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"3"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "23" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"23"    } ]
         },
         {
             "inputs":[
                 { "reg":"a0", "addr":"0x10000960", "data":"1003",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"4"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "1003" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"1003"    } ]
         },
         {
             "inputs":[
                 { "reg":"a0", "addr":"0x10000970", "data":"953",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"3"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "953" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"953"    } ]
         },
         {
             "ExtraCredit":"True",
@@ -77,8 +69,7 @@
                 { "reg":"a0", "addr":"0x10000980", "data":"-1003",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"5"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "-1003" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"-1003"    } ]
         },
         {
             "ExtraCredit":"True",
@@ -86,8 +77,7 @@
                 { "reg":"a0", "addr":"0x10000990", "data":"-003",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"4"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "-3" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"-3"    } ]
         },
         {
             "ExtraCredit":"True",
@@ -95,8 +85,7 @@
                 { "reg":"a0", "addr":"0x100009A0", "data":"-1",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"2"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "-1" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"-1"    } ]
         },
         {
             "ExtraCredit":"True",
@@ -104,8 +93,7 @@
                 { "reg":"a0", "addr":"0x100009B0", "data":"-9999",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"5"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "-9999" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"-9999"    } ]
         },
         {
             "ExtraCredit":"True",
@@ -113,8 +101,7 @@
                 { "reg":"a0", "addr":"0x100009C0", "data":"-42",  "type":".ascii"    } ,
                 { "reg":"a1", "val":"3"                                             }
             ],
-            "outputs":[ { "reg":"v0", "type":"1"    } ],
-            "ExpectedAnswers":[ "-42" ]
+            "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"-42"    } ]
         }
 
     ]

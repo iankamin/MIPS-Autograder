@@ -15,8 +15,11 @@ def generateInput():
     
     lines=list(io.getAllUserInputLines())
     if len(lines)>0: 
-        with open('input.txt', 'w') as inp:  
-            inp.writelines('\n'.join(lines))
+        lines.append("YOU SHOULD NOT BE ABLE TO SEE THIS")
+        inputFile = open('input.txt','w')
+        inputFile.writelines('\n'.join(lines))
+        inputFile.writelines('\n')
+        inputFile.close()
         return " < input.txt "
     
     return ""
