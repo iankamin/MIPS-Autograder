@@ -25,8 +25,11 @@
   <property name="maximumSize">
    <size>
     <width>500</width>
-    <height>999</height>
+    <height>66</height>
    </size>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -87,6 +90,10 @@
            <width>50</width>
            <height>24</height>
           </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
          </property>
          <property name="placeholderText">
           <string>Test</string>
@@ -184,6 +191,9 @@
            <height>24</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(234, 234, 234);</string>
+         </property>
          <item>
           <property name="text">
            <string>Hidden</string>
@@ -277,6 +287,9 @@
            <height>0</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -310,7 +323,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>2</height>
+           <height>7</height>
           </size>
          </property>
         </spacer>
@@ -335,6 +348,22 @@
          </property>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>3</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item alignment="Qt::AlignHCenter">
         <widget class="QCheckBox" name="ExtraCredit">
          <property name="sizePolicy">
@@ -346,7 +375,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>24</height>
+           <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
@@ -355,10 +384,32 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="text">
           <string/>
          </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>2</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </item>

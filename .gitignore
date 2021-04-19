@@ -6,5 +6,11 @@ grader/*.txt
 grader/submission.s
 
 MIPS-creator/__pycache__/
+MIPS-creator/__pycache__/*
+MIPS-creator/__pycache__/*.pyc
 MIPS-creator/.vscode/
+MIPS-creator/.vscode/*
 MIPS-creator/*.autosave
+*/*/*:Zone.Identifier
+*/*/*/*:Zone.Identifier
+*/*:Zone.Identifier

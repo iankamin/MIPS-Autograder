@@ -1,20 +1,21 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-
 class CollapsibleBox(QtWidgets.QWidget):
     def __init__(self, title="", parent=None):
         parent:CollapsibleBox
+        self.parent:CollapsibleBox
         super(CollapsibleBox, self).__init__()
         self.parent=parent
+        self.title=title
         self.toggle_button = QtWidgets.QToolButton(
             text=title, checkable=True, checked=False
         )
         self.toggle_button.setStyleSheet("QToolButton { border: None; }")
+        #self.toggle_button.setStyleSheet("background-color: rgb(255, 200, 200);")
         self.toggle_button.setToolButtonStyle(
             QtCore.Qt.ToolButtonTextBesideIcon
         )
+        self.toggle_button.setMaximumWidth(100000)
         self.toggle_button.setArrowType(QtCore.Qt.RightArrow)
         self.toggle_button.pressed.connect(self.on_pressed)
 
@@ -30,38 +31,53 @@ class CollapsibleBox(QtWidgets.QWidget):
         self.content_area.setLayout(QtWidgets.QVBoxLayout())
         self.content_area.setStyleSheet("background-color: rgb(200, 200, 255);")
         self.content_area.layout().addStretch(255)
+        self.content_area.setContentsMargins(0, 0, 0, 0)
+        self.content_height=self.content_area.layout().spacing()*2
 
         lay = QtWidgets.QVBoxLayout(self)
         lay.setSpacing(0)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.addWidget(self.toggle_button)
-        lay.addWidget(self.content_area)
+        lay.addWidget(self.content_area) 
 
         self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self, b"minimumHeight"))
         self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self, b"maximumHeight"))
         self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self.content_area, b"maximumHeight"))
-        self.checked = True
+
+        self.collapsed_height=self.sizeHint().height() - self.content_area.maximumHeight()
+        self.isOpen = False
+
         if type(parent) is CollapsibleBox:
             self.parent.addWidget(self)
-            self.toggle_animation.finished.connect(self.parent.updateAnimation)
+            self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self.parent, b"minimumHeight"))
+            self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self.parent, b"maximumHeight"))
+            self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self.parent.content_area, b"maximumHeight"))
+            self.toggle_animation.finished.connect(self.toggle_animation_finished)
+    
+    def toggle_animation_finished(self):
+        self.parent.updateAnimation()
 
     @QtCore.pyqtSlot()
     def on_pressed(self):
-        self.checked = not(self.checked)
-        i=self.checked
-        i=i
+        self.isOpen= not(self.isOpen)
+        
         self.toggle_button.setArrowType(
-            QtCore.Qt.DownArrow if not self.checked else QtCore.Qt.RightArrow
+            QtCore.Qt.DownArrow if self.isOpen else QtCore.Qt.RightArrow
         )
+        
         self.toggle_animation.setDirection(
             QtCore.QAbstractAnimation.Forward
-            if not self.checked
+            if self.isOpen
             else QtCore.QAbstractAnimation.Backward
         )
-        if type(self.parent) is CollapsibleBox:
-            self.parentExpandAnimation()
-        if self.content_area.layout().count()>0: 
-            self.toggle_animation.start()
+        
+        if type(self.parent) is CollapsibleBox: 
+            if not(self.isOpen) : self.parent.content_height = self.parent.content_height - self.content_height 
+            self.updateAnimation()
+            if (self.isOpen) : self.parent.content_height = self.parent.content_height + self.content_height
+        
+        
+        if self.content_area.layout().count()>0: self.toggle_animation.start()
 
     def setContentLayout(self, layout):
         lay = self.content_area.layout()
@@ -70,50 +86,59 @@ class CollapsibleBox(QtWidgets.QWidget):
         self.collapsed_height = (
             self.sizeHint().height() - self.content_area.maximumHeight()
         )
-        self.content_height = layout.sizeHint().height()
+        self.content_height = self.content_area.layout().sizeHint().height()
         self.updateAnimation()
 
     def updateAnimation(self,startValue=0,EndValue=None):
         if EndValue is None: EndValue=self.content_height
-        
-        for i in range(self.toggle_animation.animationCount()):
+        dur=150
+        for i in range(0,2):
             animation = self.toggle_animation.animationAt(i)
-            animation.setDuration(500)
+            animation.setDuration(dur)
             animation.setStartValue(self.collapsed_height+startValue)
             animation.setEndValue(self.collapsed_height + EndValue)
-
-        content_animation = self.toggle_animation.animationAt(
-            self.toggle_animation.animationCount() - 1
-        )
-        content_animation.setDuration(500)
+        
+        content_animation = self.toggle_animation.animationAt(2)
+        content_animation.setDuration(dur)
         content_animation.setStartValue(startValue)
         content_animation.setEndValue(EndValue)
 
-
-    def parentExpandAnimation(self):
-        parent:CollapsibleBox
-        dir = 1 if not self.checked else -1
-        parent=self.parent
+        if not(type(self.parent) is CollapsibleBox): return
+            
+        for i in range(3,5):
+            animation = self.toggle_animation.animationAt(i)
+            animation.setDuration(dur)
+            animation.setStartValue(self.parent.content_height+self.parent.collapsed_height)
+            animation.setEndValue(self.parent.content_height+self.parent.collapsed_height+EndValue)
         
-        p_orig_content_height = parent.content_height
-        p_orig_direction = parent.toggle_animation.direction()
+        content_animation = self.toggle_animation.animationAt(5)
+        content_animation.setDuration(dur)
+        content_animation.setStartValue(self.parent.content_height)
+        content_animation.setEndValue(self.parent.content_height+EndValue)
         
-        parent.content_height = p_orig_content_height+dir*self.content_height
-        parent.toggle_animation.setDirection(self.toggle_animation.direction())
         
-        p_new_content_height=parent.content_height
-        p_new_direction = parent.toggle_animation.direction()
-        parent.updateAnimation(p_orig_content_height+self.collapsed_height+parent.collapsed_height, parent.content_height)
-        parent.toggle_animation.start()
-
-        parent.toggle_animation.setDirection(p_orig_direction)
 
 
-
-        pass
-
-
-    def addWidget(self,widget):
+    def addWidget(self,widget:QtWidgets.QWidget):
         lay=self.content_area.layout()
         lay.insertWidget(lay.count()-1,widget)
-        self.setContentLayout(self.content_area.layout())
+        self.updateHeight(widget)
+        if type(self.parent) is CollapsibleBox and self.parent.isOpen:
+            self.parent.updateHeight(widget)
+
+    def height(self):
+        if self.isOpen: return self.collapsed_height+self.content_height
+        else: return self.collapsed_height
+    
+    def updateHeight(self,widget:QtWidgets.QWidget):
+        if type(widget) is CollapsibleBox: i = widget.height()
+        else: i=widget.sizeHint().height()
+        self.content_height+=i+self.content_area.layout().spacing()
+        self.updateAnimation()
+        if self.isOpen:
+            self.setMaximumHeight(self.content_height+self.collapsed_height)
+            self.setMinimumHeight(self.content_height+self.collapsed_height)
+            self.content_area.setMaximumHeight(self.content_height)
+
+    
+

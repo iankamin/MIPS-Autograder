@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'TestLayoutTopRow.ui'
@@ -11,11 +12,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_TopRow(QtWidgets.QWidget):
-    def __init__(self,parent=None): 
-        super(QtWidgets.QWidget, self).__init__()
-        self.parent=parent 
-        self.setupUi(self)
+class Ui_TopRow(object):
     def setupUi(self, TopRow):
         TopRow.setObjectName("TopRow")
         TopRow.resize(500, 64)
@@ -25,7 +22,8 @@ class Ui_TopRow(QtWidgets.QWidget):
         sizePolicy.setHeightForWidth(TopRow.sizePolicy().hasHeightForWidth())
         TopRow.setSizePolicy(sizePolicy)
         TopRow.setMinimumSize(QtCore.QSize(500, 64))
-        TopRow.setMaximumSize(QtCore.QSize(500, 999))
+        TopRow.setMaximumSize(QtCore.QSize(500, 66))
+        TopRow.setStyleSheet("background-color: rgb(171, 175, 255);")
         self.gridLayout = QtWidgets.QGridLayout(TopRow)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
@@ -47,6 +45,8 @@ class Ui_TopRow(QtWidgets.QWidget):
         sizePolicy.setHeightForWidth(self.TestName.sizePolicy().hasHeightForWidth())
         self.TestName.setSizePolicy(sizePolicy)
         self.TestName.setMinimumSize(QtCore.QSize(50, 24))
+        self.TestName.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+"color: rgb(0, 0, 0);")
         self.TestName.setObjectName("TestName")
         self.verticalLayout_2.addWidget(self.TestName)
         self.horizontalLayout.addLayout(self.verticalLayout_2)
@@ -78,6 +78,7 @@ class Ui_TopRow(QtWidgets.QWidget):
         self.ShowLevel.setSizePolicy(sizePolicy)
         self.ShowLevel.setMinimumSize(QtCore.QSize(125, 0))
         self.ShowLevel.setMaximumSize(QtCore.QSize(16777215, 24))
+        self.ShowLevel.setStyleSheet("background-color: rgb(234, 234, 234);")
         self.ShowLevel.setObjectName("ShowLevel")
         self.ShowLevel.addItem("")
         self.ShowLevel.addItem("")
@@ -106,6 +107,7 @@ class Ui_TopRow(QtWidgets.QWidget):
         self.verticalLayout_5.addWidget(self.label_4, 0, QtCore.Qt.AlignHCenter)
         self.MaxPoints = QtWidgets.QDoubleSpinBox(TopRow)
         self.MaxPoints.setMinimumSize(QtCore.QSize(90, 0))
+        self.MaxPoints.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.MaxPoints.setObjectName("MaxPoints")
         self.verticalLayout_5.addWidget(self.MaxPoints)
         self.horizontalLayout.addLayout(self.verticalLayout_5)
@@ -118,7 +120,7 @@ class Ui_TopRow(QtWidgets.QWidget):
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setSpacing(2)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
-        spacerItem3 = QtWidgets.QSpacerItem(20, 2, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 7, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         self.verticalLayout_4.addItem(spacerItem3)
         self.label_3 = QtWidgets.QLabel(TopRow)
         self.label_3.setMaximumSize(QtCore.QSize(16777215, 15))
@@ -127,17 +129,23 @@ class Ui_TopRow(QtWidgets.QWidget):
         self.label_7 = QtWidgets.QLabel(TopRow)
         self.label_7.setObjectName("label_7")
         self.verticalLayout_4.addWidget(self.label_7, 0, QtCore.Qt.AlignHCenter)
+        spacerItem4 = QtWidgets.QSpacerItem(20, 3, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        self.verticalLayout_4.addItem(spacerItem4)
         self.ExtraCredit = QtWidgets.QCheckBox(TopRow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ExtraCredit.sizePolicy().hasHeightForWidth())
         self.ExtraCredit.setSizePolicy(sizePolicy)
-        self.ExtraCredit.setMinimumSize(QtCore.QSize(0, 24))
+        self.ExtraCredit.setMinimumSize(QtCore.QSize(0, 0))
         self.ExtraCredit.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.ExtraCredit.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ExtraCredit.setText("")
+        self.ExtraCredit.setChecked(False)
         self.ExtraCredit.setObjectName("ExtraCredit")
         self.verticalLayout_4.addWidget(self.ExtraCredit, 0, QtCore.Qt.AlignHCenter)
+        spacerItem5 = QtWidgets.QSpacerItem(20, 2, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        self.verticalLayout_4.addItem(spacerItem5)
         self.horizontalLayout.addLayout(self.verticalLayout_4)
         self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
 

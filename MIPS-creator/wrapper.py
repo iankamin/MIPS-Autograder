@@ -4,7 +4,8 @@ import sys,os,random
 from PyQt5 import QtCore, QtGui, QtWidgets
 from mainwindow import Ui_MainWindow
 from TestLayout import Test
-from collapsibleBox import CollapsibleBox
+
+
 
 class MainWindow(QtWidgets.QMainWindow): 
 	def __init__(self): 

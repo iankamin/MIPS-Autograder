@@ -7,16 +7,17 @@
     "tests":[
         {
             "show":"True",
+            "UserInput":["34+15"]
             "inputs":[
                 { "reg":"a0", "addr":"0x10000900", "data":"6320",  "type":".ascii"    } ,
-                { "reg":"a1", "val":"4"                                             }
+                { "reg":"a1", "value":"4"                                             }
             ],
             "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"6320"    } ]
         },
         {
             "inputs":[
                 { "reg":"a0", "addr":"0x10000910", "data":"98765",  "type":".ascii"    } ,
-                { "reg":"a1", "val":"5"                                             }
+                { "reg":"a1", "value":"5"                                             }
             ],
             "outputs":[ { "reg":"v0", "type":"1", "CorrectAnswer":"98765"    } ]
         }

@@ -1,3 +1,3 @@
 {
-    "files": ["settings.json","settings.py","wrapper.py","TestLayout.py","TestLayout.ui","mainwindow.py","mainwindow.ui","TestLayoutTopRow.ui"]
+    "files": ["settings.json","settings.py","TestLayoutTopRow.ui","wrapper.py","TestLayout.py","TestLayout.ui","mainwindow.py","mainwindow.ui","UserInputRow.ui"]
 }

@@ -11,11 +11,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_UserInputRow(object):
+class Ui_UserInputRow(QtWidgets.QWidget):
+    def __init__(self): 
+        super(QtWidgets.QWidget, self).__init__() 
+        self.setupUi(self)
     def setupUi(self, UserInputRow):
         UserInputRow.setObjectName("UserInputRow")
         UserInputRow.resize(700, 31)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(UserInputRow.sizePolicy().hasHeightForWidth())
@@ -48,9 +51,11 @@ class Ui_UserInputRow(object):
 "text-decoration: line-through;\n"
 "text-decoration: line-through;\n"
 "color: rgb(255, 0, 4);")
+        self.pushButton.setText("")
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout.addWidget(self.pushButton)
         self.lineEdit = QtWidgets.QLineEdit(UserInputRow)
+        self.lineEdit.setMinimumSize(QtCore.QSize(0, 23))
         self.lineEdit.setObjectName("lineEdit")
         self.horizontalLayout.addWidget(self.lineEdit)
 
@@ -58,5 +63,4 @@ class Ui_UserInputRow(object):
         QtCore.QMetaObject.connectSlotsByName(UserInputRow)
 
     def retranslateUi(self, UserInputRow):
-        _translate = QtCore.QCoreApplication.translate
-        self.pushButton.setText(_translate("UserInputRow", "  "))
+        pass
