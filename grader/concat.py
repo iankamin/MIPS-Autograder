@@ -128,7 +128,7 @@ def illegalSyntax(data, text, bareMode):
         
         if illegalSyscalls(linelow, 10): errors.writelines("your program is a subroutine it must not terminate with syscall 10\n")
 
-        if not io.UserInput:
+        if not io.RequiresUserInput:
             if illegalSyscalls(linelow, 5) or illegalSyscalls(linelow, 6) or illegalSyscalls(linelow, 7) or illegalSyscalls(linelow, 8) or illegalSyscalls(linelow, 12) : 
                 runMips=False
                 illegalLines.append(line)
@@ -158,9 +158,10 @@ def concat(IO=None,sfile="submission.s"):
     global inputs,io
     global runMips,output,S_Header,S_Trailer
     output=open('concat.s','w')
-    
+    io:settings   
     if IO == None: io =settings("settings.json")
     else : io=IO
+    
     runMips=True
     
     #with open("mipsCreator.json") as j: io=json.load(j)

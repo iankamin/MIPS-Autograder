@@ -12,8 +12,9 @@ from settings import settings
 
 def generateInput():
     global io
-    
+    if not(io.RequiresUserInput): return ""
     lines=list(io.getAllUserInputLines())
+
     if len(lines)>0: 
         lines.append("YOU SHOULD NOT BE ABLE TO SEE THIS")
         inputFile = open('input.txt','w')
@@ -137,19 +138,19 @@ def autograder(IO = None, _ShowAll=False, runMips=True):
     testPoints = [0 for _ in range(TotalNumTests)]
     EC_Points = [0 for _ in range(TotalNumTests)]
 
-    prevFilelines=[]
+    prevUserInput=[]
     for testNum in range(TotalNumTests):
         test=io.AllTests[testNum]
         expectedAns=test.ExpectedAnswers
         
         StudentOutput,StudentPrompt= getStudentPromptAndOutputPerTest(output,testNum)
 
-        if len(test.filelines)>0:
-            filelines=test.filelines
-            [prevFilelines.append(f) for f in filelines]
-            prevFilelines.sort(key=len)
-            prevFilelines.reverse()
-        else: filelines=[]
+        if len(test.UserInput)>0:
+            UserInput=test.UserInput
+            [prevUserInput.append(f) for f in UserInput]
+            prevUserInput.sort(key=len)
+            prevUserInput.reverse()
+        else: UserInput=[]
 
     # check if test it extra credit
 
@@ -160,7 +161,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True):
 
     # grades student prompt
         if io.PromptGrade > 0:
-            for line in prevFilelines: StudentPrompt = StudentPrompt.replace(line,"")    # removes user input if they decided to print it out
+            for line in prevUserInput: StudentPrompt = StudentPrompt.replace(line,"")    # removes user input if they decided to print it out
             if ("<NON ASCII DATA>" in StudentPrompt): 
                 print("\nNon-Ascii characters were found in your prompt credit cannot be given ")
             elif ("<NO PROMPT FOUND>") in StudentPrompt:
@@ -273,7 +274,7 @@ def PrintStudentPrompt(StudentPrompt):
             print("   %s"%StudentPrompt)
 
 def printUserInput(test):
-    fl = test.filelines
+    fl = test.UserInput
     if len(fl)>0: print("\nUser Input -->")   
     for line in fl:
         print("   %s"%line)
