@@ -1,2 +1,10 @@
 .vscode/*
 .vscode
+
+grader/*.json
+grader/*.txt
+grader/submission.s
+
+MIPS-creator/__pycache__/
+MIPS-creator/.vscode/
+MIPS-creator/*.autosave
