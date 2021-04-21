@@ -33,11 +33,13 @@ class MainWindow(QtWidgets.QMainWindow):
 		s=QtCore.QRect(x,y,width,height)
 		widget.setGeometry(s)
 
-	def addTest(self,widget): 
+	def addToAllTests(self,widget): 
 		vlay = main.ui.allTests 
-		vlay.insertWidget(vlay.count()-1,Test())
+		vlay.insertWidget(vlay.count()-1,widget)
 
-
+	def addTest(self): 
+		vlay = main.ui.allTests 
+		self.addToAllTests(Test(index=vlay.count()-1))
 
 
 
@@ -49,12 +51,17 @@ if __name__ == '__main__':
 	app = QtWidgets.QApplication(sys.argv)
 	main = MainWindow()
 
-
+	icon = QtGui.QIcon()
+	icon.addPixmap(QtGui.QPixmap("Icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+    
+	AddButton = QtWidgets.QPushButton(text="  Add New Test")
+	AddButton.setMaximumWidth(100)
+	AddButton.setContentsMargins(30,0,0,0)
+	AddButton.setIcon(icon)
+	AddButton.pressed.connect(main.addTest) 
 	vlay = main.ui.allTests
-	main.addTest(Test())
-	main.addTest(Test())
-	main.addTest(Test())
-	main.addTest(Test())
+	main.addToAllTests(AddButton)
+	main.addTest()
 	
 	
 

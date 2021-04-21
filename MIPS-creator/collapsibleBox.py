@@ -116,24 +116,26 @@ class CollapsibleBox(QtWidgets.QWidget):
         content_animation.setStartValue(self.parent.content_height)
         content_animation.setEndValue(self.parent.content_height+EndValue)
         
-        
-
 
     def addWidget(self,widget:QtWidgets.QWidget):
         lay=self.content_area.layout()
         lay.insertWidget(lay.count()-1,widget)
         self.updateHeight(widget)
-        if type(self.parent) is CollapsibleBox and self.parent.isOpen:
-            self.parent.updateHeight(widget)
 
     def height(self):
         if self.isOpen: return self.collapsed_height+self.content_height
         else: return self.collapsed_height
     
-    def updateHeight(self,widget:QtWidgets.QWidget):
+    def updateHeight(self,widget:QtWidgets.QWidget, Forward=True):
+        if type(self.parent) is CollapsibleBox and self.parent.isOpen:
+            self.parent.updateHeight(widget,Forward)
+        
         if type(widget) is CollapsibleBox: i = widget.height()
         else: i=widget.sizeHint().height()
-        self.content_height+=i+self.content_area.layout().spacing()
+        if Forward: direction = 1
+        else: direction=-1
+
+        self.content_height+=direction*(i+self.content_area.layout().spacing())
         self.updateAnimation()
         if self.isOpen:
             self.setMaximumHeight(self.content_height+self.collapsed_height)

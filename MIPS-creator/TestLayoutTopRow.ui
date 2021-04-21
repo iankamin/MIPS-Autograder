@@ -192,7 +192,9 @@ color: rgb(0, 0, 0);</string>
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(234, 234, 234);</string>
+          <string notr="true">background-color: rgb(255, 255, 255);
+selection-background-color: rgb(232, 232, 232);
+selection-color: rgb(118, 0, 1);</string>
          </property>
          <item>
           <property name="text">

@@ -11,10 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_UserInputRow(QtWidgets.QWidget):
-    def __init__(self): 
-        super(QtWidgets.QWidget, self).__init__() 
-        self.setupUi(self)
+class Ui_UserInputRow(object):
     def setupUi(self, UserInputRow):
         UserInputRow.setObjectName("UserInputRow")
         UserInputRow.resize(700, 31)
@@ -52,6 +49,9 @@ class Ui_UserInputRow(QtWidgets.QWidget):
 "text-decoration: line-through;\n"
 "color: rgb(255, 0, 4);")
         self.pushButton.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("Icons/remove.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton.setIcon(icon)
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout.addWidget(self.pushButton)
         self.lineEdit = QtWidgets.QLineEdit(UserInputRow)

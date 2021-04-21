@@ -3,18 +3,12 @@
 
 .text
 main:
-    lui $a0, 0x1000
-    ori $a0, $a0, 0x0100
     jal calculator 
     add $0,$0,$0  # set a breakpoint on this line and check your results
 
-    lui $a0, 0x1000
-    ori $a0, $a0, 0x0200
     jal calculator 
     add $0,$0,$0  # set a breakpoint on this line and check your results
 
-    lui $a0, 0x1000
-    ori $a0, $a0, 0x0300
     jal calculator 
     add $0,$0,$0  # set a breakpoint on this line and check your results
     
@@ -27,139 +21,176 @@ main:
 
 
 # your code begins here
-
 calculator:
-	addi $sp, $sp, -4
-	sw $ra, 0($sp)
-	jal getInput
-	jal findOperator
-	move $s4, $v1
-	move $a1, $v0
-	jal AsciiToDec
-	move $s3, $v0
-	move $s1, $a1
-	add $s0, $s1, $a0
+    addi $sp, $sp -24
+    sw $ra, 20($sp)
+    sw $s0, 16($sp)
+    sw $s1, 12($sp)
+    sw $s2, 8($sp)
+    sw $s3, 4($sp)
+    sw $s4, 0($sp)
+    la $s0, input # $s0 = address of first char in string
+    move $a0, $s0
+    jal getInput 
+    jal findOperator    
+    move $s1, $v0 # $s1 = byte offset of operator char
+    move $s2, $v1 # $s2 = operation ascii char
 
-LOOP:
-	lbu $t0, 1($s0)
-	beq $t0, 0xa, decide
-	addi $s0, $s0, 1
-	addi $s1, $s1, 1
-	j LOOP
+    move $a0, $s0 # $a0 = pointer to first char in string
+    move $a1, $s1 # $a1 = number of chars in string
+    jal AsciiToDec
+    move $s3, $v0 # $s3 = first operand
 
-decide:
-	move $t1, $a0
-	add $a0, $a0, $a1
-        addi $a0, $a0, 1
-	sub $a1, $s1, $a1
-	jal AsciiToDec
-	move $s5, $v0
-	move $a0, $t1
-	beq $s4, 0x2a, MULTIPLY
-	beq $s4, 0x2b, ADD
-	beq $s4, 0x2d, SUBTRACT
+    add $a0, $a0, $s1
+    addi $a0, $a0, 1 # $a0 = pointer to first char in string 
+    li $a1, 6 # $a1 = number of chars in string
+    jal AsciiToDec
+    move $s4, $v0 # $s4 = second operand
 
-MULTIPLY:
-	mult $s3, $s5
-	mflo $v0
-	j FINAL
+    li $t0, 0x2B
+    beq $s2, $t0, calcAddition
+    li $t0, 0x2D
+    beq $s2, $t0, calcSubtraction
+    li $t0, 0x2A
+    beq $s2, $t0, calcMultiplication
 
-ADD:
-	add $v0, $s3, $s5
-	j FINAL
+    calcAddition: add $v0, $s3, $s4
+    j calcEnd
+    calcSubtraction: sub $v0, $s3, $s4
+    j calcEnd
+    calcMultiplication: mult $s3, $s4
+    mflo $v0
+    j calcEnd
 
-SUBTRACT:
-	sub $v0, $s3, $s5
-	j FINAL
-
-FINAL:
-	# optionally add output
-	lw $ra, 0($sp)
-	jr $ra
-
+    calcEnd: 
+    lw $ra, 20($sp)
+    lw $s0, 16($sp)
+    lw $s1, 12($sp)
+    lw $s2, 8($sp)
+    lw $s3, 4($sp)
+    lw $s4, 0($sp)
+    addi $sp, $sp, 24
+    j $ra
 
 getInput:
-        move $s0, $a0
-        li $v0, 4
-        la $a0, prompt
-        syscall
-        move $a0, $s0
-        li $v0, 8
-	li $a1, 14 # did not know this existed LOL! (did 14 to ensure full input)
-        syscall
-        li $s1, 0
-        # modified by removing redundant j L1
-
-L1:
-        lbu $t0, 0($s0)
-        beq $t0, 0xa, endL1
-        beq $s1, 11, endL1 # changed 14 character limit to 11 to prevent overflow
-        addi $s1, $s1, 1
-        addi $s0, $s0, 1
-        j L1
-
-endL1:
-        li $t0, 0xa
-        sb $t0, 0($s0)
-        sb $zero, 1($s0)
-        jr $ra
-
+    addi $sp, $sp, -4
+    sw $a0, 0($sp)
+    li $v0, 4
+    la $a0, askinput
+    syscall
+    lw $a0, 0($sp)
+    addi $sp, $sp, 4
+    li $v0, 8
+    li $a1, 13
+    syscall
+    j $ra
 
 findOperator:
-        lbu $t0, 0($a0)
-        beq $t0, 0, INVALID
-        addi $s0, $a0, 1
-        li $s1, 1
+    addi $sp, $sp, -4
+    sw $s0, 0($sp)
+    li $s0, 0
+    add $t0, $a0, $s0
+    lb $t1, 0($t0)
 
-L2:	# had to change name of this loop from L1 to L2 to ensure that the code assembles correctly
-        lbu $s2, 0($s0)
-        beq $s2, 0x2a, END
-        beq $s2, 0x2b, END
-        beq $s2, 0x2d, END
-        beq $s2, 0, INVALID
-        addi $s0, $s0, 1
-        addi $s1, $s1, 1
-        j L2
+    #first, find the first operand (ascii numbers range 48 - 57 decimal)
+    findL1:beq $t1, $zero, NA
+    li $t2, 48
+    blt $t1, $t2, findL1Incre
+    li $t2, 57
+    bgt $t1, $t2, findL1Incre
+    # number found
+    addi $s0, $s0, 1
+    add $t0, $a0, $s0
+    lb $t1, 0($t0)
+    j findL2
 
-INVALID:
-        li $v0, -1
-        li $v1, -1
-        jr $ra
+    findL1Incre: addi $s0, $s0, 1
+    add $t0, $a0, $s0
+    lb $t1, 0($t0)
+    j findL1 
+    
 
-END:
-        move $v0, $s1
-        move $v1, $s2
-        jr $ra
+    findL2: beq $t1, $zero, NA
+    li $t2, 0x2B
+    beq $t1, $t2, Addition
+    li $t2, 0x2D
+    beq $t1, $t2, Subtraction
+    li $t2, 0x2A
+    beq $t1, $t2, Multiplication
 
+    addi $s0, $s0, 1
+    add $t0, $a0, $s0
+    lb $t1, 0($t0)
+    j findL2
+
+    Addition: move $v0, $s0
+    li $v1, 0x2B
+    j findEnd
+
+    Subtraction: move $v0, $s0
+    li $v1, 0x2D
+    j findEnd
+
+    Multiplication: move $v0, $s0
+    li $v1, 0x2A
+    j findEnd
+
+    NA: li $v0, -1
+    li $v1, -1
+    j findEnd
+
+    findEnd: lw $s0, 0($sp)
+    addi $sp, $sp, 4
+    j $ra
 
 AsciiToDec:
-        li $v0, 0
-        addi $s0, $a1, -1 # $s0 is the counter
-        li $s2, 1 #s2 is the multiplier for the number place
+    addi $sp, $sp, -8
+    sw $s0, 4($sp)
+    sw $s1, 0($sp)
+    #sw $s2, 0($sp)
+    li $s0, 0 # offset
+    li $s1, 0 # if negative
+    #li $s2, 0 # 
+    lb $t1, 0($a0)
+    li $v0, 0
+    # first, find number(ascii numbers range 48 - 57 decimal)
+    # check if negative and save.
 
-L3:	# had to change name of this loop from L1 to L3 to ensure that the code assembles correctly
-        add $s1, $a0, $s0 # $s1 will contain the character at whatever place
-        lbu $s1, 0($s1)
-        beq $s1, 0x2d, AppendNegative
-        addi $s1, $s1, -48
-        mult $s1, $s2
-        mflo $t0
-        add $v0, $v0, $t0
-        addi $s0, $s0, -1
-        beq $s0, -1, end
-        li $t0, 10
-        mult $s2, $t0
-        mflo $s2
-        j L3
-# in L3, I had to change END to end, and rename the other label to ensure that the code assembles correctly
-AppendNegative:
-        li $t0, -1
-        mult $v0, $t0
-        mflo $v0
+    asciiL1:beq $s0, $a1 asciiEnd
+    li $t2, 45
+    beq $t1, $t2, Negative
+    li $t2, 48
+    blt $t1, $t2, asciiEnd
+    li $t2, 57
+    bgt $t1, $t2, asciiEnd
+    # number found, subtract by 48 to find decimal
+    # if not zero number,multiply previous number by 10 and add digit number
+    addi $t1, $t1, -48
+    bne $v0, $0, NotZero
+    add $v0, $v0, $t1
+    j asciiL1Incre
+    NotZero:
+    mul $v0, $v0, 10
+    add $v0, $v0, $t1
+    j asciiL1Incre
+    
+    Negative: addi $s1, $s1, 1
 
-end:
-        jr $ra
+    asciiL1Incre: addi $s0, $s0, 1
+    add $t0, $a0, $s0
+    lb $t1, 0($t0)
+    j asciiL1 
 
+    asciiEnd: beq $s1, $0, Positive
+    nor $v0, $v0, $v0
+    addi $v0, $v0, 1
+    Positive: lw $s1, 0($sp)
+    lw $s0, 4($sp)
+    addi $sp, $sp, 8
+    j $ra
 
-.data 0x10010000  # uncomment this line
-	 prompt: .asciiz "Please enter the expression:\n"
+.data 0x10010000  # uncomment this line 
+# your data goes here
+askinput: .asciiz "Input string up to 11 chars:\n"
+.align 2
+input: .space 11

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>UserInputRow</class>
- <widget class="QWidget" name="UserInputRow">
+ <class>RegInputRow</class>
+ <widget class="QWidget" name="RegInputRow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -102,26 +102,55 @@ color: rgb(255, 0, 4);</string>
      <property name="sizeHint" stdset="0">
       <size>
        <width>10</width>
-       <height>20</height>
+       <height>10</height>
       </size>
      </property>
     </spacer>
    </item>
    <item>
-    <widget class="QLineEdit" name="lineEdit">
-     <property name="minimumSize">
+    <widget class="QLineEdit" name="register_2">
+     <property name="maximumSize">
       <size>
-       <width>0</width>
-       <height>23</height>
+       <width>70</width>
+       <height>16777215</height>
       </size>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="placeholderText">
-      <string>User Input</string>
+      <string>Register</string>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="value">
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 255, 255);</string>
+     </property>
+     <property name="placeholderText">
+      <string>Value</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

@@ -153,12 +153,10 @@ def removeComments(submission):
             line = line[:line.index("#")]
         out += line+"\n"
     return out
-
 def concat(IO=None,sfile="submission.s"):
     global inputs,io
     global runMips,output,S_Header,S_Trailer
     output=open('concat.s','w')
-    io:settings   
     if IO == None: io =settings("settings.json")
     else : io=IO
     

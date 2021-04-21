@@ -1,31 +1,133 @@
 {   
     "subroutine_name":"calculator",
-    "PromptGrade":2,
-    "TestGrade":2,
-    "ECTestGrade":"0.5",
-    "RequiresUserInput":true,
+    "PromptGrade":"2",
+    "TestGrade":"2",
+    "ECTestGrade":".5",
+    "RequiresUserInput":"True",
     "tests":[
         {
             "show":"True",
             "UserInput":[ "1234+4321" ],
-            "inputs":[
-                { "reg":"a0", "addr":"0x10000900", "data":"6320",  "type":".ascii"    } ,
-                { "reg":"a1", "value":"4"                                             }
-            ],
-            "outputs":[ { "reg":"v0", "type":1,"CorrectAnswer":"5555"    } ]
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"5555"    } ]
         },
         {
             "UserInput":[ "00+0183" ],
-            "inputs":[
-                { "reg":"a0", "addr":"0x10000930", "data":"99",  "type":".ascii"    } ,
-                { "reg":"a1", "value":"1"                                             }
-            ],
             "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"183"    } ]
         },
-        { 
-            "ExtraCredit":true,
+        {
             "UserInput":[ "23+22" ],
             "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"45"    } ]
+        },
+        {
+            "UserInput":[ "3+21" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"24"    } ]
+        },
+
+
+        {
+            "UserInput":[ "83-9183" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-9100"    } ]
+        },
+        {
+            "UserInput":[ "00-0983" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-983"    } ]
+        },
+        {
+            "UserInput":[ "9999-9" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"9990"    } ]
+        },
+        {
+            "UserInput":[ "19-9" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"10"    } ]
+        },
+
+
+
+        {
+            "UserInput":[ "1*9999" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"9999"    } ]
+        },
+        {
+            "UserInput":[ "1*1" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"1"    } ]
+        },
+        {
+            "UserInput":[ "9999*9999" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"99980001"    } ]
+        },
+        {
+            "UserInput":[ "1*0" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"0"    } ]
+        },
+        {
+            "UserInput":[ "0001*0000" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"0"    } ]
+        },
+        {
+            "UserInput":[ "987*234" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"230958"    } ]
+        },
+
+
+        {
+            "show":"True",
+            "ExtraCredit":"True",
+            "UserInput":[ "-1234+-4321" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-5555"    } ]
+        },
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "-23+22" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-1"    } ]
+        },
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "3+-21" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-18"    } ]
+        },
+
+
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "-83--9183" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"9100"    } ]
+        },
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "1--1" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"2"    } ]
+        },
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "-9999-9" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-10008"    } ]
+        },
+
+
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "-1*-9999" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"9999"    } ]
+        },
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "-1*1" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-1"    } ]
+        },
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "9999*-9999" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-99980001"    } ]
+        },
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "-987*234" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-230958"    } ]
+        },
+        {
+            "ExtraCredit":"True",
+            "UserInput":[ "-0001*0001" ],
+            "outputs":[ { "reg":"v0", "type":"1","CorrectAnswer":"-1"    } ]
         }
     ]
 }
