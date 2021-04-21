@@ -11,90 +11,111 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from collapsibleBox import CollapsibleBox
 from classes import *
+from copy import deepcopy
 
 
 class Test(QtWidgets.QWidget): 
-    def __init__(self,index): 
+    def __init__(self,index,parent,TopRow=None): 
         super(QtWidgets.QWidget, self).__init__() 
-        self.name="Test - %s"%index
+        if TopRow is None or TopRow.TestName.text()=="": self.name="Test"
+        else: self.name = TopRow.TestName.text()
         self.index=index
+        self.parent=parent
+        self.TopRow=TopRow
         self.setupUi()
 
+    
     def setupUi(self):
         self.setObjectName("test") 
         self.setMinimumWidth(725)
         self.verticalLayout = QtWidgets.QVBoxLayout(self) 
         self.verticalLayout.setObjectName("verticalLayout")
         self.verticalLayout.setSpacing(0)
-        self.HidingBox=CollapsibleBox(self.name)
+        if self.TopRow is None:self.TopRow=TestTopRow()
+        
+        self.HidingBox=CollapsibleBox("%s - %s"%(self.name,self.index))
         self.verticalLayout.addWidget(self.HidingBox)
-        self.TopRow=TestTopRow()
+
         self.TopRow.TestName.textChanged.connect(self.updateName)
         self.HidingBox.addWidget(self.TopRow)
-        self.allUserInput=CollapsibleBox("User Input",self.HidingBox)
-        self.DataInput=CollapsibleBox("Data Input",self.HidingBox)
-        self.InputRegisters=CollapsibleBox("Input Registers",self.HidingBox)
-        self.Outputs=CollapsibleBox("Output Registers",self.HidingBox)
+        self.allUserInput=CollapsibleBox("User Input",self.HidingBox,self.addUserInputRow)
+        self.DataInput=CollapsibleBox("Data Input",self.HidingBox,self.addDataRow)
+        self.InputRegisters=CollapsibleBox("Input Registers",self.HidingBox,self.addRegisterRow)
+        self.Outputs=CollapsibleBox("Output Registers",self.HidingBox,self.addOutputRow)
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("Icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         
-        text="   Add New"
-        width=90
-        AddButton1 = QtWidgets.QPushButton(text=text)
-        AddButton1.setMaximumWidth(width)
-        AddButton1.setIcon(icon)
-        AddButton2 = QtWidgets.QPushButton(text=text)
-        AddButton2.setMaximumWidth(width)
-        AddButton2.setIcon(icon)
-        AddButton3 = QtWidgets.QPushButton(text=text)
-        AddButton3.setMaximumWidth(width)
-        AddButton3.setIcon(icon)
-        AddButton4 = QtWidgets.QPushButton(text=text)
-        AddButton4.setMaximumWidth(width)
-        AddButton4.setIcon(icon)
+        self.TopRow.CopyButton.pressed.connect(self.Copy)
         
-        
-        AddButton1.pressed.connect(self.addUserInputRow)
-        AddButton2.pressed.connect(self.addDataRow)
-        AddButton3.pressed.connect(self.addRegisterRow)
-        AddButton4.pressed.connect(self.addOutputRow)
-
-        self.allUserInput.addWidget(AddButton1)
-        self.DataInput.addWidget(AddButton2)
-        self.InputRegisters.addWidget(AddButton3)
-        self.Outputs.addWidget(AddButton4)
-    
-        
-
-
         self.verticalLayout.addStretch()
         self.retranslateUi() 
+    def __deepcopy__(self,_):
+        topRow=self.TopRow.copy()
+        copy = Test(index=self.index,parent=self.parent,TopRow=topRow)
+        
+        lay=self.allUserInput.content_area.layout()
+        items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+        for item in items: 
+            i=type(item)
+            if i is not UserInputRow: continue
+            copy.addUserInputRow(item.copy())
+        
+        lay=self.DataInput.content_area.layout()
+        items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+        for item in items: 
+            i=type(item)
+            if i is not DataRow: continue
+            copy.addDataRow(item.copy())
+        
+        lay=self.InputRegisters.content_area.layout()
+        items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+        for item in items: 
+            i=type(item)
+            if i is not RegisterRow: continue
+            copy.addRegisterRow(item.copy())
+        
+        lay=self.Outputs.content_area.layout()
+        items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+        for item in items: 
+            i=type(item)
+            if i is not OutputRow: continue
+            copy.addOutputRow(item.copy())
+
+        return copy
     #TODO make the add user input button work
-    def addUserInputRow(self):
-        row=UserInputRow(parent=self.allUserInput)
+    def addUserInputRow(self,row=None):
+        if row is None:row=UserInputRow(parent=self.allUserInput)
+        else: row.parent = self.allUserInput
         row.Deleted.connect(self.rowDeleted)
     
-    def addDataRow(self):
-        row=DataRow(parent=self.DataInput)
+    def addDataRow(self,row=None):
+        if row is None: row=DataRow(parent=self.DataInput)
+        else: row.parent = self.DataInput
         row.Deleted.connect(self.rowDeleted)
     
-    def addRegisterRow(self):
-        row=RegisterRow(parent=self.InputRegisters)
+    def addRegisterRow(self, row=None):
+        if row is None: row=RegisterRow(parent=self.InputRegisters)
+        else: row.parent = self.InputRegisters
         row.Deleted.connect(self.rowDeleted)
     
-    def addOutputRow(self):
-        row=OutputRow(parent=self.Outputs)
+    def addOutputRow(self,row=None):
+        if row is None: row=OutputRow(parent=self.Outputs)
+        else: row.parent = self.Outputs
         row.Deleted.connect(self.rowDeleted)
    
     def rowDeleted(self, row,box):
         box.updateHeight(row,Forward=False)
 
-    def updateName(self, s):
+    def updateName(self, s=None):
         if s == "": s = "Test"
+        if s is None: s = self.name
         self.HidingBox.toggle_button.setText("%s - %s"%(s,self.index))
         self.name=s
-
+    
+    def Copy(self):
+        newTest = deepcopy(self)
+        self.parent.addTest(newTest)
 
     def retranslateUi(self): 
         pass

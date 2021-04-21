@@ -108,7 +108,7 @@ color: rgb(255, 0, 4);</string>
     </spacer>
    </item>
    <item>
-    <widget class="QLineEdit" name="register_2">
+    <widget class="QLineEdit" name="reg">
      <property name="maximumSize">
       <size>
        <width>70</width>

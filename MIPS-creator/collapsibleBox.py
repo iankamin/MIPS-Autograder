@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class CollapsibleBox(QtWidgets.QWidget):
-    def __init__(self, title="", parent=None):
+    def __init__(self, title="", parent=None, addFunction=None):
         parent:CollapsibleBox
         self.parent:CollapsibleBox
         super(CollapsibleBox, self).__init__()
@@ -19,6 +19,22 @@ class CollapsibleBox(QtWidgets.QWidget):
         self.toggle_button.setArrowType(QtCore.Qt.RightArrow)
         self.toggle_button.pressed.connect(self.on_pressed)
 
+        if addFunction is not None:
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap("Icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.AddButton = QtWidgets.QPushButton(text=" Add New")
+            self.AddButton.setMaximumWidth(90)
+            self.AddButton.setIcon(icon)
+            self.AddButton.pressed.connect(addFunction)
+            self.AddButton.hide()
+        else: self.AddButton = None
+
+        lay1 =QtWidgets.QHBoxLayout()
+        lay1.setSpacing(0)
+        lay1.setContentsMargins(0, 0, 0, 0)
+        lay1.addWidget(self.toggle_button)
+        if addFunction is not None: lay1.addWidget(self.AddButton) 
+
         self.toggle_animation = QtCore.QParallelAnimationGroup(self)
 
         self.content_area = QtWidgets.QScrollArea(
@@ -33,11 +49,10 @@ class CollapsibleBox(QtWidgets.QWidget):
         self.content_area.layout().addStretch(255)
         self.content_area.setContentsMargins(0, 0, 0, 0)
         self.content_height=self.content_area.layout().spacing()*2
-
         lay = QtWidgets.QVBoxLayout(self)
         lay.setSpacing(0)
         lay.setContentsMargins(0, 0, 0, 0)
-        lay.addWidget(self.toggle_button)
+        lay.addLayout(lay1)
         lay.addWidget(self.content_area) 
 
         self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self, b"minimumHeight"))
@@ -60,7 +75,11 @@ class CollapsibleBox(QtWidgets.QWidget):
     @QtCore.pyqtSlot()
     def on_pressed(self):
         self.isOpen= not(self.isOpen)
-        
+
+        if self.AddButton is not None:
+            if self.isOpen: self.AddButton.show()
+            else:           self.AddButton.hide()
+
         self.toggle_button.setArrowType(
             QtCore.Qt.DownArrow if self.isOpen else QtCore.Qt.RightArrow
         )

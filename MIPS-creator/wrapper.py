@@ -33,13 +33,17 @@ class MainWindow(QtWidgets.QMainWindow):
 		s=QtCore.QRect(x,y,width,height)
 		widget.setGeometry(s)
 
-	def addToAllTests(self,widget): 
+	def insertWidget(self,widget): 
 		vlay = main.ui.allTests 
 		vlay.insertWidget(vlay.count()-1,widget)
 
-	def addTest(self): 
+	def addTest(self,newTest=None): 
 		vlay = main.ui.allTests 
-		self.addToAllTests(Test(index=vlay.count()-1))
+		if newTest is None: newTest=Test(index=vlay.count()-1,parent=self)
+		else: 
+			newTest.index=vlay.count()-1
+			newTest.updateName()
+		self.insertWidget(newTest)
 
 
 
@@ -60,7 +64,7 @@ if __name__ == '__main__':
 	AddButton.setIcon(icon)
 	AddButton.pressed.connect(main.addTest) 
 	vlay = main.ui.allTests
-	main.addToAllTests(AddButton)
+	main.insertWidget(AddButton)
 	main.addTest()
 	
 	

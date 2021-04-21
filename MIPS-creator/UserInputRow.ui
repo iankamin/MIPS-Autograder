@@ -108,7 +108,7 @@ color: rgb(255, 0, 4);</string>
     </spacer>
    </item>
    <item>
-    <widget class="QLineEdit" name="lineEdit">
+    <widget class="QLineEdit" name="UserInput">
      <property name="minimumSize">
       <size>
        <width>0</width>
