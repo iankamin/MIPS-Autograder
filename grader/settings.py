@@ -17,50 +17,28 @@ class settings():
 
 
     def __init__(self, file):
-    
         with open(file, 'r') as f: io = json.load(f)
         self.io=io
 
         self.SubroutineName=io["subroutine_name"]
-        self.PromptGrade=float(io["PromptGrade"])
-        self.TestGrade=float(io["TestGrade"])
         
-        try: self.ECTestGrade=float(io["ECTestGrade"])
-        except KeyError: self.ECTestGrade=self.TestGrade
+        self.PromptGrade=float(io.get("PromptGrade",0))
+        self.TestGrade=float(io.get("TestGrade",1))
+        self.ECTestGrade=float(io.get("ECTestGrade",self.TestGrade))
 
-        try: self.MessageToStudent=io["MessageToStudent"]
-        except KeyError: self.MessageToStudent=""
-
-        try: 
-            if type(io["ShowAll"]) is str: self.ShowAll=io["ShowAll"].lower()=="true"
-            elif type(io["ShowAll"]) is bool: self.ShowAll = io["ShowAll"]
-            else: self.ShowAll
-        except KeyError: self.ShowAll = False
+        self.MessageToStudent=io.get("MessageToStudent","")
+        self.ShowAll = io.get("ShowAll",False)
+        self.ShowAllOutput = io.get("ShowAllOutput",False)
+        self.BareMode = io.get("BareMode",False)
+        self.Shuffle = io.get("Shuffle",False)
+        self.RequiresUserInput = io.get("RequiresUserInput",False)
         
-        try: 
-            if type(io["ShowAllOutput"]) is str: self.ShowAllOutput=io["ShowAllOutput"].lower()=="true"
-            elif type(io["ShowAllOutput"]) is bool: self.ShowAllOutput = io["ShowAllOutput"]
-            else: self.ShowAllOutput
-        except KeyError: self.ShowAllOutput = False
+        if type(self.ShowAll)  is str: self.ShowAll  = self.ShowAll.lower() =="true"
+        if type(self.BareMode) is str: self.BareMode = self.BareMode.lower()=="true"
+        if type(self.Shuffle)  is str: self.Shuffle  = self.Shuffle.lower() =="true"
+        if type(self.ShowAllOutput) is str:     self.ShowAllOutput = self.ShowAllOutput.lower()=="true"
+        if type(self.RequiresUserInput) is str: self.RequiresUserInput = self.RequiresUserInput.lower()=="true"
         
-        
-        try: 
-            if type(io["BareMode"]) is str: self.BareMode=io["BareMode"].lower()=="true"
-            elif type(io["BareMode"]) is bool: self.BareMode = io["BareMode"]
-            else: self.BareMode
-        except KeyError: self.BareMode = False
-        
-        try: 
-            if type(io["Shuffle"]) is str: self.Shuffle=io["Shuffle"].lower()=="true"
-            elif type(io["Shuffle"]) is bool: self.Shuffle = io["Shuffle"]
-            else: self.Shuffle
-        except KeyError: self.Shuffle = False
-        
-        try: 
-            if type(io["RequiresUserInput"]) is str: self.RequiresUserInput=io["RequiresUserInput"].lower()=="true"
-            elif type(io["RequiresUserInput"]) is bool: self.RequiresUserInput = io["RequiresUserInput"]
-            else: self.RequiresUserInput
-        except KeyError: self.RequiresUserInput = False
 
         self.AllTests=self.CreateTests(io["tests"],io,canShuffle=True)
 
@@ -114,48 +92,27 @@ class settings():
             self.MemInputs=[]
             self.RegInputs=[]
             self.Output=[]
+
+        # Initialize from JSON
         def __init__(self,parent, testjs,testNumber):
-            try: 
-                if type(testjs["show"]) is str: self.show=testjs["show"].lower()=="true"
-                elif type(testjs["show"]) is bool: self.show = testjs["show"]
-                else: self.show
-            except KeyError: self.show = False
-
-           # Name and Number should make finding a specific Test in the .s file easier 
-            try: self.testName=testjs["name"].strip()
-            except KeyError: self.testName = "Test"
-            self.testNumber=testNumber   
+            self.show       = testjs.get("show",False) 
+            self.showOutput = testjs.get("showOutput",False)
+            self.testName   = testjs.get("name","Test").strip()
+            self.testNumber = testNumber   
+            self.ExtraCredit= testjs.get("ExtraCredit",False) 
+            self.OutOf      = testjs.get("OutOf", parent.ECTestGrade if self.ExtraCredit else parent.TestGrade)
+            self.UserInput  = testjs.get("UserInput",[])
+            
+            if type(self.show) is str : self.show = (self.show.lower()=="true")
+            if type(self.showOutput)  is str: self.showOutput = (self.showOutput.lower()=="true")
+            if type(self.ExtraCredit) is str: self.ExtraCredit= self.ExtraCredit.lower()=="true"
         
-            try:    
-                if type(testjs["ExtraCredit"]) is str: self.ExtraCredit=testjs["ExtraCredit"].lower()=="true"
-                elif type(testjs["ExtraCredit"]) is bool: self.ExtraCredit = testjs["ExtraCredit"]
-                else: self.ExtraCredit
-            except KeyError: self.ExtraCredit = False
-        
-            try: 
-                if type(testjs["showOutput"]) is str: self.showOutput=testjs["showOutput"].lower()=="true"
-                elif type(testjs["showOutput"]) is bool: self.showOutput = testjs["showOutput"]
-                else: self.showOutput
-            except KeyError: 
-                self.showOutput = parent.ShowAllOutput
+            if type(self.show)       is bool: self.show       = self.show or parent.ShowAll
+            if type(self.showOutput) is bool: self.showOutput = self.showOutput or parent.ShowAllOutput
             
-            try: self.OutOf = testjs["OutOf"]
-            except KeyError:
-                if self.ExtraCredit: self.OutOf = parent.ECTestGrade
-                else: self.OutOf = parent.TestGrade
-            
-            try: self.UserInput=testjs["UserInput"]
-            except KeyError: self.UserInput = []
-
-
-            self.MemInputs=[]
-            self.RegInputs=[]
-            self.Output=[]
-            try: i=testjs["inputs"]
-            except KeyError: i=[]
-            self.setInputs(i)
-            
-            self.ExpectedAnswers=self.setOutputs(testjs["outputs"])
+            # Get Inputs and Outputs
+            self.MemInputs,self.RegInputs = self.setInputs(testjs.get("inputs",[]))
+            self.ExpectedAnswers,self.Output=self.setOutputs(testjs["outputs"])
         
         def ToDict(self):
             testjs={}
@@ -172,31 +129,35 @@ class settings():
 
             
         def setInputs(self, inputs):
+            memInputs=[]
+            regInputs=[]
             for inp in inputs:
 
-                try: self.MemInputs.append( self.__MemInput__( inp["addr"], inp["data"],inp["type"]))
+                try: memInputs.append( self.__MemInput__( inp["addr"], inp["data"],inp["type"]))
                 except KeyError: None
                 try: 
-                    self.RegInputs.append( self.__RegInput__( inp["reg"], inp["addr"],memPointer=self.MemInputs[-1]))
+                    regInputs.append( self.__RegInput__( inp["reg"], inp["addr"],memPointer=memInputs[-1]))
                 except KeyError as e: print(e)
 
-                try: self.RegInputs.append( self.__RegInput__( inp["reg"], inp["value"]))
+                try: regInputs.append( self.__RegInput__( inp["reg"], inp["value"]))
                 except KeyError: None
+            return memInputs,regInputs
 
-        def setOutputs(self, outputs):
+        def setOutputs(self, outputsJS):
             ExpectedAnswers=[]
-            for out in outputs:
+            outputs=[]
+            for out in outputsJS:
                 ans=out["CorrectAnswer"]
                 ExpectedAnswers.append(ans)
                 try: # print string stored at address out["addr"] 
-                    self.Output.append( self.__Output__( type='4', reg='a0', addr=out["addr"],ans=ans))
+                    outputs.append( self.__Output__( type='4', reg='a0', addr=out["addr"],ans=ans))
                     continue
-                except KeyError: None
+                except KeyError as e: print(e) 
             
                 try: # print value of register
-                    self.Output.append( self.__Output__(  type=out["type"], reg=out["reg"],ans=ans))
+                    outputs.append( self.__Output__(  type=out["type"], reg=out["reg"],ans=ans))
                 except:  raise Exception("Output not address or register")
-            return ExpectedAnswers
+            return ExpectedAnswers,outputs
 
                 
 
@@ -259,6 +220,7 @@ if __name__ == "__main__":
     tt = settings("settings.json")
     d=tt.ToDict()
     j=json.dumps(d,indent=4)
+    print(j)
 
 
 
