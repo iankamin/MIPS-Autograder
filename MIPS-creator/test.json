@@ -1,0 +1,47 @@
+{
+    "subroutine_name": "",
+    "PromptGrade": 0.0,
+    "TestGrade": 0.0,
+    "ECTestGrade": 0.0,
+    "MessageToStudent": "",
+    "ShowAll": false,
+    "ShowAllOutput": false,
+    "BareMode": false,
+    "RequiresUserInput": false,
+    "Shuffle": false,
+    "tests": [
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0.0,
+            "show": false,
+            "ShowOutput": false,
+            "UserInput": [
+                "",
+                ""
+            ],
+            "inputs": [
+                {
+                    "reg": "$",
+                    "value": ""
+                },
+                {
+                    "reg": "$",
+                    "value": ""
+                }
+            ],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "",
+                    "reg": "$"
+                },
+                {
+                    "type": 1,
+                    "CorrectAnswer": "",
+                    "reg": "$"
+                }
+            ]
+        }
+    ]
+}

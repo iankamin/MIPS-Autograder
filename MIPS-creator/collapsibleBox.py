@@ -26,7 +26,7 @@ class CollapsibleBox(QtWidgets.QWidget):
         if btnFunction is not None:
             btnText="  "+btnText
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap("Icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon.addPixmap(QtGui.QPixmap("ui_files/Icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.AddButton = QtWidgets.QPushButton(text=btnText)
             self.AddButton.setMaximumWidth(90)
             self.AddButton.setIcon(icon)
@@ -75,8 +75,6 @@ class CollapsibleBox(QtWidgets.QWidget):
             self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self.parent, b"maximumHeight"))
             self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self.parent.content_area, b"maximumHeight"))
             self.toggle_animation.finished.connect(self.toggle_animation_finished)
-
-
 
 
     def indexUpdated(self,index):
