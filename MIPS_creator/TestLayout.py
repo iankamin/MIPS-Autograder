@@ -10,9 +10,10 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from copy import deepcopy
-from MIPS_creator.utilities import settings
 from time import sleep
 from .collapsibleBox import CollapsibleBox
+from .RowTypes import *
+from .utilities import set_Test,settings
 
 class Test(QtWidgets.QWidget): 
     def __init__(self,index,parent,TopRow=None): 
@@ -57,10 +58,10 @@ class Test(QtWidgets.QWidget):
 
         self.TopRow.TestName.textChanged.connect(self.setName)
         self.HidingBox.addWidget(self.TopRow)
-        self.allUserInput=CollapsibleBox("User Input",self.HidingBox,self.addUserInputRow)
-        self.DataInput=CollapsibleBox("Data Input",self.HidingBox,self.addDataRow)
-        self.InputRegisters=CollapsibleBox("Input Registers",self.HidingBox,self.addRegisterRow)
-        self.Outputs=CollapsibleBox("Output Registers",self.HidingBox,self.addOutputRow)
+        self.allUserInput  = CollapsibleBox("User Input"        ,self.HidingBox, lambda: self.addRow(UserInputRow))
+        self.DataInput     = CollapsibleBox("Data Input"        ,self.HidingBox, lambda: self.addRow(DataRow     ))
+        self.InputRegisters= CollapsibleBox("Input Registers"   ,self.HidingBox, lambda: self.addRow(RegisterRow ))
+        self.Outputs       = CollapsibleBox("Output Registers"  ,self.HidingBox, lambda: self.addRow(OutputRow   ))
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("Icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -74,71 +75,83 @@ class Test(QtWidgets.QWidget):
 
     def deleteSelf(self): 
         self.parent.deleteTest(self)
-    def __del__(self):
-        del self.TopRow
-        del self.allUserInput
-        del self.DataInput
-        del self.InputRegisters
-        del self.Outputs
     
-    def ExpandAndCollapseAll(self,collapse):
+    
+    def ExpandAndCollapseAll(self,expand):
         toggleAll_animation = QtCore.QParallelAnimationGroup(self)
-        for anim in self.ExpandAndCollapseAll_AnimationSet(self.HidingBox,collapse): toggleAll_animation.addAnimation(anim)
-        for anim in self.ExpandAndCollapseAll_AnimationSet(self.allUserInput,collapse): toggleAll_animation.addAnimation(anim)
-        for anim in self.ExpandAndCollapseAll_AnimationSet(self.DataInput,collapse): toggleAll_animation.addAnimation(anim)
-        for anim in self.ExpandAndCollapseAll_AnimationSet(self.InputRegisters,collapse): toggleAll_animation.addAnimation(anim)
-        for anim in self.ExpandAndCollapseAll_AnimationSet(self.Outputs,collapse): toggleAll_animation.addAnimation(anim)
+
+        toggleAll_animation.setDirection(
+            QtCore.QAbstractAnimation.Forward if expand else QtCore.QAbstractAnimation.Backward)
+
+        if self.HidingBox.isOpen: hbox_ch=self.HidingBox.content_height
+        else: hbox_ch=0
+        
+        if not expand: #Hiding box need to be first when collapsing and last when Expanding
+            for anim in self.ExpandAndCollapseAll_AnimationSet(self.HidingBox,expand): toggleAll_animation.addAnimation(anim)
+
+        for anim in self.ExpandAndCollapseAll_AnimationSet(self.allUserInput,expand): toggleAll_animation.addAnimation(anim)
+        for anim in self.ExpandAndCollapseAll_AnimationSet(self.DataInput,expand): toggleAll_animation.addAnimation(anim)
+        for anim in self.ExpandAndCollapseAll_AnimationSet(self.InputRegisters,expand): toggleAll_animation.addAnimation(anim)
+        for anim in self.ExpandAndCollapseAll_AnimationSet(self.Outputs,expand): toggleAll_animation.addAnimation(anim)
+        self.allUserInput.isOpen=expand
+        self.DataInput.isOpen=expand
+        self.InputRegisters.isOpen=expand
+        self.Outputs.isOpen=expand
+
+        if expand: 
+            for anim in self.ExpandAndCollapseAll_AnimationSet(self.HidingBox,expand, override=self.HidingBox.isOpen, startHeightOffset=hbox_ch): 
+                toggleAll_animation.addAnimation(anim)
+        
+        self.HidingBox.isOpen=expand
+        
+        toggleAll_animation.start()
+        
+        self.HidingBox.updateAnimation(0, self.HidingBox.content_height)
 
 
     
-    def ExpandAndCollapseAll_AnimationSet(self, box:CollapsibleBox, collapse, dur=0):
-        if box.isClosed and collapse: return
-        if box.isOpen and not collapse: return
+    def ExpandAndCollapseAll_AnimationSet(self, box:CollapsibleBox, expand, dur=0, override=False, startHeightOffset=0):
+        if not override:
+            if box.isClosed and not expand: return
+            if box.isOpen and expand: return
 
         if dur<=0: dur=box.animationDuration
         anim = QtCore.QPropertyAnimation(box, b"minimumHeight")
-        anim.setDuration(box.animationDuration)
-        anim.setStartValue(box.collapsed_height)
-        anim.setEndValue(box.collapsed_height + box.content_height)
+        anim.setDuration(dur)
+        anim.setStartValue(box.collapsed_height + startHeightOffset)
+        anim.setEndValue(box.collapsed_height + box.content_height )
         yield anim
 
         anim = QtCore.QPropertyAnimation(box, b"maximumHeight")
-        anim.setDuration(box.animationDuration)
-        anim.setStartValue(box.collapsed_height)
-        anim.setEndValue(box.collapsed_height + box.content_height)
+        anim.setDuration(dur)
+        anim.setStartValue(box.collapsed_height + startHeightOffset)
+        anim.setEndValue(box.collapsed_height + box.content_height )
         yield anim
         
         anim = QtCore.QPropertyAnimation(box.content_area, b"maximumHeight")
-        anim.setDuration(box.animationDuration)
-        anim.setStartValue(0)
-        anim.setEndValue(box.content_height)
+        anim.setDuration(dur)
+        anim.setStartValue(0 + startHeightOffset)
+        anim.setEndValue(box.content_height )
         yield anim
     
 
     #TODO make the add user input button work
-    def addUserInputRow(self,row=None,**kwargs):
-        if row is None:row=UserInputRow(parent=self.allUserInput,**kwargs)
-        else: row.parent = self.allUserInput
+    def addRow(self,rowType,row=None,**kwargs):
+        row:Row
+        if rowType is None and row is None: raise Exception("either row or rowType must be defined")
+        if row is not None: rowType=type(row)
+        
+        if rowType is UserInputRow:  destination=self.allUserInput
+        elif rowType is DataRow:     destination=self.DataInput
+        elif rowType is RegisterRow: destination=self.InputRegisters
+        elif rowType is OutputRow:   destination=self.Outputs
+        else: raise Exception("unusable type %s"%rowType)
+        
+        if row is None: row=rowType(parent=destination,**kwargs)
+        else: row.parent = destination
         row.Deleted.connect(self.rowDeleted)
         return row
-    
-    def addDataRow(self,row=None,**kwargs):
-        if row is None: row=DataRow(parent=self.DataInput,**kwargs)
-        else: row.parent = self.DataInput
-        row.Deleted.connect(self.rowDeleted)
-        return row
-    
-    def addRegisterRow(self, row=None,**kwargs):
-        if row is None: row=RegisterRow(parent=self.InputRegisters,**kwargs)
-        else: row.parent = self.InputRegisters
-        row.Deleted.connect(self.rowDeleted)
-        return row
-    
-    def addOutputRow(self,row=None,**kwargs):
-        if row is None: row=OutputRow(parent=self.Outputs,**kwargs)
-        else: row.parent = self.Outputs
-        row.Deleted.connect(self.rowDeleted)
-        return row
+
    
     def rowDeleted(self, row,box):
         box.updateHeight(row,Forward=False)
@@ -152,7 +165,7 @@ class Test(QtWidgets.QWidget):
         pass
 
     def convertToJSON(self,setting:settings): 
-        test_setting=setting.Test(parent=setting)
+        test_setting=set_Test(parent=setting)
         test_setting.head_init(**self.TopRow.GetKwargs())
 
         self.setJSONKwargs(
@@ -202,7 +215,7 @@ class Test(QtWidgets.QWidget):
         for item in items: 
             i=type(item)
             if i is not UserInputRow: continue
-            copy.addUserInputRow(item.copy())
+            copy.addRow(UserInputRow, row=item.copy())
         
         lay=self.DataInput.content_area.layout()
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]

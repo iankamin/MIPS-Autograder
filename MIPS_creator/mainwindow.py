@@ -1,9 +1,12 @@
 from PyQt5 import QtCore, QtWidgets,uic
 from PyQt5.sip import delete
+import os
 from MIPS_creator.collapsibleBox import CollapsibleBox
 from MIPS_creator.utilities import settings,set_Test
 from MIPS_creator.TestLayout import Test
 from MIPS_creator.ui_files.filepaths import mainwindow_ui
+from MIPS_creator.RowTypes import DataRow, OutputRow, UserInputRow,RegisterRow
+from .grader_controller import transferFile
 
 class MainWindow(QtWidgets.QMainWindow): 
     allTests:QtWidgets.QVBoxLayout 
@@ -27,10 +30,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self): 
         super(MainWindow, self).__init__() 
         uic.loadUi(mainwindow_ui, self)
+        self.allTests.addSpacing(600)
         self.allTests.addStretch(500)
         self.AddTestButton.pressed.connect(self.addTest) 
         self.SaveSettingsBtn.pressed.connect(self.SaveSettings)
         self.LoadSettingsBtn.pressed.connect(self.LoadSettings)
+        self.RunMipsBtn.pressed.connect(self.RunMips)
         self.ExpandBtn.pressed.connect(self.ExpandAll)
         self.CollapseBtn.pressed.connect(self.CollapseAll)
         self.numberOfTests=0
@@ -66,14 +71,14 @@ class MainWindow(QtWidgets.QMainWindow):
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
         for test in items: 
             if test is None: continue
-            test.ExpandAndCollapseAll(False)
+            test.ExpandAndCollapseAll(True)
     def CollapseAll(self):
         test:Test
         lay=self.allTests
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
         for test in items: 
             if test is None: continue
-            test.ExpandAndCollapseAll(True)
+            test.ExpandAndCollapseAll(False)
 
 
     def insertWidget(self,widget): 
@@ -95,7 +100,7 @@ class MainWindow(QtWidgets.QMainWindow):
         lay=self.allTests
         lay.removeWidget(test)
         self.numberOfTests-=1
-        del test
+        delete(test)
         self.updateAllTestIndices()
             
     def addTest(self,newTest=None): 
@@ -110,7 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numberOfTests+=1
         return newTest
 
-    def SaveSettings(self):
+    def SaveSettings(self,loc=None):
         sa=False
         so=False
         i = self.ShowLevel.currentIndex
@@ -138,22 +143,24 @@ class MainWindow(QtWidgets.QMainWindow):
             setJS.AddTest(test.convertToJSON(setting=setJS))
 
         #output=QtWidgets.QFileDialog.getOpenFileName(self) #file needs to exist
-        output=QtWidgets.QFileDialog.getSaveFileName(self,"Save Settings as",self.lastSaveLocation,"*.json")
-        if output[1].replace("*",'') not in output[0]:
-            out=output[0].strip()+output[1].replace("*",'')
-        else: out=output[0]
-        self.lastSaveLocation=out
-        if output[1]:
-            with open(out, 'w') as f: f.write(setJS.GetJSON())
+        if loc is None:
+            output=QtWidgets.QFileDialog.getSaveFileName(self,"Save Settings as",self.lastSaveLocation,"*.json")
+            if output[1].replace("*",'') not in output[0]:
+                out=output[0].strip()+output[1].replace("*",'')
+            else: out=output[0]
+            self.lastSaveLocation=out
+            if output[1]:
+                with open(out, 'w') as f: f.write(setJS.GetJSON())
+        else:
+            with open(loc, 'w') as f: f.write(setJS.GetJSON())
     
     def DeleteAllTests(self):
-        self.numberOfTests=0
         lay=self.allTests
-        tests = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+        tests = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None]
         test:Test 
         for test in tests: 
-            if test is None: continue
             self.deleteTest(test)
+        self.numberOfTests=0
 
     def LoadSettings(self):
         filePath=QtWidgets.QFileDialog.getOpenFileName(self) #file needs to exist
@@ -161,23 +168,48 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.DeleteAllTests()
         set=settings(filePath[0])
+
+        self.subroutine_name.setText( set.SubroutineName)
+        self.EC_TestPoints.setValue( set.ECTestGrade)
+        self.TestPoints.setValue( set.TestGrade)
+        self.PromptPoints.setValue( set.PromptGrade)
+        self.RequireUserInput.setChecked( set.RequiresUserInput)
+        self.BareMode.setChecked( set.BareMode)
+        self.Shuffle.setChecked( set.Shuffle)
+        set.MessageToStudent = self.message.toPlainText()
+        if set.ShowAll: i = 2
+        elif set.ShowAllOutput: i = 1
+        else: i=0
+        self.ShowLevel.setCurrentIndex(i)
+        
+        
         testJS:set_Test
         for testJS in set.AllTests:
             #TODO ADD TOP ROW
             test=self.addTest()
             test:Test
             i:set_Test.__RegInput__
-            for i in testJS.MemInputs: test.addDataRow(**i.ToDict())
+            for i in testJS.MemInputs: test.addRow(DataRow, **i.ToDict())
             for i in testJS.RegInputs: 
                 if i.ToDict() is None: continue
-                test.addRegisterRow(**i.ToDict())
-            for i in testJS.UserInput: test.addUserInputRow(text=i)
-            for i in testJS.Output: test.addOutputRow(**i.ToDict())
+                test.addRow(RegisterRow,**i.ToDict())
+            for i in testJS.UserInput: test.addRow(UserInputRow, text=i)
+            for i in testJS.Output: test.addRow(OutputRow, **i.ToDict())
 
             test.TopRow.replaceInfo(**testJS.ToDict())
 
+    def RunMips(self):
+        #submissionPath=QtWidgets.QFileDialog.getOpenFileName(self)[0] #file needs to exist
+        #if not submissionPath: return
+        submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
+        print(submissionPath)
+        
+        set_file = os.path.join(os.path.dirname(__file__), "trial.json")
+        print(set_file)
+        #self.SaveSettings(set_file)
+        transferFile( settingsFile=set_file,
+                      submissionFile=submissionPath)
 
 
 
-        #TODO Load settings
         

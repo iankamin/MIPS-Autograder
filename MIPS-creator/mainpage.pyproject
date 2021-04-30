@@ -1,3 +1,0 @@
-{
-    "files": ["settings.py","regInput.ui","TestLayoutTopRow.ui","mainwindow.ui","TestLayout.ui","UserInputRow.ui","TestLayout.py","mainwindow.py","settings.json","regOutput.ui","DataRow.ui","wrapper.py","ui_files/DataRow.ui","ui_files/mainwindow.ui","ui_files/regInput.ui","ui_files/regOutput.ui","ui_files/TestLayout.ui","ui_files/TopRow.ui","ui_files/UserInputRow.ui"]
-}

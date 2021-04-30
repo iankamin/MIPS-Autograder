@@ -68,7 +68,7 @@ class CollapsibleBox(QtWidgets.QWidget):
         self.toggle_animation.addAnimation( QtCore.QPropertyAnimation(self.content_area, b"maximumHeight"))
 
         self.collapsed_height=self.sizeHint().height() - self.content_area.maximumHeight()
-        self.isOpen = False
+        self._isOpen = False
         self.setContentsMargins(0,0,0,0)
         self.toggle_animation.finished.connect(self.toggle_animation_finished)
         if type(parent) is CollapsibleBox:
@@ -82,6 +82,31 @@ class CollapsibleBox(QtWidgets.QWidget):
     def isClosed(self): return not(self.isOpen)
     @isClosed.setter
     def isClosed(self,val:bool): self.isOpen=not(val)
+    
+    @property
+    def isOpen(self): return (self._isOpen)
+    @isOpen.setter
+    def isOpen(self,val:bool): 
+        if self._isOpen == val: return
+        self._isOpen=val
+        self.toggle_button.setChecked(val)
+        self.toggle_button.setArrowType(
+            QtCore.Qt.DownArrow if self._isOpen else QtCore.Qt.RightArrow
+        )
+        self.toggle_animation.setDirection(
+            QtCore.QAbstractAnimation.Forward
+            if self._isOpen
+            else QtCore.QAbstractAnimation.Backward
+        )
+        if self.AddButton is not None:
+            if self._isOpen: self.AddButton.show()
+            else:           self.AddButton.hide()
+        
+        if type(self.parent) is CollapsibleBox: 
+            if self.isClosed : self.parent.content_height = self.parent.content_height - self.content_height 
+            self.updateAnimation()
+            if self.isOpen : self.parent.content_height = self.parent.content_height + self.content_height
+
 
 
     def indexUpdated(self,index):
@@ -107,27 +132,6 @@ class CollapsibleBox(QtWidgets.QWidget):
     @QtCore.pyqtSlot()
     def on_pressed(self):
         self.isOpen= not(self.isOpen)
-
-        if self.AddButton is not None:
-            if self.isOpen: self.AddButton.show()
-            else:           self.AddButton.hide()
-
-        self.toggle_button.setArrowType(
-            QtCore.Qt.DownArrow if self.isOpen else QtCore.Qt.RightArrow
-        )
-        
-        self.toggle_animation.setDirection(
-            QtCore.QAbstractAnimation.Forward
-            if self.isOpen
-            else QtCore.QAbstractAnimation.Backward
-        )
-        
-        if type(self.parent) is CollapsibleBox: 
-            if not(self.isOpen) : self.parent.content_height = self.parent.content_height - self.content_height 
-            self.updateAnimation()
-            if (self.isOpen) : self.parent.content_height = self.parent.content_height + self.content_height
-        
-        
         if self.content_area.layout().count()>0: self.toggle_animation.start()
 
     def setContentLayout(self, layout):

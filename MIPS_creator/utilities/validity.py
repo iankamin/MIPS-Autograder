@@ -1,19 +1,19 @@
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QRegExpValidator
 
 
-validRegisters=[
-        'at',
-        'v0','v1',
-        'a0','a1','a2','a3',
-        't0','t1','t2','t3','t4','t5','t6','t7','t8','t9'
-        's0','s1','s2','s3','s4','s5','s6','s7',
-        'gp','sp','fp','ra',
-        '1','2','3','3','5','6','7','8','9','10','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','28','29','30','31'
-        'f0','f1','f2','f3','f3','f5','f6','f7','f8','f9','f10','f10','f11','f12','f13','f14','f15','f16','f17','f18','f19','f20','f21','f22','f23','f24','f25','f26','f27','f28','f29','f30','f31'
-    ]
-
+addressRegex=QRegExp("^((0[xX][a-fA-F0-9]{0,8})|([-+]?[0-9]{0,10}))$")
+registerRegex=QRegExp("^\$?(at|v0?1?|a[0123]|t[0-9]|s[0-7]|gp|sp|fp|ra|f?([0-2]?[0-9]|3[0-1]))$")
+byteRegex=QRegExp("^((0[xX][[0-9a-fA-F]{1,2})|(\+?([0-1]?[0-9]{1,2}|2([0-4][0-9]|5[0-5])))|(-(0?[[0-9]{0,2}|1([0-1][0-9]|2[0-8]))))$")
+wordRegex=QRegExp("^(0[xX][[0-9a-fA-F]{1,8}|[+-]?[0-9]{0,10})$")
+asciiRegex=QRegExp(".*")
+addressRegexValidator=QRegExpValidator(addressRegex)
+registerRegexValidator=QRegExpValidator(registerRegex)
+byteRegexValidator=QRegExpValidator(byteRegex)
+wordRegexValidator=QRegExpValidator(wordRegex)
+asciiRegexValidator=QRegExpValidator(wordRegex)
 def isReg(reg):
-    reg=reg.replace('$','')
-    return reg in validRegisters
+    return 
 
 def isInt(var):
     try:

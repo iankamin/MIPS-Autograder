@@ -11,6 +11,7 @@ clean:
 	-rm grader/output.txt
 	-rm grader/submission.s
 	-rm grader/concat.s
+	-rm -r MIPS_creator/grader_data
 
 
 

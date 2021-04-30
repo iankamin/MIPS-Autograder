@@ -3,20 +3,13 @@ import json,os,sys,random
 #TODO Prompt Points must ignore extra credit
 #TODO seperate Regular Tests and extra credit Tests
 class settings():
-    def __init__(self):
-        self.io=None
-        self.SubroutineName=None
-        self.PromptGrade=None
-        self.TestGrade=None
-        self.ECTestGrade=None
-        self.MessageToStudent=None
-        self.ShowAll = False
-        self.BareMode = False
-        self.RequiresUserInput = False
-        self.AllTests=[]
 
 
-    def __init__(self, file):
+    def __init__(self, file=None):
+        if file is None:
+            self.empty()
+            return
+
         with open(file, 'r') as f: io = json.load(f)
         self.io=io
 
@@ -39,20 +32,32 @@ class settings():
         if type(self.ShowAllOutput) is str:     self.ShowAllOutput = self.ShowAllOutput.lower()=="true"
         if type(self.RequiresUserInput) is str: self.RequiresUserInput = self.RequiresUserInput.lower()=="true"
         
-
+        self.NumberOfRegularTests=0
         self.AllTests=self.CreateTests(io["tests"],io,canShuffle=True)
 
 
+    def empty(self):
+        self.io=None
+        self.SubroutineName=None
+        self.PromptGrade=None
+        self.TestGrade=None
+        self.ECTestGrade=None
+        self.MessageToStudent=None
+        self.ShowAll = False
+        self.BareMode = False
+        self.RequiresUserInput = False
+        self.AllTests=[]
 
     def CreateTests(self,alltests_json,io,canShuffle=False):
         reg,ec=[],[]
         for i,testjs in enumerate(alltests_json):
-            test=self.Test(self,testjs,i)
+            test=Test(parent=self,testjs=testjs,testNumber=i)
             if test.ExtraCredit: ec.append(test)
             else:                reg.append(test)
         if self.Shuffle and canShuffle:
             random.shuffle(ec)
             random.shuffle(reg)
+        self.NumberOfRegularTests=len(reg)
         return reg+ec
 
     def getAllUserInputLines(self):
@@ -79,132 +84,152 @@ class settings():
         io["tests"]=[t.ToDict() for t in self.AllTests]
         return io
 
-    class Test:
-        def __init__(self):
-            self.show = False
-            self.testName = "Test"
-        
-            self.ExtraCredit = False
-            self.showOutput = False
-            self.OutOf = 0
-            self.UserInput = []
+class Test():
 
-            self.MemInputs=[]
-            self.RegInputs=[]
-            self.Output=[]
+    # Initialize from JSON
+    def __init__(self,parent, testjs=None,testNumber=0):
+        self.parent=parent
+        if testjs is None: 
+            self.empty()
+            return
 
-        # Initialize from JSON
-        def __init__(self,parent, testjs,testNumber):
-            self.show       = testjs.get("show",False) 
-            self.showOutput = testjs.get("showOutput",False)
-            self.testName   = testjs.get("name","Test").strip()
-            self.testNumber = testNumber   
-            self.ExtraCredit= testjs.get("ExtraCredit",False) 
-            self.OutOf      = testjs.get("OutOf", parent.ECTestGrade if self.ExtraCredit else parent.TestGrade)
-            self.UserInput  = testjs.get("UserInput",[])
-            
-            if type(self.show) is str : self.show = (self.show.lower()=="true")
-            if type(self.showOutput)  is str: self.showOutput = (self.showOutput.lower()=="true")
-            if type(self.ExtraCredit) is str: self.ExtraCredit= self.ExtraCredit.lower()=="true"
+        self.show       = testjs.get("show",False) 
+        self.showOutput = testjs.get("showOutput",False)
+        self.testName   = testjs.get("name","Test").strip()
+        self.testNumber = testNumber   
+        self.ExtraCredit= testjs.get("ExtraCredit",False) 
+        self.OutOf      = testjs.get("OutOf",0) or (parent.ECTestGrade if self.ExtraCredit else parent.TestGrade)
+        self.UserInput  = testjs.get("UserInput",[])
         
-            if type(self.show)       is bool: self.show       = self.show or parent.ShowAll
-            if type(self.showOutput) is bool: self.showOutput = self.showOutput or parent.ShowAllOutput
+        if type(self.show) is str : self.show = (self.show.lower()=="true")
+        if type(self.showOutput)  is str: self.showOutput = (self.showOutput.lower()=="true")
+        if type(self.ExtraCredit) is str: self.ExtraCredit= self.ExtraCredit.lower()=="true"
+    
+        if type(self.show)       is bool: self.show       = self.show or parent.ShowAll
+        if type(self.showOutput) is bool: self.showOutput = self.showOutput or parent.ShowAllOutput
+        self.showLevel = 2 if self.show else 1 if self.showOutput else 0
+        
+        # Get Inputs and Outputs
+        self.MemInputs,self.RegInputs = self.setInputs(testjs.get("inputs",[]))
+        self.ExpectedAnswers,self.Output=self.setOutputs(testjs["outputs"])
+    def empty(self):
+        self.show = False
+        self.testName = "Test"
+    
+        self.ExtraCredit = False
+        self.showOutput = False
+        self.OutOf = 0
+        self.UserInput = []
+
+        self.MemInputs=[]
+        self.RegInputs=[]
+        self.Output=[]
+    
+    def ToDict(self):
+        testjs={}
+        testjs["name"]=self.testName
+        testjs["ExtraCredit"]=self.ExtraCredit 
+        testjs["name"]=self.testName
+        testjs["OutOf"]=self.OutOf 
+        testjs["show"]=self.show
+        testjs["ShowOutput"]=self.showOutput 
+        testjs["ShowLevel"]=self.showLevel
+        testjs["UserInput"]=self.UserInput
+        testjs["inputs"]=[i.ToDict() for i in self.MemInputs]
+        testjs["inputs"] += [i.ToDict() for i in self.RegInputs if not i.memPointer]
+        testjs["outputs"]=[i.ToDict() for i in self.Output]
+        return testjs
+
+
+        
+    def setInputs(self, inputs):
+        memInputs=[]
+        regInputs=[]
+        for inp in inputs:
+
+            try: 
+                memInputs.append( self.__MemInput__( inp["addr"], inp["data"],inp["type"]))
+                try: 
+                    memInputs[-1].reg=inp["reg"]
+                    regInputs.append( self.__RegInput__( inp["reg"], inp["addr"],memPointer=True))
+                except KeyError as e:pass #print(e)
+            except KeyError: None
+
+            try: regInputs.append( self.__RegInput__( inp["reg"], inp["value"]))
+            except KeyError: None
+        return memInputs,regInputs
+
+    def setOutputs(self, outputsJS):
+        ExpectedAnswers=[]
+        outputs=[]
+        for out in outputsJS:
+            ans=out["CorrectAnswer"]
+            ExpectedAnswers.append(ans)
+            try: # print string stored at address out["addr"] 
+                outputs.append( self.__Output__( type='4', reg='a0', addr=out["addr"],CorrectAnswer=ans))
+                continue
+            except KeyError as e: pass#print(e) 
+        
+            try: # print value of register
+                outputs.append( self.__Output__(  type=out["type"], reg=out["reg"],CorrectAnswer=ans))
+            except:  raise Exception("Output not address or register")
+        return ExpectedAnswers,outputs
+
             
-            # Get Inputs and Outputs
-            self.MemInputs,self.RegInputs = self.setInputs(testjs.get("inputs",[]))
-            self.ExpectedAnswers,self.Output=self.setOutputs(testjs["outputs"])
+    class __RegInput__:
+        def __init__(self,reg,value,memPointer=False):
+            self.reg='$'+reg.replace('$','')
+            self.value=value
+            self.memPointer=memPointer
         
         def ToDict(self):
-            testjs={}
-            testjs["name"]=self.testName
-            testjs["ExtraCredit"]=self.ExtraCredit 
-            testjs["OutOf"]=self.OutOf 
-            testjs["show"]=self.show
-            testjs["ShowOutput"]=self.showOutput 
-            testjs["UserInput"]=self.UserInput
-            testjs["inputs"]=[i.ToDict() for i in self.RegInputs]
-            testjs["outputs"]=[i.ToDict() for i in self.Output]
-            return testjs
+            if self.memPointer is False: 
+                return {"reg":self.reg.replace("$",""),"value":self.value}
 
-
+    class __MemInput__:
+        def __init__(self,addr,data,type,reg=None):
+            self.addr=addr
+            self.data=data
+            self.type=type
+            self.reg=reg
             
-        def setInputs(self, inputs):
-            memInputs=[]
-            regInputs=[]
-            for inp in inputs:
+            if "ascii" in type.lower(): 
+                self.data=self.data.replace("\\\"","quote_7654123")
+                self.data=self.data.replace("\"","")
+                self.data=self.data.replace("quote_7654123","\\\"")
+                self.data='\"'+self.data+'\"'
 
-                try: memInputs.append( self.__MemInput__( inp["addr"], inp["data"],inp["type"]))
-                except KeyError: None
-                try: 
-                    regInputs.append( self.__RegInput__( inp["reg"], inp["addr"],memPointer=memInputs[-1]))
-                except KeyError as e: print(e)
-
-                try: regInputs.append( self.__RegInput__( inp["reg"], inp["value"]))
-                except KeyError: None
-            return memInputs,regInputs
-
-        def setOutputs(self, outputsJS):
-            ExpectedAnswers=[]
-            outputs=[]
-            for out in outputsJS:
-                ans=out["CorrectAnswer"]
-                ExpectedAnswers.append(ans)
-                try: # print string stored at address out["addr"] 
-                    outputs.append( self.__Output__( type='4', reg='a0', addr=out["addr"],ans=ans))
-                    continue
-                except KeyError as e: print(e) 
-            
-                try: # print value of register
-                    outputs.append( self.__Output__(  type=out["type"], reg=out["reg"],ans=ans))
-                except:  raise Exception("Output not address or register")
-            return ExpectedAnswers,outputs
-
-                
-
-
-        class __RegInput__:
-            def __init__(self,reg,value,memPointer=None):
-                self.reg='$'+reg.replace('$','')
-                self.value=value
-                self.memPointer=memPointer
-                if memPointer is not None: self.memPointer.reg=self.reg
-            
-            def ToDict(self):
-                if self.memPointer is None: return {"reg":self.reg,"value":self.value}
-                else:                       return self.memPointer.ToDict()
-
-        class __MemInput__:
-            def __init__(self,addr,data,type):
-                self.addr=addr
-                self.data=data
-                self.type=type
-                self.reg = None
-            def ToDict(self):
-                d = { "type":self.type, "addr":self.addr, 'data':self.data }
-                if self.reg is not None: d["reg"]=self.reg
-                return d
         
-        class __Output__:
-            def __init__(self,type,reg,ans,addr=None):
-                self.reg = '$'+reg.replace('$','')
-                self.type = type
-                self.addr = addr
-                self.CorrectAnswer = ans
-                
-                if addr is None:
-                    self.lui_reg = "$0"
-                    self.upper_addr = '0'
-                    self.lower_addr = '0'
-                else:
-                    self.lui_reg = '$'+reg.replace('$','')
-                    if '0x' in addr.strip(): 
-                        addr = addr.strip()[2:].zfill(8)
-                    self.upper_addr = '0x'+addr[:4]
-                    self.lower_addr = '0x'+addr[4:]
-            def ToDict(self):
-                d = { "reg":self.reg, "type":self.type, "CorrectAnswer":self.CorrectAnswer }
-                if self.addr is not None: d["addr"]=self.addr
-                return d
+        def ToDict(self):
+            d = { "type":self.type, "addr":self.addr, 'data':self.data.replace("\"","") }
+            if self.reg is not None: d["reg"]=self.reg.replace("$","")
+            return d
+    
+    class __Output__:
+        def __init__(self,type,CorrectAnswer,reg=None,addr=None):
+            if reg is None and addr is None: raise Exception("reg or addr must be given a value")
+            if reg is not None: self.reg = '$'+reg.replace('$','')
+            else:self.reg=reg
+            self.type = str(type)
+            self.addr = addr
+            self.CorrectAnswer = CorrectAnswer
+            
+            if addr is None:
+                self.lui_reg = "$0"
+                self.upper_addr = '0'
+                self.lower_addr = '0'
+            else:
+                if reg is not None: self.lui_reg = '$'+reg.replace('$','')
+                if '0x' in addr.strip(): 
+                    addr = addr.strip()[2:].zfill(8)
+                self.upper_addr = '0x'+addr[:4]
+                self.lower_addr = '0x'+addr[4:]
+        
+        def ToDict(self):
+            d = {"type":self.type, "CorrectAnswer":self.CorrectAnswer }
+            if self.addr is not None: d["addr"]=self.addr
+            if self.reg is not None: d["reg"]=self.reg.replace("$","")
+            return d
                 
 
 def isInt(val):

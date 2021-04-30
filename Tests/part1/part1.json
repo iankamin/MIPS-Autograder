@@ -1,79 +1,25 @@
 {   
     "subroutine_name":"getInput",
-    "MessageToStudent":"These tests utilize memory betweeen addresses 0x10000300 - 0x10000500",
     "PromptGrade":"2",
     "TestGrade":"2",
-    "UserInput":"True",
     "tests":[
         {   
             "show":"True",
-            "filelines":[
-                "1234+4568"
-            ],
-            "inputs":[
-                { "reg":"a0",
-                  "val":"0x10000300" 
-                } 
-            ],
-            "outputs":[
-                { "addr":"0x10000300" } 
-            ],
-            "ExpectedAnswers":[
-                "1234+4568"
-            ]
+            "UserInput":[ "1234+4568" ],
+            "inputs":[ { "reg":"a0", "val":"0x10000300" } ],
+            "outputs":[ { "addr":"0x10000300", "CorrectAnswer": "1234+4568"} ]
         },
         {   
-            "filelines":[
-                "12"
-            ],
-            "inputs":[
-                { "reg":"a0",
-                  "val":"0x10000300" 
-                } 
-            ],
-            "outputs":[
-                { "addr":"0x10000300" 
-                } 
-            ],
-            "ExpectedAnswers":[
-                "12"
-            ]
-
+            "show":"True",
+            "UserInput":[ "12+45" ],
+            "inputs":[ { "reg":"a0", "val":"0x10000400" } ],
+            "outputs":[ { "addr":"0x10000400", "CorrectAnswer": "12+45"} ]
         },
         {   
-            "filelines":[
-                "134-12"
-            ],
-            "inputs":[
-                { "reg":"a0",
-                  "val":"0x10000330" 
-                } 
-            ],
-            "outputs":[
-                { "addr":"0x10000330" 
-                } 
-            ],
-            "ExpectedAnswers":[
-                "134-12"
-            ]
-
-        },
-        {
-            "filelines":[
-                "-2321+-3424"
-            ],
-            "inputs":[
-                { "reg":"a0",
-                  "val":"0x10000350" 
-                } 
-            ],
-            "outputs":[
-                { "addr":"0x10000350" 
-                } 
-            ],
-            "ExpectedAnswers":[
-                "-2321+-3424"
-            ]
+            "show":"True",
+            "UserInput":[ "12-45" ],
+            "inputs":[ { "reg":"a0", "val":"0x10000500" } ],
+            "outputs":[ { "addr":"0x10000500", "CorrectAnswer": "12-45"} ]
         }
     ]
 }

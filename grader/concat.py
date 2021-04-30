@@ -1,9 +1,11 @@
 import json
 import os, sys
 import re
-from settings import settings
+try: from grader.settings import settings,Test
+except: from settings import settings,Test
 
-
+localDir = os.path.dirname(__file__)+"/"
+StorageDir=localDir
 
 '''
 splits student submission 
@@ -12,7 +14,7 @@ submission[1] - skelton code
 submission[2] - .text section
 '''    
 def getSubmission(sfile):
-    with open ("concatErrors.txt",'w') as f: f.write('\n') 
+    with open(localDir + "concatErrors.txt",'w') as f: f.write('\n') 
     try:
         with open(sfile,'r') as f: 
             submission=f.read()
@@ -30,7 +32,7 @@ def getSubmission(sfile):
             linestart,lineend=submission[:s].rfind('\n')+1,submission[e:].find('\n')+e
             sub=submission[linestart:s]+'X'*(e-s)+submission[e:lineend]
             problems+=sub+'\n'
-        with open ("concatErrors.txt",'a+') as f: f.write("NON ASCII CHARACTER was found in your program\nAttempting to fix but may cause additional issues\nplease check your code and remove potential problems\nPotential Problems denoted with \'X\' :\n%s\n"%problems)
+        with open (localDir + "concatErrors.txt",'a+') as f: f.write("NON ASCII CHARACTER was found in your program\nAttempting to fix but may cause additional issues\nplease check your code and remove potential problems\nPotential Problems denoted with \'X\' :\n%s\n"%problems)
         
     submission = submission.replace("XXAAXX783908782388289038339",'#XXAAXX783908782388289038339 #')
     submission = submission.replace(".globl",'#.globl')
@@ -58,7 +60,7 @@ def mergeMemory(submission):
     
     #   Gets the static memory data
 
-    S_Header=open('template/TemplateStaticHeader','r')
+    S_Header=open(localDir + 'template/TemplateStaticHeader','r')
     dataConcat+='\n'+S_Header.read()
     
     # organizes data found in submission[0] .global is placed at the top everything else is placed at the bottom
@@ -99,7 +101,7 @@ def illegalSyscalls(line, syscode):
 def illegalSyntax(data, text, bareMode):
     global io
     global runMips
-    errors=open("concatErrors.txt","a+")
+    errors=open(localDir + "concatErrors.txt","a+")
     errors.writelines("\n")
     if io.BareMode: bareModeIllegalSyntax(data,text, errors)
     
@@ -153,10 +155,12 @@ def removeComments(submission):
             line = line[:line.index("#")]
         out += line+"\n"
     return out
-def concat(IO=None,sfile="submission.s"):
+def concat(IO=None,sfile="submission.s",concatFile="concat.s"):
     global inputs,io
     global runMips,output,S_Header,S_Trailer
-    output=open('concat.s','w')
+    if concatFile == "concat.s": output=open(localDir + 'concat.s','w')
+    else: output=open(concatFile,'w')
+
     if IO == None: io =settings("settings.json")
     else : io=IO
     
@@ -175,7 +179,7 @@ def concat(IO=None,sfile="submission.s"):
 
     allTests=""
     for test in io.AllTests:
-        with open('template/TemplateTrial','r') as S_Trial:
+        with open(localDir + 'template/TemplateTrial','r') as S_Trial:
             body = S_Trial.read()
             body=body.replace("<student_subroutine>",io.SubroutineName)
             body=body.replace("<TEST NAME>",test.testName)
@@ -189,7 +193,7 @@ def concat(IO=None,sfile="submission.s"):
         allTests+=body
         #print(allTests)
         
-    S_Trailer=open('template/TemplateStaticTrailer','r')
+    S_Trailer=open(localDir + 'template/TemplateStaticTrailer','r')
     output.write(S_Trailer.read().replace("<TRIALS>",allTests))
     output.write(textSect)
     output.close()
@@ -216,12 +220,11 @@ def CreateAllOutputs(test):
 
 def createInputMem(_addr,_data,_type):
     _type='.'+_type.replace(".",'')
-    _addr='0x'+_addr.replace("0x",'')
-    with open("template/TemplateInitMemory",'r') as f:
+    with open(localDir + "template/TemplateInitMemory",'r') as f:
         contents=f.read()
         contents=contents.replace("<addr>",_addr)
         contents=contents.replace("<type>",_type)
-        contents=contents.replace("<data>","\""+_data+"\"")
+        contents=contents.replace("<data>",_data)
         return contents
 
 def createInputReg(_reg,_val):
@@ -229,7 +232,7 @@ def createInputReg(_reg,_val):
     if '0x' in _val.strip():
         _val= '0x'+_val[2:].zfill(8)
         #print(_val)
-    with open("template/TemplateInitRegister",'r') as f:
+    with open(localDir + "template/TemplateInitRegister",'r') as f:
         contents=f.read()
         contents=contents.replace("<reg>",_reg)
 
@@ -243,7 +246,7 @@ def createInputReg(_reg,_val):
         return contents
 
 def createOutput(out):
-    with open("template/TemplateOut",'r') as f:
+    with open(localDir + "template/TemplateOut",'r') as f:
         contents=f.read()
         contents=contents.replace("<upper_addr>",out.upper_addr)
         contents=contents.replace("<lower_addr>",out.lower_addr)

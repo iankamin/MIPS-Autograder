@@ -1,9 +1,11 @@
 from abc import abstractmethod
 import random
 from PyQt5 import QtWidgets,uic
+from PyQt5.QtGui import QRegExpValidator
 from PyQt5.sip import delete
-from PyQt5.QtCore import pyqtSignal
-import .utilities
+from PyQt5.QtCore import QRegExp, pyqtSignal
+from .ui_files import UserInputRow_ui,TopRow_ui,DataRow_ui,RegInput_ui,RegOutput_ui
+from .utilities import validity
 
 class Row(QtWidgets.QWidget):
     Deleted = pyqtSignal(QtWidgets.QWidget,QtWidgets.QAbstractScrollArea)
@@ -38,8 +40,12 @@ class Row(QtWidgets.QWidget):
             self.reg.setMaxLength(3)
         else:
             self.reg.setMaxLength(2)
+    
     def addressChanged(self,text:str):
+        self.address:QtWidgets.QLineEdit
         if len(text) == 0: return
+        if text[0]=='-': self.address.setMaxLength(11)
+        else: self.address.setMaxLength(10)
         if text[-1] not in "-x0123456789abcdefABCDEF": self.address.setText(text[:-1])
     
     # Prevents the scroll wheel from affecting combobox
@@ -58,7 +64,7 @@ class TestTopRow(QtWidgets.QWidget):
     DeleteButton:QtWidgets.QPushButton
     def __init__(self,name=None,ShowLevel=None,MaxPoints=None,ExtraCredit=None): 
         super(QtWidgets.QWidget, self).__init__()
-        uic.loadUi('ui_files/TopRow.ui', self)
+        uic.loadUi(TopRow_ui, self)
         self.ShowLevel.wheelEvent = self.wheelEvent
         self.MaxPoints.wheelEvent = self.wheelEvent
         
@@ -103,7 +109,7 @@ class UserInputRow(Row):
     UserInput:QtWidgets.QLineEdit
     def __init__(self,parent=None,text=None): 
         super().__init__()
-        uic.loadUi('ui_files/UserInputRow.ui', self)
+        uic.loadUi(UserInputRow_ui, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
         
@@ -123,10 +129,13 @@ class DataRow(Row):
     reg:QtWidgets.QComboBox
     def __init__(self,parent=None,addr=None,data=None,type=None,reg=None): 
         super().__init__()
-        uic.loadUi('ui_files/DataRow.ui', self)
+        uic.loadUi(DataRow_ui, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
-        self.address.textChanged.connect(self.addressChanged)
+        
+        self.reg.setValidator(validity.registerRegexValidator)
+        self.address.setValidator(validity.addressRegexValidator)
+
         self.type.wheelEvent=self.wheelEvent
         self.reg.wheelEvent=self.wheelEvent
         
@@ -156,17 +165,16 @@ class RegisterRow(Row):
     DeleteButton:QtWidgets.QPushButton
     reg:QtWidgets.QLineEdit
     value:QtWidgets.QLineEdit
-    def __init__(self,parent=None,addr=None,data=None,type=None,reg=None): 
+    def __init__(self,parent=None,reg=None,value=None): 
         super().__init__()
-        uic.loadUi('ui_files/regInput.ui', self)
+        uic.loadUi(RegInput_ui, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
         self.reg.textChanged.connect(self.regLimit)
         
-        if reg is not None: self.reg.setCurrentText(reg)
-        if type is not None: self.type.setCurrentText(type.replace(".",'').lower())
-        if addr is not None: self.address.setText(addr)
-        if data is not None: self.data.setText(data)
+        if reg is not None: self.reg.setText(reg)
+        if value is not None: self.value.setText(value)
+
     def copy(self):
         copy=RegisterRow()
         copy.reg.setText(self.reg.text())
@@ -190,7 +198,7 @@ class OutputRow(Row):
     CorrectAnswer:QtWidgets.QLineEdit
     def __init__(self,parent=None,reg=None,type=None,addr=None,CorrectAnswer=None): 
         super().__init__()
-        uic.loadUi('ui_files/regOutput.ui', self)
+        uic.loadUi(RegOutput_ui, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
         self.type.wheelEvent=self.wheelEvent
@@ -210,8 +218,9 @@ class OutputRow(Row):
     def addressChanged(self,text:str):
         if len(text) == 0: return
         #if text[-1] not in "-x0123456789abcdefABCDEF": self.address.setText(text[:-1])
+    
     def ComboBoxChanged(self,i):
-        print(i)
+        #print(i)
         if i=="String":
             self.reg.hide()
             self.address.show()
@@ -226,10 +235,9 @@ class OutputRow(Row):
         copy.type.setCurrentIndex(self.type.currentIndex())
         return copy
     def getSyscall(_,type):
-        if validity.isInt(type): 
-            type=int(type)
-            return { 1:'Integer', 2:'Float', 3:'Double', 4:'String', 11:'Character' }[type]
-        if type is str: return { 'Integer':1, 'Float':2, 'Double':3, 'String':4, 'Character':11 }[type]
+        return { 1 :'Integer'  , 2 :'Float'  , 3 :'Double'  , 4 :'String'  , 11 :'Character', 
+                '1':'Integer'  ,'2':'Float'  ,'3':'Double'  ,'4':'String'  ,'11':'Character', 
+                    'Integer':1,    'Float':2,    'Double':3,    'String':4,     'Character':11 }[type]
     def getKwargs(self):
         i=self.type.currentText()
         if i=="String": return { 'type':self.getSyscall(i), 'addr':self.address.text(), 'CorrectAnswer':self.CorrectAnswer.text() }

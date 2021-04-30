@@ -1,0 +1,94 @@
+
+the following errors occurred
+=============================
+Program Terminated Early without running all tests
+
+(spim) (spim)
+
+runtime error:
+   Cannot open file: `/home/kamian/MIPS_Autograder/grader/concat.s'
+Unknown spim command=============================
+
+TEST 1  - 0.000 out of 1.0
+............................................
+TEST 2  - 0.000 out of 1.0
+............................................
+TEST 3  - 0.000 out of 1.0
+............................................
+TEST 4  - 0.000 out of 1.0
+............................................
+TEST 5  - 0.000 out of 1.0
+............................................
+TEST 6  - 0.000 out of 1.0
+............................................
+TEST 7  - 0.000 out of 1.0
+............................................
+TEST 8  - 0.000 out of 1.0
+............................................
+TEST 9  - 0.000 out of 1.0
+............................................
+TEST 10  - 0.000 out of 1.0
+............................................
+TEST 11  - 0.000 out of 1.0
+............................................
+TEST 12 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 13 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 14 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 15 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 16 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 17 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 18 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 19 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 20 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 21 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 22 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 23 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 24 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+TEST 25 (Extra Credit) 
+Extra Credit must work fully to receive credit
+original score  - 0.000 out of 0.5
+............................................
+Prompt - 0.000 out of 2.0
+
+
+======== RESULTS ========
+{"scores": {"PromptPrinted": 0.0, "test1": 0, "test2": 0, "test3": 0, "test4": 0, "test5": 0, "test6": 0, "test7": 0, "test8": 0, "test9": 0, "test10": 0, "test11": 0, "test12": 0, "test13": 0, "test14": 0, "test15": 0, "test16": 0, "test17": 0, "test18": 0, "test19": 0, "test20": 0, "test21": 0, "test22": 0, "test23": 0, "test24": 0, "test25": 0}}
