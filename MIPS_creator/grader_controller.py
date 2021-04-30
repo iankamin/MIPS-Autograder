@@ -21,7 +21,6 @@ def transferFile(settingsFile,submissionFile):
         'concatFile':grader_data_loc+"concat.s",
         'autograderOutput':grader_data_loc+"graderResults.txt",
         'ShowAll':False,
-        'printResults':True}
-            
-            )
+        'printResults':False}
+    )
 

@@ -118,7 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def SaveSettings(self,loc=None):
         sa=False
         so=False
-        i = self.ShowLevel.currentIndex
+        i = self.ShowLevel.currentIndex()
         if i == 1:so=True
         if i == 2:sa=True
 
@@ -206,7 +206,7 @@ class MainWindow(QtWidgets.QMainWindow):
         
         set_file = os.path.join(os.path.dirname(__file__), "trial.json")
         print(set_file)
-        #self.SaveSettings(set_file)
+        self.SaveSettings(set_file)
         transferFile( settingsFile=set_file,
                       submissionFile=submissionPath)
 

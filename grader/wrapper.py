@@ -18,7 +18,7 @@ def runGrader(settingsFile="settings.json",submissionFile="submission.s",
     io=settings(settingsFile)
 
     runMips=concat(IO=io,sfile=submissionFile,concatFile=concatFile)
-    autograder(IO=io,_ShowAll=_ShowAll, runMips=runMips,outputDest=outputFile,
+    autograder(IO=io,_ShowAll=_ShowAll, runMips=runMips,outputDest=outputFile, concatFile=concatFile,
     autograderOutput=autograderOutput,printResults=printResults)
 
 

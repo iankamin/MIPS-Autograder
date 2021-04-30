@@ -85,7 +85,7 @@ class settings():
         return io
 
 class Test():
-
+    parent:settings
     # Initialize from JSON
     def __init__(self,parent, testjs=None,testNumber=0):
         self.parent=parent
@@ -112,6 +112,7 @@ class Test():
         # Get Inputs and Outputs
         self.MemInputs,self.RegInputs = self.setInputs(testjs.get("inputs",[]))
         self.ExpectedAnswers,self.Output=self.setOutputs(testjs["outputs"])
+        i=0
     def empty(self):
         self.show = False
         self.testName = "Test"
@@ -130,7 +131,9 @@ class Test():
         testjs["name"]=self.testName
         testjs["ExtraCredit"]=self.ExtraCredit 
         testjs["name"]=self.testName
-        testjs["OutOf"]=self.OutOf 
+        if self.OutOf==(self.parent.ECTestGrade if self.ExtraCredit else self.parent.TestGrade):
+            testjs["OutOf"]=0
+        else: testjs["OutOf"]=self.OutOf 
         testjs["show"]=self.show
         testjs["ShowOutput"]=self.showOutput 
         testjs["ShowLevel"]=self.showLevel

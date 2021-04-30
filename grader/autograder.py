@@ -23,7 +23,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     io.printHeader()
 
     if runMips: 
-        SPIMerror = mips()
+        SPIMerror = mips(concatFile)
         output, header_error, NoneAsciiMSG = GetMipsOutput()
         completionErr="Program Terminated Early without running all tests" if len(io.AllTests)*3 > len(output) else ""
     

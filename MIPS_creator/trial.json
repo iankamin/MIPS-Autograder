@@ -5,18 +5,18 @@
     "ECTestGrade": 0.5,
     "MessageToStudent": "",
     "ShowAll": false,
-    "ShowAllOutput": false,
+    "ShowAllOutput": true,
     "BareMode": false,
     "RequiresUserInput": true,
-    "Shuffle": false,
+    "Shuffle": true,
     "tests": [
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
+            "OutOf": 2.0,
+            "show": true,
             "ShowOutput": false,
-            "ShowLevel": 0,
+            "ShowLevel": 2,
             "UserInput": [
                 "1234+4321"
             ],
@@ -30,9 +30,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -49,9 +49,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -68,9 +68,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -87,9 +87,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -106,9 +106,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -125,9 +125,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -144,9 +144,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -163,9 +163,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -182,9 +182,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -201,9 +201,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -220,9 +220,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -239,9 +239,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -258,9 +258,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 0.5,
+            "OutOf": 2.0,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -277,12 +277,12 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
-            "show": false,
+            "OutOf": 0.5,
+            "show": true,
             "ShowOutput": false,
-            "ShowLevel": 0,
+            "ShowLevel": 2,
             "UserInput": [
                 "-1234+-4321"
             ],
@@ -296,9 +296,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -315,9 +315,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -334,9 +334,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -353,9 +353,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -372,9 +372,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -391,9 +391,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -410,9 +410,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -429,9 +429,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -448,9 +448,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,
@@ -467,9 +467,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
+            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 1.0,
+            "OutOf": 0.5,
             "show": false,
             "ShowOutput": false,
             "ShowLevel": 0,

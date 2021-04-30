@@ -222,20 +222,20 @@ class Test(QtWidgets.QWidget):
         for item in items: 
             i=type(item)
             if i is not DataRow: continue
-            copy.addDataRow(item.copy())
+            copy.addRow(DataRow, item.copy())
         
         lay=self.InputRegisters.content_area.layout()
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
         for item in items: 
             i=type(item)
             if i is not RegisterRow: continue
-            copy.addRegisterRow(item.copy())
+            copy.addRow(RegisterRow, item.copy())
         
         lay=self.Outputs.content_area.layout()
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
         for item in items: 
             i=type(item)
             if i is not OutputRow: continue
-            copy.addOutputRow(item.copy())
+            copy.addRow(OutputRow, item.copy())
 
         return copy

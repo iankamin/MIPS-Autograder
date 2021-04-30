@@ -62,7 +62,7 @@ main:
 	
 
 # ================================================================
-# Test    14
+# Test    5
 
 	jal zzzdivider
 	add $0, $0, $0
@@ -102,7 +102,7 @@ lw $v0, 4($sp)
 
 
 # ================================================================
-# Test    15
+# Test    3
 
 	jal zzzdivider
 	add $0, $0, $0
@@ -142,7 +142,527 @@ lw $v0, 4($sp)
 
 
 # ================================================================
-# Test    16
+# Test    11
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    8
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    10
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    1
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    6
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    2
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    4
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    12
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    13
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    9
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    7
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    24
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	
+
+	jal calculator
+	add $0,$0,$0
+
+	jal zzzdivider
+	add $0, $0, $0
+
+	#add $t0, $0, $a0
+	#add $t1, $0, $v0
+
+	
+sw $a0, 0($sp)
+sw $v0, 4($sp)
+
+lui $0, 0
+addi $a0, $v0, 0
+addi $v0, $0, 1
+syscall
+
+jal zzzneaten
+
+lw $a0, 0($sp)
+lw $v0, 4($sp)
+
+
+
+	jal zzzdivider
+	add $0, $0, $0
+
+# ================================================================
+
+
+
+# ================================================================
+# Test    21
 
 	jal zzzdivider
 	add $0, $0, $0
@@ -262,7 +782,7 @@ lw $v0, 4($sp)
 
 
 # ================================================================
-# Test    19
+# Test    14
 
 	jal zzzdivider
 	add $0, $0, $0
@@ -342,7 +862,7 @@ lw $v0, 4($sp)
 
 
 # ================================================================
-# Test    21
+# Test    15
 
 	jal zzzdivider
 	add $0, $0, $0
@@ -462,7 +982,7 @@ lw $v0, 4($sp)
 
 
 # ================================================================
-# Test    24
+# Test    19
 
 	jal zzzdivider
 	add $0, $0, $0
@@ -502,527 +1022,7 @@ lw $v0, 4($sp)
 
 
 # ================================================================
-# Test    0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    1
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    2
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    3
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    4
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    5
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    6
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    7
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    8
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    9
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    10
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    11
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    12
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	
-
-	jal calculator
-	add $0,$0,$0
-
-	jal zzzdivider
-	add $0, $0, $0
-
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
-
-	
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui $0, 0
-addi $a0, $v0, 0
-addi $v0, $0, 1
-syscall
-
-jal zzzneaten
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-
-
-	jal zzzdivider
-	add $0, $0, $0
-
-# ================================================================
-
-
-
-# ================================================================
-# Test    13
+# Test    16
 
 	jal zzzdivider
 	add $0, $0, $0

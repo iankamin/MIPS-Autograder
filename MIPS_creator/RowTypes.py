@@ -86,7 +86,7 @@ class TestTopRow(QtWidgets.QWidget):
     def GetKwargs(self):
         sa=False
         so=False
-        i = self.ShowLevel.currentIndex
+        i = self.ShowLevel.currentIndex()
         if i == 1:so=True
         if i == 2:sa=True
     
@@ -101,8 +101,8 @@ class TestTopRow(QtWidgets.QWidget):
         
         if(name) is not None: self.TestName.setText(name)
         if(ShowLevel) is not None: self.ShowLevel.setCurrentIndex(ShowLevel)
-        if(ExtraCredit) is not None: self.MaxPoints.setValue(ExtraCredit)
-        if(OutOf) is not None: self.ExtraCredit.setChecked(OutOf)
+        if(ExtraCredit) is not None: self.MaxPoints.setValue(OutOf)
+        if(OutOf) is not None: self.ExtraCredit.setChecked(ExtraCredit)
 
 class UserInputRow(Row):
     DeleteButton:QtWidgets.QPushButton

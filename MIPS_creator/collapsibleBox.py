@@ -111,7 +111,7 @@ class CollapsibleBox(QtWidgets.QWidget):
 
     def indexUpdated(self,index):
         if index is not None: 
-            if index %2: self.setStyleSheet("background-color: rgb(215, 215, 255)")
+            if index %2: self.setStyleSheet("background-color: rgb(245, 245, 255)")
             else:        self.setStyleSheet("background-color: rgb(230, 230, 255)")
     
     def toggle_animation_finished(self):
