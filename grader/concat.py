@@ -37,7 +37,7 @@ def getSubmission(sfile):
     submission = submission.replace("XXAAXX783908782388289038339",'#XXAAXX783908782388289038339 #')
     submission = submission.replace(".globl",'#.globl')
     submission = submission.replace(".global",'#.global')
-    submission = submission.replace("XXFFVV3793","XXFFAV3793") #just in case its coincidentally used by the student
+    submission = submission.replace("XXFFVV3793","studentGBG") #just in case its coincidentally used by the student
     submission = submission.split("XXAAXX783908782388289038339")
     #print(submission)
     return submission

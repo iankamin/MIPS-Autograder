@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtWidgets,uic
+from PyQt5.QtGui import QFont
 from PyQt5.sip import delete
 import os
 from MIPS_creator.collapsibleBox import CollapsibleBox
@@ -6,7 +7,7 @@ from MIPS_creator.utilities import settings,set_Test
 from MIPS_creator.TestLayout import Test
 from MIPS_creator.ui_files.filepaths import mainwindow_ui
 from MIPS_creator.RowTypes import DataRow, OutputRow, UserInputRow,RegisterRow
-from .grader_controller import transferFile
+from .grader_controller import transferFile,showResults
 
 class MainWindow(QtWidgets.QMainWindow): 
     allTests:QtWidgets.QVBoxLayout 
@@ -26,6 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
     RunMipsBtn:QtWidgets.QPushButton
     CreateTarBtn:QtWidgets.QPushButton
     AddTestButton:QtWidgets.QPushButton
+    fontComboBox:QtWidgets.QFontComboBox
 
     def __init__(self): 
         super(MainWindow, self).__init__() 
@@ -41,6 +43,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numberOfTests=0
         self.lastSaveLocation=""
         self.ShowLevel.wheelEvent=self.wheelEvent
+
 
     # Prevents the scroll wheel from affecting combobox
     def wheelEvent(self, *args, **kwargs):
@@ -209,6 +212,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SaveSettings(set_file)
         transferFile( settingsFile=set_file,
                       submissionFile=submissionPath)
+        showResults(self)
 
 
 

@@ -17,7 +17,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">font: 12pt &quot;Sans Serif&quot;;</string>
+   <string notr="true">font: 12pt </string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QFrame" name="frame">
@@ -26,7 +26,7 @@
       <x>0</x>
       <y>0</y>
       <width>301</width>
-      <height>701</height>
+      <height>891</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -144,7 +144,7 @@
           <x>0</x>
           <y>0</y>
           <width>299</width>
-          <height>595</height>
+          <height>785</height>
          </rect>
         </property>
         <layout class="QFormLayout" name="formLayout">
@@ -412,8 +412,8 @@ selection-color: rgb(118, 0, 1);</string>
      <rect>
       <x>300</x>
       <y>40</y>
-      <width>701</width>
-      <height>661</height>
+      <width>971</width>
+      <height>851</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -439,8 +439,8 @@ selection-color: rgb(118, 0, 1);</string>
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>685</width>
-       <height>659</height>
+       <width>955</width>
+       <height>849</height>
       </rect>
      </property>
      <property name="sizePolicy">

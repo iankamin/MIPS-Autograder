@@ -13,8 +13,8 @@ clean:
 	-rm grader/concat.s
 	-rm -r MIPS_creator/grader_data
 
-
-
+list:
+	ls 
 
 %.s:
 	@make clean

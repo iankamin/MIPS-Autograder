@@ -1,183 +1,31 @@
 
 the following errors occurred
 =============================
-    None
-=============================
+cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+    cannot be used as a label in the data section
+You should not be requesting user input in this submission. 
+you program will not run until the following lines are removed or modified
+        li $v0, 8
 
-TEST 1 (Output Only)
- Expected   $v0 = -983 ( 0xfffffc29 )
-   Actual   $v0 = -983 ( 0xfffffc29 )
+runtime error:
+   program was never run due to potential illegal syscalls=============================
 
-TEST 1  - 2.000 out of 2.0
-............................................
-TEST 2 (Output Only)
- Expected   $v0 = 24 ( 0x18 )
-   Actual   $v0 = 24 ( 0x18 )
-
-TEST 2  - 2.000 out of 2.0
-............................................
-TEST 3 (Output Only)
- Expected   $v0 = 0 ( 0x0 )
-   Actual   $v0 = 0 ( 0x0 )
-
-TEST 3  - 2.000 out of 2.0
-............................................
-TEST 4 (Output Only)
- Expected   $v0 = 9999 ( 0x270f )
-   Actual   $v0 = 9999 ( 0x270f )
-
-TEST 4  - 2.000 out of 2.0
-............................................
-TEST 5 (Output Only)
- Expected   $v0 = 99980001 ( 0x5f592e1 )
-   Actual   $v0 = 99980001 ( 0x5f592e1 )
-
-TEST 5  - 2.000 out of 2.0
-............................................
-TEST 6 (Output Only)
- Expected   $v0 = 183 ( 0xb7 )
-   Actual   $v0 = 183 ( 0xb7 )
-
-TEST 6  - 2.000 out of 2.0
-............................................
-TEST 7 (Output Only)
- Expected   $v0 = 9990 ( 0x2706 )
-   Actual   $v0 = 9990 ( 0x2706 )
-
-TEST 7  - 2.000 out of 2.0
-............................................
-TEST 8 (Output Only)
- Expected   $v0 = 45 ( 0x2d )
-   Actual   $v0 = 45 ( 0x2d )
-
-TEST 8  - 2.000 out of 2.0
-............................................
-TEST 9 (Output Only)
- Expected   $v0 = -9100 ( 0xffffdc74 )
-   Actual   $v0 = -9100 ( 0xffffdc74 )
-
-TEST 9  - 2.000 out of 2.0
-............................................
-TEST 10 (Output Only)
- Expected   $v0 = 0 ( 0x0 )
-   Actual   $v0 = 0 ( 0x0 )
-
-TEST 10  - 2.000 out of 2.0
-............................................
-TEST 11 (Output Only)
- Expected   $v0 = 230958 ( 0x3862e )
-   Actual   $v0 = 230958 ( 0x3862e )
-
-TEST 11  - 2.000 out of 2.0
-............................................
-TEST 12 (Output Only)
- Expected   $v0 = 1 ( 0x1 )
-   Actual   $v0 = 1 ( 0x1 )
-
-TEST 12  - 2.000 out of 2.0
-............................................
-TEST 13 (Output Only)
- Expected   $v0 = 10 ( 0xa )
-   Actual   $v0 = 10 ( 0xa )
-
-TEST 13  - 2.000 out of 2.0
-............................................
-TEST 14 
-Sample Output
-==============
-=========== test14 ==========
-
-Your Prompt -->
-   Input string up to 11 chars:
-
-User Input -->
-   1234+4321
-
-Output -->
- Expected   $v0 = 5555 ( 0x15b3 )
-   Actual   $v0 = 5555 ( 0x15b3 )
-
-TEST 14 - 2.000 out of 2.0
-............................................
-TEST 15 (Extra Credit) (Output Only)
- Expected   $v0 = -1 ( 0xffffffff )
-   Actual   $v0 = -1 ( 0xffffffff )
-
-TEST 15  - 0.500 out of 0.5
-............................................
-TEST 16 (Extra Credit) (Output Only)
- Expected   $v0 = -1 ( 0xffffffff )
-   Actual   $v0 = -1 ( 0xffffffff )
-
-TEST 16  - 0.500 out of 0.5
-............................................
-TEST 17 (Extra Credit) (Output Only)
- Expected   $v0 = 9100 ( 0x238c )
-   Actual   $v0 = 9100 ( 0x238c )
-
-TEST 17  - 0.500 out of 0.5
-............................................
-TEST 18 (Extra Credit) (Output Only)
- Expected   $v0 = 2 ( 0x2 )
-   Actual   $v0 = 2 ( 0x2 )
-
-TEST 18  - 0.500 out of 0.5
-............................................
-TEST 19 (Extra Credit) 
-Sample Output
-==============
-=========== test19 ==========
-
-Your Prompt -->
-   Input string up to 11 chars:
-
-User Input -->
-   -1234+-4321
-
-Output -->
- Expected   $v0 = -5555 ( 0xffffea4d )
-   Actual   $v0 = -5555 ( 0xffffea4d )
-
-TEST 19 - 0.500 out of 0.5
-............................................
-TEST 20 (Extra Credit) (Output Only)
- Expected   $v0 = 9999 ( 0x270f )
-   Actual   $v0 = 9999 ( 0x270f )
-
-TEST 20  - 0.500 out of 0.5
-............................................
-TEST 21 (Extra Credit) (Output Only)
- Expected   $v0 = -1 ( 0xffffffff )
-   Actual   $v0 = -1 ( 0xffffffff )
-
-TEST 21  - 0.500 out of 0.5
-............................................
-TEST 22 (Extra Credit) (Output Only)
- Expected   $v0 = -99980001 ( 0xfa0a6d1f )
-   Actual   $v0 = -99980001 ( 0xfa0a6d1f )
-
-TEST 22  - 0.500 out of 0.5
-............................................
-TEST 23 (Extra Credit) (Output Only)
- Expected   $v0 = -230958 ( 0xfffc79d2 )
-   Actual   $v0 = -230958 ( 0xfffc79d2 )
-
-TEST 23  - 0.500 out of 0.5
-............................................
-TEST 24 (Extra Credit) (Output Only)
- Expected   $v0 = -10008 ( 0xffffd8e8 )
-   Actual   $v0 = -10008 ( 0xffffd8e8 )
-
-TEST 24  - 0.500 out of 0.5
-............................................
-TEST 25 (Extra Credit) (Output Only)
- Expected   $v0 = -18 ( 0xffffffee )
-   Actual   $v0 = -18 ( 0xffffffee )
-
-TEST 25  - 0.500 out of 0.5
-............................................
-Prompt - 2.000 out of 2.0
 
 
 ======== RESULTS ========
-{"scores": {"PromptPrinted": 2.0, "test1": 2.0, "test2": 2.0, "test3": 2.0, "test4": 2.0, "test5": 2.0, "test6": 2.0, "test7": 2.0, "test8": 2.0, "test9": 2.0, "test10": 2.0, "test11": 2.0, "test12": 2.0, "test13": 2.0, "test14": 2.0, "test15": 0.5, "test16": 0.5, "test17": 0.5, "test18": 0.5, "test19": 0.5, "test20": 0.5, "test21": 0.5, "test22": 0.5, "test23": 0.5, "test24": 0.5, "test25": 0.5}}
+{"scores": {}}

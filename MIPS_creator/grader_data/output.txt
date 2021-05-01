@@ -9,39 +9,7 @@ XXFFVV3793
 Input string up to 11 chars:
 
 XXFFVV3793
--983
-
-XXFFVV3793
-
-XXFFVV3793
-Input string up to 11 chars:
-
-XXFFVV3793
-24
-
-XXFFVV3793
-
-XXFFVV3793
-Input string up to 11 chars:
-
-XXFFVV3793
-0
-
-XXFFVV3793
-
-XXFFVV3793
-Input string up to 11 chars:
-
-XXFFVV3793
-9999
-
-XXFFVV3793
-
-XXFFVV3793
-Input string up to 11 chars:
-
-XXFFVV3793
-99980001
+5555
 
 XXFFVV3793
 
@@ -57,14 +25,6 @@ XXFFVV3793
 Input string up to 11 chars:
 
 XXFFVV3793
-9990
-
-XXFFVV3793
-
-XXFFVV3793
-Input string up to 11 chars:
-
-XXFFVV3793
 45
 
 XXFFVV3793
@@ -73,7 +33,71 @@ XXFFVV3793
 Input string up to 11 chars:
 
 XXFFVV3793
+24
+
+XXFFVV3793
+
+XXFFVV3793
+Input string up to 11 chars:
+
+XXFFVV3793
 -9100
+
+XXFFVV3793
+
+XXFFVV3793
+Input string up to 11 chars:
+
+XXFFVV3793
+-983
+
+XXFFVV3793
+
+XXFFVV3793
+Input string up to 11 chars:
+
+XXFFVV3793
+9990
+
+XXFFVV3793
+
+XXFFVV3793
+Input string up to 11 chars:
+
+XXFFVV3793
+10
+
+XXFFVV3793
+
+XXFFVV3793
+Input string up to 11 chars:
+
+XXFFVV3793
+9999
+
+XXFFVV3793
+
+XXFFVV3793
+Input string up to 11 chars:
+
+XXFFVV3793
+1
+
+XXFFVV3793
+
+XXFFVV3793
+Input string up to 11 chars:
+
+XXFFVV3793
+99980001
+
+XXFFVV3793
+
+XXFFVV3793
+Input string up to 11 chars:
+
+XXFFVV3793
+0
 
 XXFFVV3793
 
@@ -97,23 +121,7 @@ XXFFVV3793
 Input string up to 11 chars:
 
 XXFFVV3793
-1
-
-XXFFVV3793
-
-XXFFVV3793
-Input string up to 11 chars:
-
-XXFFVV3793
-10
-
-XXFFVV3793
-
-XXFFVV3793
-Input string up to 11 chars:
-
-XXFFVV3793
-5555
+-5555
 
 XXFFVV3793
 
@@ -129,7 +137,7 @@ XXFFVV3793
 Input string up to 11 chars:
 
 XXFFVV3793
--1
+-18
 
 XXFFVV3793
 
@@ -153,7 +161,7 @@ XXFFVV3793
 Input string up to 11 chars:
 
 XXFFVV3793
--5555
+-10008
 
 XXFFVV3793
 
@@ -193,14 +201,6 @@ XXFFVV3793
 Input string up to 11 chars:
 
 XXFFVV3793
--10008
-
-XXFFVV3793
-
-XXFFVV3793
-Input string up to 11 chars:
-
-XXFFVV3793
--18
+-1
 
 XXFFVV3793

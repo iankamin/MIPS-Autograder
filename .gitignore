@@ -13,9 +13,11 @@ __pycache__/
 MIPS-creator/.vscode/
 MIPS-creator/.vscode/*
 MIPS-creator/*.autosave
+
 */*/*:Zone.Identifier
 */*/*/*:Zone.Identifier
 */*:Zone.Identifier
+
 */*/*/*.pyc
 */*/*.pyc
 */*.pyc
@@ -25,6 +27,17 @@ MIPS-creator/*.autosave
 */*/*.autosave
 */*.autosave
 *.autosave
+
+*/*/*/*.pyproject
+*/*/*.pyproject
+*/*.pyproject
+*.pyproject
+
+*/*/*/*.pyproject.user
+*/*/*.pyproject.user
+*/*.pyproject.user
+*.pyproject.user
+
 
 MIPS-creator/*/*/*.json
 MIPS-creator/*/*.json

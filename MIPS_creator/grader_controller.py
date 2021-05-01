@@ -2,9 +2,11 @@ from MIPS_creator.utilities.settings import settings
 import os
 from shutil import copyfile
 from grader.wrapper import runGrader
+from MIPS_creator.ResultsWindow import ResultsWindow
+
+grader_data_loc = os.path.join(os.path.dirname(__file__), "grader_data/")
 
 def transferFile(settingsFile,submissionFile):
-    grader_data_loc = os.path.join(os.path.dirname(__file__), "grader_data/")
     if not os.path.exists(grader_data_loc):
         os.makedirs(grader_data_loc)
     localSettingsFile=grader_data_loc+"settings.json"
@@ -23,4 +25,14 @@ def transferFile(settingsFile,submissionFile):
         'ShowAll':False,
         'printResults':False}
     )
+def showResults(parent):
+    w1=ResultsWindow("Raw MIPS Output",parent)
+    w1.displayFile(grader_data_loc+"output.txt",True)
+    w1.show()
+    w2=ResultsWindow("Concatenated MIPS File",parent)
+    w2.displayFile(grader_data_loc+"concat.s",True)
+    w2.show()
+    w2=ResultsWindow("Autograder Results",parent)
+    w2.displayFile(grader_data_loc+"graderResults.txt",True)
+    w2.show()
 
