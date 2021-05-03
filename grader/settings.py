@@ -1,4 +1,13 @@
 import json,os,sys,random
+from enum import Enum
+
+class OutputLevel(Enum):
+    ShowNone=0
+    ShowOutput=1
+    ShowInput=2
+    ShowAll=3
+
+
 #TODO MAX points need to account for individual tests
 #TODO Prompt Points must ignore extra credit
 #TODO seperate Regular Tests and extra credit Tests
@@ -24,6 +33,7 @@ class settings():
         self.ShowAllOutput = io.get("ShowAllOutput",False)
         self.BareMode = io.get("BareMode",False)
         self.Shuffle = io.get("Shuffle",False)
+        self.JsonStyle = io.get("JsonStyle",0)
         self.RequiresUserInput = io.get("RequiresUserInput",False)
         
         if type(self.ShowAll)  is str: self.ShowAll  = self.ShowAll.lower() =="true"
@@ -81,6 +91,7 @@ class settings():
         io["BareMode"]=self.BareMode
         io["RequiresUserInput"]=self.RequiresUserInput
         io["Shuffle"]=self.Shuffle
+        io["JsonStyle"]=self.JsonStyle
         io["tests"]=[t.ToDict() for t in self.AllTests]
         return io
 

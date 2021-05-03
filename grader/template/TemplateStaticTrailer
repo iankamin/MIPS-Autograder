@@ -6,9 +6,9 @@ zzzneaten:
 	sw $ra, 8($sp)
 	addi $sp, $sp, -12
 
-	lui $a0, 0x9000		# prints new line stuff for neatness
+	lui $a0, 0x9000		
 	addi $a0,$a0,0x0230
-	addi $v0, $0, 4		#syscall string print 
+	addi $v0, $0, 4		
 	syscall
 	
 	addi $sp, $sp, 12
@@ -27,9 +27,9 @@ zzzdivider:
 
 	jal zzzneaten
 
-	lui $a0, 0x9000		# prints new line stuff for neatness
+	lui $a0, 0x9000		
 	addi $a0,$a0,0x0220
-	addi $v0, $0, 4		#syscall string print 
+	addi $v0, $0, 4		
 	syscall
 
 	jal zzzneaten
@@ -47,6 +47,7 @@ main:
 	
 	addi $v0, $0, 10
 	syscall
-
-	
-
+#________________________
+# Subroutine Code 
+# Begins Here
+#vvvvvvvvvvvvvvvvvvvvvvvv

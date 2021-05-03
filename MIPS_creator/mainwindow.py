@@ -7,7 +7,7 @@ from MIPS_creator.utilities import settings,set_Test
 from MIPS_creator.TestLayout import Test
 from MIPS_creator.ui_files.filepaths import mainwindow_ui
 from MIPS_creator.RowTypes import DataRow, OutputRow, UserInputRow,RegisterRow
-from .grader_controller import transferFile,showResults
+from .grader_controller import transferFile,showResults, CreateTAR
 
 class MainWindow(QtWidgets.QMainWindow): 
     allTests:QtWidgets.QVBoxLayout 
@@ -28,6 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
     CreateTarBtn:QtWidgets.QPushButton
     AddTestButton:QtWidgets.QPushButton
     fontComboBox:QtWidgets.QFontComboBox
+    JsonStyle:QtWidgets.QComboBox
 
     def __init__(self): 
         super(MainWindow, self).__init__() 
@@ -38,6 +39,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.SaveSettingsBtn.pressed.connect(self.SaveSettings)
         self.LoadSettingsBtn.pressed.connect(self.LoadSettings)
         self.RunMipsBtn.pressed.connect(self.RunMips)
+        self.CreateTarBtn.pressed.connect(self.CreateTar)
         self.ExpandBtn.pressed.connect(self.ExpandAll)
         self.CollapseBtn.pressed.connect(self.CollapseAll)
         self.numberOfTests=0
@@ -118,7 +120,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numberOfTests+=1
         return newTest
 
-    def SaveSettings(self,loc=None):
+    def SaveSettings(self,loc=None,updateSaveLocation=True):
         sa=False
         so=False
         i = self.ShowLevel.currentIndex()
@@ -136,6 +138,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     RequiresUserInput=self.RequireUserInput.isChecked(),
                     ShowAll 		= sa  	,
                     ShowAllOutput 	= so  	,
+                    JsonStyle       = self.JsonStyle
                 )
         
         lay=self.allTests
@@ -151,7 +154,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if output[1].replace("*",'') not in output[0]:
                 out=output[0].strip()+output[1].replace("*",'')
             else: out=output[0]
-            self.lastSaveLocation=out
+            if updateSaveLocation: self.lastSaveLocation=out
             if output[1]:
                 with open(out, 'w') as f: f.write(setJS.GetJSON())
         else:
@@ -166,7 +169,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numberOfTests=0
 
     def LoadSettings(self):
-        filePath=QtWidgets.QFileDialog.getOpenFileName(self) #file needs to exist
+        filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json") #file needs to exist
         if not filePath[0]: return
 
         self.DeleteAllTests()
@@ -179,6 +182,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.RequireUserInput.setChecked( set.RequiresUserInput)
         self.BareMode.setChecked( set.BareMode)
         self.Shuffle.setChecked( set.Shuffle)
+        self.JsonStyle.setChecked( set.JsonStyle)
         set.MessageToStudent = self.message.toPlainText()
         if set.ShowAll: i = 2
         elif set.ShowAllOutput: i = 1
@@ -202,17 +206,30 @@ class MainWindow(QtWidgets.QMainWindow):
             test.TopRow.replaceInfo(**testJS.ToDict())
 
     def RunMips(self):
-        #submissionPath=QtWidgets.QFileDialog.getOpenFileName(self)[0] #file needs to exist
-        #if not submissionPath: return
-        submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
+        submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
+        if not submissionPath: return
+        #submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
         print(submissionPath)
+        self.lastSaveLocation=submissionPath
         
-        set_file = os.path.join(os.path.dirname(__file__), "trial.json")
+        set_file = os.path.join(os.path.dirname(__file__), "temp.json")
         print(set_file)
         self.SaveSettings(set_file)
         transferFile( settingsFile=set_file,
                       submissionFile=submissionPath)
         showResults(self)
+
+    def CreateTar(self):
+        TarDestination=QtWidgets.QFileDialog.getSaveFileName(self,"Save TAR File as", self.lastSaveLocation,"TAR File (*.tar *.TAR)")[0] #file needs to exist
+        if not TarDestination: return
+        self.lastSaveLocation=TarDestination
+
+        set_file = os.path.join(os.path.dirname(__file__), "temp.json")
+        print(set_file)
+        self.SaveSettings(set_file)
+        CreateTAR(set_file, TarDestination,self)
+
+
 
 
 

@@ -11,7 +11,12 @@ clean:
 	-rm grader/output.txt
 	-rm grader/submission.s
 	-rm grader/concat.s
-	-rm -r MIPS_creator/grader_data
+
+UI_clean:
+	-rm MIPS_creator/grader_data/*.s
+	-rm MIPS_creator/grader_data/*.txt
+	-rm MIPS_creator/grader_data/*.json
+
 
 list:
 	ls 
@@ -35,6 +40,14 @@ student_%.s:
 	@cp Tests/$*/$*.json grader/settings.json
 	-tar -cf Tests/$*/$*.tar grader
 	-cp Makefile Tests/$*/Makefile
+
+UI_tar:
+	-make clean
+	-make UI_clean
+	@tar -cf MIPS_creator/grader_data/UI.tar grader
+	
+
+
 
 
 

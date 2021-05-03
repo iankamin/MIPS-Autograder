@@ -217,148 +217,6 @@ background-color: rgb(255, 255, 255);</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="0">
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>10</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Prompt Points</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="1">
-          <widget class="QDoubleSpinBox" name="PromptPoints">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 255, 255);</string>
-           </property>
-           <property name="specialValueText">
-            <string/>
-           </property>
-           <property name="prefix">
-            <string/>
-           </property>
-           <property name="maximum">
-            <double>999.990000000000009</double>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Test Points</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="1">
-          <widget class="QDoubleSpinBox" name="TestPoints">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 255, 255);</string>
-           </property>
-           <property name="specialValueText">
-            <string/>
-           </property>
-           <property name="maximum">
-            <double>999.990000000000009</double>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Extra Credit Points</string>
-           </property>
-          </widget>
-         </item>
-         <item row="10" column="1">
-          <widget class="QDoubleSpinBox" name="EC_TestPoints">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 255, 255);</string>
-           </property>
-           <property name="specialValueText">
-            <string/>
-           </property>
-           <property name="maximum">
-            <double>999.990000000000009</double>
-           </property>
-          </widget>
-         </item>
-         <item row="11" column="0">
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>10</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="12" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>General Message</string>
-           </property>
-          </widget>
-         </item>
-         <item row="13" column="0" colspan="2">
-          <widget class="QTextEdit" name="message">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-             <horstretch>0</horstretch>
-             <verstretch>190</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">border-style: outset;
-border-color: black;
-border-width: 1px;
-background-color: rgb(255, 255, 255);</string>
-           </property>
-          </widget>
-         </item>
          <item row="6" column="0" colspan="2">
           <widget class="QComboBox" name="ShowLevel">
            <property name="sizePolicy">
@@ -397,6 +255,174 @@ selection-color: rgb(118, 0, 1);</string>
            <item>
             <property name="text">
              <string>Show Full Details</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="10" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Prompt Points</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="1">
+          <widget class="QDoubleSpinBox" name="PromptPoints">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(255, 255, 255);</string>
+           </property>
+           <property name="specialValueText">
+            <string/>
+           </property>
+           <property name="prefix">
+            <string/>
+           </property>
+           <property name="maximum">
+            <double>999.990000000000009</double>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Test Points</string>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="1">
+          <widget class="QDoubleSpinBox" name="TestPoints">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(255, 255, 255);</string>
+           </property>
+           <property name="specialValueText">
+            <string/>
+           </property>
+           <property name="maximum">
+            <double>999.990000000000009</double>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Extra Credit Points</string>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="1">
+          <widget class="QDoubleSpinBox" name="EC_TestPoints">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(255, 255, 255);</string>
+           </property>
+           <property name="specialValueText">
+            <string/>
+           </property>
+           <property name="maximum">
+            <double>999.990000000000009</double>
+           </property>
+          </widget>
+         </item>
+         <item row="15" column="0">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="16" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>General Message</string>
+           </property>
+          </widget>
+         </item>
+         <item row="17" column="0" colspan="2">
+          <widget class="QTextEdit" name="message">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <horstretch>0</horstretch>
+             <verstretch>190</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border-style: outset;
+border-color: black;
+border-width: 1px;
+background-color: rgb(255, 255, 255);</string>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="0" colspan="2">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>JSON Output Style</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="0" colspan="2">
+          <widget class="QComboBox" name="JsonStyle">
+           <item>
+            <property name="text">
+             <string>{Total+Prompt  ,   Extra Credit}</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>{Prompt  ,   Total  ,   Extra Credit}</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>{Prompt,  Test1, Test2, Test3,.....TestX}</string>
             </property>
            </item>
           </widget>

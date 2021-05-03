@@ -92,17 +92,32 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
         autograderResults.write(" - %.3f out of %s\n"%(testPoints[testNum],test.OutOf))
         autograderResults.write("............................................\n")
         testPoints[testNum]=temp
-
+    
+    simpleGrade=True
     scores={}
-    #scores["total"] = sum(testPoints)
     if io.PromptGrade > 0:
         pp=sum(promptPoints)
-        if pp>=io.NumberOfRegularTests: scores["PromptPrinted"] = io.PromptGrade
-        else: scores["PromptPrinted"] = (io.PromptGrade * sum(promptPoints)) / io.NumberOfRegularTests
-        #scores["total"] += scores["PromptPrinted"]
-        autograderResults.write("Prompt - %.3f out of %s\n"%( scores["PromptPrinted"], io.PromptGrade ))
-    for i in range(1,TotalNumTests+1):
-        scores["test%i"%i]=testPoints[i-1]
+        if pp>=io.NumberOfRegularTests: Prompt = io.PromptGrade
+        else: Prompt = (io.PromptGrade * sum(promptPoints)) / io.NumberOfRegularTests
+        autograderResults.write("Prompt - %.3f out of %s\n"%( scores["Prompt"], io.PromptGrade ))
+    
+    if io.JsonStyle==0:
+        total=Prompt
+    if io.JsonStyle==1 or io.JsonStyle==2:
+        total=0
+        if io.PromptGrade > 0:
+            scores["Prompt"]=Prompt
+
+    if io.JsonStyle==0 or io.JsonStyle==1:
+        total+=sum(testPoints[:io.NumberOfRegularTests])
+        scores["Total"]=total
+        if len(testPoints[io.NumberOfRegularTests:])>0:
+            ectotal=sum(testPoints[io.NumberOfRegularTests:])
+            scores["Extra Credit"]=ectotal
+
+    if io.JsonStyle==2:   
+        for i in range(1,TotalNumTests+1):
+            scores["test%i"%i]=testPoints[i-1]
     
     JSONscores= {'scores':scores}
 
@@ -242,7 +257,7 @@ def PrintMipsError(headerErr, lastOutput, SPIMerror, NonAsciiMSG,completionErr,r
 
         
 
-overridePrompt="The following is the result of every test"
+overridePrompt="The following is the result of every test\n"
 def ShowDetails(testNum,test,StudentOutput,StudentPrompt=None):
     global overridePrompt,ShowAll,io
     autograderResults.write("TEST %i "%(testNum))
@@ -257,7 +272,7 @@ def ShowDetails(testNum,test,StudentOutput,StudentPrompt=None):
             return
         else: 
             autograderResults.write("\nSample Output\n==============\n")
-    
+    else: 
         autograderResults.write(overridePrompt)
         overridePrompt=""
         autograderResults.write("=========== test%i ==========\n"%testNum)

@@ -31,7 +31,7 @@ class Test(QtWidgets.QWidget):
     def name(self,s):
         if s == "": self._name = "Test"
         else: self._name=s
-        self.HidingBox.toggle_button.setText("%s - %s"%(self.name,self.index))
+        self.HidingBox.toggle_button.setText("{:0>2} - {}".format(self.index,self.name))
     def setName(self,s):
         self.name=s
     @property
@@ -40,7 +40,7 @@ class Test(QtWidgets.QWidget):
     def index(self,i):
         self._index=i
         self.HidingBox.indexUpdated(i)
-        self.HidingBox.toggle_button.setText("%s - %s"%(self.name,self.index))
+        self.HidingBox.toggle_button.setText("{:0>2} - {}".format(self.index,self.name))
 
     def setupUi(self):
         self.setObjectName("test") 

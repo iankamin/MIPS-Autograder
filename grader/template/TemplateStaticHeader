@@ -3,5 +3,3 @@
 	.asciiz "XXFFVV3793"
 .kdata 0x90000230
 	.asciiz "\n"
-
-	
