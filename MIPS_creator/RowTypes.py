@@ -84,15 +84,8 @@ class TestTopRow(QtWidgets.QWidget):
         copy.ExtraCredit.setChecked(self.ExtraCredit.isChecked())
         return copy
     def GetKwargs(self):
-        sa=False
-        so=False
-        i = self.ShowLevel.currentIndex()
-        if i == 1:so=True
-        if i == 2:sa=True
-    
         return {
-            'show':sa       ,
-            'showOutput':so,
+            'ShowLevel':self.ShowLevel.currentIndex()      ,
             'testName':self.TestName.text() or "Test"  ,
             'ExtraCredit':self.ExtraCredit.isChecked(),
             'OutOf':self.MaxPoints.value() 

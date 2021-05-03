@@ -1,11 +1,16 @@
 import json,os,sys,random
 from enum import Enum
 
-class OutputLevel(Enum):
-    ShowNone=0
-    ShowOutput=1
-    ShowInput=2
-    ShowAll=3
+class Show(Enum):
+    NONE=0
+    INPUT=1
+    OUTPUT=2
+    ALL=3
+
+    def __gt__(self,other): return self.value>other.value
+    def __ge__(self,other): return self.value>=other.value
+    def __lt__(self,other): return self.value<other.value
+    def __le__(self,other): return self.value<=other.value
 
 
 #TODO MAX points need to account for individual tests
@@ -14,9 +19,9 @@ class OutputLevel(Enum):
 class settings():
 
 
-    def __init__(self, file=None):
+    def __init__(self, file=None,**kwargs):
         if file is None:
-            self.empty()
+            self.empty(**kwargs)
             return
 
         with open(file, 'r') as f: io = json.load(f)
@@ -27,33 +32,29 @@ class settings():
         self.PromptGrade=float(io.get("PromptGrade",0))
         self.TestGrade=float(io.get("TestGrade",1))
         self.ECTestGrade=float(io.get("ECTestGrade",self.TestGrade))
-
+        self.ShowLevel=Show(io.get("ShowLevel",0))
         self.MessageToStudent=io.get("MessageToStudent","")
-        self.ShowAll = io.get("ShowAll",False)
-        self.ShowAllOutput = io.get("ShowAllOutput",False)
         self.BareMode = io.get("BareMode",False)
         self.Shuffle = io.get("Shuffle",False)
         self.JsonStyle = io.get("JsonStyle",0)
         self.RequiresUserInput = io.get("RequiresUserInput",False)
         
-        if type(self.ShowAll)  is str: self.ShowAll  = self.ShowAll.lower() =="true"
         if type(self.BareMode) is str: self.BareMode = self.BareMode.lower()=="true"
         if type(self.Shuffle)  is str: self.Shuffle  = self.Shuffle.lower() =="true"
-        if type(self.ShowAllOutput) is str:     self.ShowAllOutput = self.ShowAllOutput.lower()=="true"
         if type(self.RequiresUserInput) is str: self.RequiresUserInput = self.RequiresUserInput.lower()=="true"
         
         self.NumberOfRegularTests=0
         self.AllTests=self.CreateTests(io["tests"],io,canShuffle=True)
 
 
-    def empty(self):
+    def empty(self,**kwargs):
         self.io=None
         self.SubroutineName=None
         self.PromptGrade=None
         self.TestGrade=None
         self.ECTestGrade=None
         self.MessageToStudent=None
-        self.ShowAll = False
+        self.ShowLevel=Show.NONE
         self.BareMode = False
         self.RequiresUserInput = False
         self.AllTests=[]
@@ -86,10 +87,9 @@ class settings():
         io["TestGrade"]=self.TestGrade
         io["ECTestGrade"]=self.ECTestGrade
         io["MessageToStudent"]=self.MessageToStudent
-        io["ShowAll"]=self.ShowAll
-        io["ShowAllOutput"]=self.ShowAllOutput
         io["BareMode"]=self.BareMode
         io["RequiresUserInput"]=self.RequiresUserInput
+        io["ShowLevel"]=self.ShowLevel.value
         io["Shuffle"]=self.Shuffle
         io["JsonStyle"]=self.JsonStyle
         io["tests"]=[t.ToDict() for t in self.AllTests]
@@ -98,38 +98,30 @@ class settings():
 class Test():
     parent:settings
     # Initialize from JSON
-    def __init__(self,parent, testjs=None,testNumber=0):
+    def __init__(self,parent, testjs=None,testNumber=0,**kwargs):
         self.parent=parent
         if testjs is None: 
-            self.empty()
+            self.empty(**kwargs)
             return
 
-        self.show       = testjs.get("show",False) 
-        self.showOutput = testjs.get("showOutput",False)
+        self.ShowLevel =  max(Show(testjs.get("ShowLevel",0)) , parent.ShowLevel )
         self.testName   = testjs.get("name","Test").strip()
         self.testNumber = testNumber   
         self.ExtraCredit= testjs.get("ExtraCredit",False) 
         self.OutOf      = testjs.get("OutOf",0) or (parent.ECTestGrade if self.ExtraCredit else parent.TestGrade)
         self.UserInput  = testjs.get("UserInput",[])
         
-        if type(self.show) is str : self.show = (self.show.lower()=="true")
-        if type(self.showOutput)  is str: self.showOutput = (self.showOutput.lower()=="true")
         if type(self.ExtraCredit) is str: self.ExtraCredit= self.ExtraCredit.lower()=="true"
-    
-        if type(self.show)       is bool: self.show       = self.show or parent.ShowAll
-        if type(self.showOutput) is bool: self.showOutput = self.showOutput or parent.ShowAllOutput
-        self.showLevel = 2 if self.show else 1 if self.showOutput else 0
         
         # Get Inputs and Outputs
         self.MemInputs,self.RegInputs = self.setInputs(testjs.get("inputs",[]))
         self.ExpectedAnswers,self.Output=self.setOutputs(testjs["outputs"])
         i=0
-    def empty(self):
-        self.show = False
+    def empty(self,**kwargs):
         self.testName = "Test"
     
         self.ExtraCredit = False
-        self.showOutput = False
+        self.ShowLevel=Show.NONE
         self.OutOf = 0
         self.UserInput = []
 
@@ -141,20 +133,15 @@ class Test():
         testjs={}
         testjs["name"]=self.testName
         testjs["ExtraCredit"]=self.ExtraCredit 
-        testjs["name"]=self.testName
         if self.OutOf==(self.parent.ECTestGrade if self.ExtraCredit else self.parent.TestGrade):
             testjs["OutOf"]=0
         else: testjs["OutOf"]=self.OutOf 
-        testjs["show"]=self.show
-        testjs["ShowOutput"]=self.showOutput 
-        testjs["ShowLevel"]=self.showLevel
+        testjs["ShowLevel"]=Show.NONE.value if self.ShowLevel == self.parent.ShowLevel else self.ShowLevel.value
         testjs["UserInput"]=self.UserInput
         testjs["inputs"]=[i.ToDict() for i in self.MemInputs]
         testjs["inputs"] += [i.ToDict() for i in self.RegInputs if not i.memPointer]
         testjs["outputs"]=[i.ToDict() for i in self.Output]
         return testjs
-
-
         
     def setInputs(self, inputs):
         memInputs=[]

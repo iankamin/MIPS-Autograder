@@ -3,8 +3,8 @@ import os
 import sys
 import subprocess
 import re
-try: from grader.settings import settings,Test
-except: from settings import settings,Test
+try: from grader.settings import settings,Test,Show
+except: from settings import settings,Test,Show
 
 localDir = os.path.dirname(__file__)+"/"
 
@@ -15,7 +15,6 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     global ShowAll, io,outputFile,autograderResults
     if IO == None: io = settings(settingsFile)
     else : io=IO
-    ShowAll = _ShowAll or io.ShowAll
     tests = io.AllTests
     outputFile=outputDest
     autograderResults=open(autograderOutput,'w')
@@ -95,11 +94,12 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     
     simpleGrade=True
     scores={}
+    Prompt=0
     if io.PromptGrade > 0:
         pp=sum(promptPoints)
         if pp>=io.NumberOfRegularTests: Prompt = io.PromptGrade
         else: Prompt = (io.PromptGrade * sum(promptPoints)) / io.NumberOfRegularTests
-        autograderResults.write("Prompt - %.3f out of %s\n"%( scores["Prompt"], io.PromptGrade ))
+        autograderResults.write("Prompt - %.3f out of %s\n"%( Prompt, io.PromptGrade ))
     
     if io.JsonStyle==0:
         total=Prompt
@@ -254,51 +254,61 @@ def PrintMipsError(headerErr, lastOutput, SPIMerror, NonAsciiMSG,completionErr,r
     autograderResults.write("=============================\n\n")
 
 
+def ShowInput(test):
+    PrintMemInputs(test)
+    PrintRegInputs(test)
+    printUserInput(test)
+    print('\n')
 
-        
+def ShowOutput(test,StudentOutput,StudentPrompt):
+    PrintStudentPrompt(StudentPrompt)
+    printOutput(test,StudentOutput, True)
 
-overridePrompt="The following is the result of every test\n"
-def ShowDetails(testNum,test,StudentOutput,StudentPrompt=None):
-    global overridePrompt,ShowAll,io
-    autograderResults.write("TEST %i "%(testNum))
-    if test.ExtraCredit: 
-        autograderResults.write( '(Extra Credit) ')
-    if not ShowAll: # Checks ShowAll
-        if not test.show: 
-            if test.showOutput:
-                autograderResults.write("(Output Only)\n")
-                printOutput(test,StudentOutput, False)
-                autograderResults.write("TEST %i "%(testNum))
-            return
-        else: 
-            autograderResults.write("\nSample Output\n==============\n")
-    else: 
-        autograderResults.write(overridePrompt)
-        overridePrompt=""
-        autograderResults.write("=========== test%i ==========\n"%testNum)
-
+def ShowAll(test,StudentOutput,StudentPrompt):
     PrintMemInputs(test)
     PrintRegInputs(test)
     PrintStudentPrompt(StudentPrompt)
     printUserInput(test)
     printOutput(test,StudentOutput, True)
 
+
+
+io:settings
+        
+
+def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None):
+    global io
+    autograderResults.write("TEST %i "%(testNum))
+    
+    if test.ExtraCredit: autograderResults.write( '(Extra Credit) ')
+    T=test.ShowLevel
+    I=io.ShowLevel
+    if test.ShowLevel == Show.NONE: return
+
+    if io.ShowLevel==Show.ALL: autograderResults.write("=========== test%i ==========\n"%testNum)
+    else: autograderResults.write("\nSample Output\n==============\n")
+
+    if test.ShowLevel==Show.INPUT:
+        autograderResults.write("(Input Only)\n")
+        ShowInput(test)
+    
+    if test.ShowLevel==Show.OUTPUT:
+        autograderResults.write("(Output Only)\n")
+        ShowOutput(test,StudentOutput, StudentPrompt)
+    
+    if test.ShowLevel==Show.ALL:
+        ShowAll(test,StudentOutput,StudentPrompt)
+
     autograderResults.write("TEST %i"%(testNum))
 
 
 def PrintMemInputs(test):    
-    if len(test.MemInputs)>0: 
-        autograderResults.write("\nInitial Data in Memory -->\n")   
+    if len(test.MemInputs)>0: autograderResults.write("\nInitial Data in Memory -->\n")   
     for inp in test.MemInputs:
         autograderResults.write("   addr(%s) =  %s \"%s\""%(inp.addr,inp.type,inp.data))
 
-
-
 def PrintRegInputs(test):
-    if len(test.RegInputs): 
-        autograderResults.write("\nRegister Input Values -->\n")   
-    
-    
+    if len(test.RegInputs): autograderResults.write("\nRegister Input Values -->\n")   
     for inp in test.RegInputs:
         val = GetHexAndDecOrString(inp.value)
         autograderResults.write("   reg: %s = %s\n"%(inp.reg,val))
@@ -313,8 +323,7 @@ def PrintStudentPrompt(StudentPrompt):
 
 def printUserInput(test):
     fl = test.UserInput
-    if len(fl)>0: 
-        autograderResults.write("\nUser Input -->\n")   
+    if len(fl)>0: autograderResults.write("\nUser Input -->\n")   
     for line in fl:
         autograderResults.write("   %s\n"%line)
 
@@ -383,6 +392,6 @@ def GetHexAndDecOrString(s, type=0):
 if __name__ == "__main__":
     os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
     try: _ShowAll=sys.argv[1]
-    except: _ShowAll=False # overrides json "show" and shows the StudentOutputs of every test
+    except: _ShowAll=Show.NONE # overrides json "show" and shows the StudentOutputs of every test
 
     autograder(_ShowAll=_ShowAll)

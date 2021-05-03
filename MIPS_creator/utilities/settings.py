@@ -1,23 +1,26 @@
 import json,os,sys,random
 from grader import settings as gSettings
 from grader import Test as gTest
+from grader import Show as Show
+
 #TODO MAX points need to account for individual tests
 #TODO Prompt Points must ignore extra credit
 #TODO seperate Regular Tests and extra credit Tests
+
 class settings(gSettings):
     def __init__(self, file=None,**kwargs):
-        super().__init__(file)
-        if file is None: self.empty(**kwargs)
+        super().__init__(file=file,**kwargs)
     
     def empty(self,**kwargs):
+        if len(kwargs) == 0: return
         self.io=None
         self.SubroutineName=kwargs.get("subroutine_name")
         self.PromptGrade=kwargs.get("PromptGrade",0)
         self.TestGrade=kwargs.get("TestGrade",0)
         self.ECTestGrade=kwargs.get("ECTestGrade",self.TestGrade)
         self.MessageToStudent=kwargs.get("MessageToStudent","")
-        self.ShowAll = kwargs.get("ShowAll")
-        self.ShowAllOutput = kwargs.get("ShowAllOutput")
+        self.JsonStyle = kwargs.get("JsonStyle")
+        self.ShowLevel = Show(kwargs.get("ShowLevel"))
         self.BareMode = kwargs.get("BareMode")
         self.RequiresUserInput = kwargs.get("RequiresUserInput")
         self.Shuffle = kwargs.get("Shuffle",False)
@@ -42,9 +45,7 @@ class Test(gTest):
 
     def head_init(self,**kwargs):
         
-        self.show       = kwargs.get("show",False) 
-        self.showOutput = kwargs.get("showOutput",False)
-        self.showLevel = 2 if self.show else 1 if self.showOutput else 0
+        self.ShowLevel = max(Show(kwargs.get("ShowLevel",0)),self.parent.ShowLevel)
         self.testName   = kwargs.get("testName","Test")
         self.ExtraCredit= kwargs.get("ExtraCredit",False) 
         self.OutOf      = kwargs.get("OutOf", 0)
@@ -67,20 +68,7 @@ class Test(gTest):
 
 
 
-    
-    def ToDict(self):
-        testjs={}
-        testjs["ExtraCredit"]=self.ExtraCredit 
-        testjs["name"]=self.testName
-        testjs["OutOf"]=self.OutOf 
-        testjs["show"]=self.show
-        testjs["ShowOutput"]=self.showOutput 
-        testjs["ShowLevel"]=self.showLevel
-        testjs["UserInput"]=self.UserInput
-        testjs["inputs"]=[i.ToDict() for i in self.MemInputs]
-        testjs["inputs"] += [i.ToDict() for i in self.RegInputs if not i.memPointer]
-        testjs["outputs"]=[i.ToDict() for i in self.Output]
-        return testjs
+
 
     def setInputs(self, inputs):
         memInputs=[]

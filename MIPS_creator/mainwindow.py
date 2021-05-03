@@ -124,9 +124,6 @@ class MainWindow(QtWidgets.QMainWindow):
         sa=False
         so=False
         i = self.ShowLevel.currentIndex()
-        if i == 1:so=True
-        if i == 2:sa=True
-
         setJS = settings(
                     subroutine_name = self.subroutine_name.text()	,
                     PromptGrade	    = self.PromptPoints.value()		,
@@ -136,9 +133,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     BareMode 		= self.BareMode.isChecked()  	,
                     Shuffle 		= self.Shuffle.isChecked() 	,
                     RequiresUserInput=self.RequireUserInput.isChecked(),
-                    ShowAll 		= sa  	,
-                    ShowAllOutput 	= so  	,
-                    JsonStyle       = self.JsonStyle
+                    ShowLevel       = self.ShowLevel.currentIndex(),
+                    JsonStyle       = self.JsonStyle.currentIndex()
                 )
         
         lay=self.allTests
@@ -182,12 +178,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.RequireUserInput.setChecked( set.RequiresUserInput)
         self.BareMode.setChecked( set.BareMode)
         self.Shuffle.setChecked( set.Shuffle)
-        self.JsonStyle.setChecked( set.JsonStyle)
-        set.MessageToStudent = self.message.toPlainText()
-        if set.ShowAll: i = 2
-        elif set.ShowAllOutput: i = 1
-        else: i=0
-        self.ShowLevel.setCurrentIndex(i)
+        self.JsonStyle.setCurrentIndex( set.JsonStyle)
+        self.message.setText(set.MessageToStudent)
+        self.ShowLevel.setCurrentIndex(set.ShowLevel.value)
         
         
         testJS:set_Test

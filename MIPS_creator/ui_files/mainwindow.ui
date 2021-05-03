@@ -129,6 +129,12 @@
      </item>
      <item>
       <widget class="QScrollArea" name="scrollArea">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="styleSheet">
         <string notr="true">background-color: rgb(230, 230, 255);</string>
        </property>
@@ -245,6 +251,11 @@ selection-color: rgb(118, 0, 1);</string>
            <item>
             <property name="text">
              <string>Detail Level (Hidden)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Show Only Inputs</string>
             </property>
            </item>
            <item>
@@ -410,6 +421,12 @@ background-color: rgb(255, 255, 255);</string>
          </item>
          <item row="14" column="0" colspan="2">
           <widget class="QComboBox" name="JsonStyle">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <item>
             <property name="text">
              <string>{Total+Prompt  ,   Extra Credit}</string>
