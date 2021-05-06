@@ -9,16 +9,14 @@ class CollapsibleBox(QtWidgets.QWidget):
         self.indexUpdated(index)
         self.parent=parent
         self.title=title
-        self.toggle_button = QtWidgets.QToolButton(
-            text=title, checkable=True, checked=False
-        )
+        self.toggle_button = QtWidgets.QToolButton( text=title, checkable=True, checked=False)
+
         self.setObjectName("%s-%s"%(self.title,index or " "))
         self.toggle_button.setStyleSheet("QToolButton { border: None; }")
         #self.toggle_button.setStyleSheet("background-color: rgb(255, 200, 200);")
-        self.toggle_button.setToolButtonStyle(
-            QtCore.Qt.ToolButtonTextBesideIcon
-        )
+        self.toggle_button.setToolButtonStyle( QtCore.Qt.ToolButtonTextBesideIcon)
         self.toggle_button.setMaximumWidth(100000)
+        
         if index is None: self.toggle_button.setMinimumHeight(20)
         else: self.toggle_button.setMinimumHeight(30)
         self.toggle_button.setArrowType(QtCore.Qt.RightArrow)

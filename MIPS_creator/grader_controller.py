@@ -26,42 +26,29 @@ def transferFile(settingsFile,submissionFile):
         'ShowAll':False,
         'printResults':False}
     )
-allWs=[]
+w1:ResultsWindow
+w2:ResultsWindow
+w3:ResultsWindow
+w1,w2,w3=None,None,None
 def showResults(parent):
-    for w in allWs: w.close()
     
-    w1=ResultsWindow("Raw MIPS Output",parent)
-    w1.displayFile(grader_data_loc+"output.txt",True)
-    w1.setMaximumWidth(w1.width()*2/3)
-    w1.move(0,0)
-    w2=ResultsWindow("Concatenated MIPS File",parent)
-    w2.displayFile(grader_data_loc+"concat.s",True)
-    w2.move(w1.width(),0)
-    w3=ResultsWindow("Autograder Results",parent)
-    w3.displayFile(grader_data_loc+"graderResults.txt",True)
-    w3.move(w1.width()+w2.width(),0)
+    parent.rawMipsDock.displayFile(grader_data_loc+"output.txt",True)
+    parent.concatAsmDock.displayFile(grader_data_loc+"concat.s",True)
+    parent.gradeDock.displayFile(grader_data_loc+"graderResults.txt",True)
+    parent.rawMipsDock.show()
+    parent.gradeDock.show()
+    parent.concatAsmDock.show()
     
-    w1.show()
-    w2.show()
-    w3.show()
-    allWs.append(w1)
-    allWs.append(w2)
-    allWs.append(w3)
     os.system("make clean")
     os.system("make UI_clean")
 
     
     
-makeW=None
 def CreateTAR(settingsFile, tarDestination,parent):
-    makeW.close()
     destSettingsFile="grader/settings.json"
     copyfile(settingsFile,destSettingsFile)
     os.system("make UI_tar")
     tarPath = grader_data_loc+"UI.tar"
     copyfile(tarPath,tarDestination)
     
-    makeW=ResultsWindow("Autograder Makefile",parent)
-    makeW.displayFile(grader_data_loc+"Makefile",False)
-    makeW.move(100,0)
-    makeW.show()
+    parent.makefileDock.displayFile(grader_data_loc+"Makefile",False)

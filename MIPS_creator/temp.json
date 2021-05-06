@@ -6,15 +6,15 @@
     "MessageToStudent": "",
     "BareMode": false,
     "RequiresUserInput": true,
-    "ShowLevel": 1,
-    "Shuffle": false,
+    "ShowLevel": 0,
+    "Shuffle": true,
     "JsonStyle": 0,
     "tests": [
         {
             "name": "Test",
             "ExtraCredit": false,
             "OutOf": 0,
-            "ShowLevel": 0,
+            "ShowLevel": 3,
             "UserInput": [
                 "1234+4321"
             ],
@@ -31,7 +31,7 @@
             "name": "Test",
             "ExtraCredit": false,
             "OutOf": 0,
-            "ShowLevel": 0,
+            "ShowLevel": 3,
             "UserInput": [
                 "00+0183"
             ],

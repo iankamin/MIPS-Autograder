@@ -1,3 +1,4 @@
+from MIPS_creator.ResultsWindow import ResultsWindow
 from PyQt5 import QtCore, QtWidgets,uic
 from PyQt5.QtGui import QFont
 from PyQt5.sip import delete
@@ -29,6 +30,19 @@ class MainWindow(QtWidgets.QMainWindow):
     AddTestButton:QtWidgets.QPushButton
     fontComboBox:QtWidgets.QFontComboBox
     JsonStyle:QtWidgets.QComboBox
+    resultsDock:QtWidgets.QDockWidget
+    frame:QtWidgets.QFrame
+    scrollArea:QtWidgets.QScrollArea
+    testScroll:QtWidgets.QScrollArea
+    testScrollArea:QtWidgets.QWidget
+    rawMipsDock:QtWidgets.QDockWidget
+    gradeDock:QtWidgets.QDockWidget
+    toggleOutputBtn:QtWidgets.QPushButton
+
+    #1080P size
+    #  Window
+    #     width=1536
+    #     height=801
 
     def __init__(self): 
         super(MainWindow, self).__init__() 
@@ -45,30 +59,68 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numberOfTests=0
         self.lastSaveLocation=""
         self.ShowLevel.wheelEvent=self.wheelEvent
+        self.JsonStyle.wheelEvent=self.wheelEvent
+        self.rawMipsDock=ResultsWindow("MIPS Output",self)
+        self.gradeDock=ResultsWindow("Grade Output",self)
+        self.concatAsmDock=ResultsWindow("ASM File",self)
+        self.makefileDock=ResultsWindow("Makefile",self)
 
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.makefileDock)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.rawMipsDock)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.concatAsmDock)
+        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.gradeDock)
+        self.tabifyDockWidget(self.gradeDock,self.rawMipsDock)
+        self.tabifyDockWidget(self.gradeDock,self.concatAsmDock)
+        self.tabifyDockWidget(self.gradeDock,self.makefileDock)
+#        g=self.gradeDock.geometry()
+#        g=QtCore.QRect(g.x()-200,g.y(),1000,g.height())
+#        self.gradeDock.setGeometry(g)
+#        self.rawMipsDock.setGeometry(g)
+#        self.concatAsmDock.setGeometry(g)
+#        self.makefileDock.setGeometry(g)
+
+        self.outputHidden=True
+        self.makefileDock.hide()
+        self.rawMipsDock.hide()
+        self.concatAsmDock.hide()
+        self.gradeDock.hide()
+        
+        self.toggleOutputBtn.hide()
+        self.toggleOutputBtn.pressed.connect(self.toggleOutputPressed)
+        self.BareMode.pressed.connect(self.tester)
+    
+    def wheelEvent(self, *args, **kwargs): 
+        if self.hasFocus(): return QtWidgets.QComboBox.wheelEvent(self, *args, **kwargs)
+    
+    def toggleOutputPressed(self):
+        self.toggleOutput(self.outputHidden)
+        self.outputHidden = not self.outputHidden
+
+    def toggleOutput(self, visibile):
+        if visibile:
+            if self.makefileDock.isUsed : self.makefileDock.show()
+            if self.rawMipsDock.isUsed : self.rawMipsDock.show()
+            if self.concatAsmDock.isUsed : self.concatAsmDock.show()
+            if self.gradeDock.isUsed : self.gradeDock.show()
+        else:
+            self.makefileDock.hide()
+            self.rawMipsDock.hide()
+            self.concatAsmDock.hide()
+            self.gradeDock.hide()
+    
 
     # Prevents the scroll wheel from affecting combobox
-    def wheelEvent(self, *args, **kwargs):
-        if self.hasFocus(): return QtWidgets.QComboBox.wheelEvent(self, *args, **kwargs)
+    def tester(self):
+        print("\n\n")
+        print("Window size")
+        print(self.width())
+        print("Test Size")
+        print(self.allTests.itemAt(0).widget().width())
+        print("Makefile Dock Size")
+        print(self.makefileDock.width())
+        print("grade Dock Size")
+        print(self.gradeDock.textBox.width())
 
-    def resizeEvent(self, event): 
-        self.resizeThis(self.centralWidget,True,True)
-        self.resizeThis(self.frame,True,False)
-        self.resizeThis(self.scrollArea,True,False)
-        self.resizeThis(self.testScroll,True,True)
-        self.resizeThis(self.testScrollArea,True,True)
-
-    def resizeThis(self,widget,updateHeight,updateWidth):
-        parentWidth=widget.parent().geometry().width()
-        parentHeight=widget.parent().geometry().height()
-        x=widget.geometry().x()
-        y=widget.frameGeometry().y()
-        if updateHeight: height=parentHeight-y
-        else:            height=widget.geometry().height()
-        if updateWidth: width=parentWidth-x
-        else:           width=widget.geometry().width()
-        s=QtCore.QRect(x,y,width,height)
-        widget.setGeometry(s)
 
     def ExpandAll(self):
         test:Test
@@ -77,6 +129,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for test in items: 
             if test is None: continue
             test.ExpandAndCollapseAll(True)
+
     def CollapseAll(self):
         test:Test
         lay=self.allTests
@@ -84,7 +137,6 @@ class MainWindow(QtWidgets.QMainWindow):
         for test in items: 
             if test is None: continue
             test.ExpandAndCollapseAll(False)
-
 
     def insertWidget(self,widget): 
         vlay = self.allTests 
@@ -138,11 +190,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 )
         
         lay=self.allTests
-        tests = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+        tests = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None ]
         test:Test 
         for test in tests: 
-            if test is None: continue
             setJS.AddTest(test.convertToJSON(setting=setJS))
+        if len(tests)==0: return False
+
 
         #output=QtWidgets.QFileDialog.getOpenFileName(self) #file needs to exist
         if loc is None:
@@ -155,6 +208,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 with open(out, 'w') as f: f.write(setJS.GetJSON())
         else:
             with open(loc, 'w') as f: f.write(setJS.GetJSON())
+        return True
     
     def DeleteAllTests(self):
         lay=self.allTests
@@ -165,9 +219,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numberOfTests=0
 
     def LoadSettings(self):
-        filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json") #file needs to exist
-        if not filePath[0]: return
-
+        #filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json") #file needs to exist
+        #if not filePath[0]: return
+        filePath=["/home/kamian/MIPS_Autograder/Tests/part4/part4.json"]
         self.DeleteAllTests()
         set=settings(filePath[0])
 
@@ -199,18 +253,25 @@ class MainWindow(QtWidgets.QMainWindow):
             test.TopRow.replaceInfo(**testJS.ToDict())
 
     def RunMips(self):
-        submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
-        if not submissionPath: return
+        #submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
+        #if not submissionPath: return
         #submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
+        submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/iankamin@buffalo.edu_30_handin.s"
         print(submissionPath)
         self.lastSaveLocation=submissionPath
         
         set_file = os.path.join(os.path.dirname(__file__), "temp.json")
         print(set_file)
-        self.SaveSettings(set_file)
+        success = self.SaveSettings(set_file)
+        if not success: return
+        
         transferFile( settingsFile=set_file,
                       submissionFile=submissionPath)
         showResults(self)
+        self.toggleOutputBtn.show()
+        self.outputHidden=False
+        self.toggleOutput(True)
+        self.gradeDock.raise_()
 
     def CreateTar(self):
         TarDestination=QtWidgets.QFileDialog.getSaveFileName(self,"Save TAR File as", self.lastSaveLocation,"TAR File (*.tar *.TAR)")[0] #file needs to exist
@@ -219,8 +280,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         set_file = os.path.join(os.path.dirname(__file__), "temp.json")
         print(set_file)
-        self.SaveSettings(set_file)
+        success = self.SaveSettings(set_file)
+        if not success: return
         CreateTAR(set_file, TarDestination,self)
+        self.toggleOutputBtn.show()
+        self.outputHidden=False
+        self.toggleOutput(True)
+        self.makefileDock.raise_()
+
+
 
 
 

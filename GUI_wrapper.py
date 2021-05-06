@@ -21,7 +21,6 @@ if __name__ == '__main__':
     #os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
     app = QtWidgets.QApplication(sys.argv)
     main = MainWindow()
-    main.show()
     #createTest(main,1,1,1,1)
     #createTest(main,2,2,2,2)
     ##createTest(main,3,1,2,5)
@@ -29,5 +28,8 @@ if __name__ == '__main__':
     ##input("clicktoDelete")
     ##main.DeleteAllTests()
     ##createTest(main,3,3,3,3)
-
+    print(main.geometry())
+    main.LoadSettings()
+    main.RunMips()
+    main.showMaximized()
     sys.exit(app.exec_())

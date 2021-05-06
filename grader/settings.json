@@ -4,18 +4,17 @@
     "TestGrade": 2.0,
     "ECTestGrade": 0.5,
     "MessageToStudent": "",
-    "ShowLevel":0,
     "BareMode": false,
     "RequiresUserInput": true,
+    "ShowLevel": 0,
     "Shuffle": false,
+    "JsonStyle": 0,
     "tests": [
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": true,
-            "ShowOutput": false,
-            "ShowLevel": 2,
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
             "UserInput": [
                 "1234+4321"
             ],
@@ -29,11 +28,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "00+0183"
@@ -48,11 +45,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "23+22"
@@ -67,11 +62,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "3+21"
@@ -86,11 +79,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "83-9183"
@@ -105,11 +96,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "00-0983"
@@ -124,11 +113,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "9999-9"
@@ -143,11 +130,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "19-9"
@@ -162,11 +147,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "1*9999"
@@ -181,11 +164,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "1*1"
@@ -200,11 +181,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "9999*9999"
@@ -219,11 +198,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "1*0"
@@ -238,11 +215,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "0001*0000"
@@ -257,11 +232,9 @@
             ]
         },
         {
-            "ExtraCredit": false,
             "name": "Test",
-            "OutOf": 2.0,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": false,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "987*234"
@@ -276,12 +249,10 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": true,
-            "ShowOutput": false,
-            "ShowLevel": 2,
+            "ExtraCredit": true,
+            "OutOf": 0,
+            "ShowLevel": 0,
             "UserInput": [
                 "-1234+-4321"
             ],
@@ -295,11 +266,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "-23+22"
@@ -314,11 +283,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "3+-21"
@@ -333,11 +300,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "-83--9183"
@@ -352,11 +317,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "1--1"
@@ -371,11 +334,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "-9999-9"
@@ -390,11 +351,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "-1*-9999"
@@ -409,11 +368,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "-1*1"
@@ -428,11 +385,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "9999*-9999"
@@ -447,11 +402,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "-987*234"
@@ -466,11 +419,9 @@
             ]
         },
         {
-            "ExtraCredit": true,
             "name": "Test",
-            "OutOf": 0.5,
-            "show": false,
-            "ShowOutput": false,
+            "ExtraCredit": true,
+            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
                 "-0001*0001"

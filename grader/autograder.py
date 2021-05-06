@@ -273,19 +273,18 @@ def ShowAll(test,StudentOutput,StudentPrompt):
 
 
 
-io:settings
         
 
 def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None):
     global io
-    autograderResults.write("TEST %i "%(testNum))
+    if io.ShowLevel!=Show.ALL: autograderResults.write("%s %i "%(test.testName,test.testNumber))
     
     if test.ExtraCredit: autograderResults.write( '(Extra Credit) ')
     T=test.ShowLevel
     I=io.ShowLevel
     if test.ShowLevel == Show.NONE: return
 
-    if io.ShowLevel==Show.ALL: autograderResults.write("=========== test%i ==========\n"%testNum)
+    if io.ShowLevel==Show.ALL: autograderResults.write("=========== %s%i ==========\n"%(test.testName,test.testNumber))
     else: autograderResults.write("\nSample Output\n==============\n")
 
     if test.ShowLevel==Show.INPUT:
@@ -299,7 +298,7 @@ def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None):
     if test.ShowLevel==Show.ALL:
         ShowAll(test,StudentOutput,StudentPrompt)
 
-    autograderResults.write("TEST %i"%(testNum))
+    autograderResults.write("%s %i"%(test.testName,test.testNumber))
 
 
 def PrintMemInputs(test):    

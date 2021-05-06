@@ -164,6 +164,11 @@ selection-color: rgb(118, 0, 1);</string>
          </item>
          <item>
           <property name="text">
+           <string>Show Only Inputs</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Show Only Output</string>
           </property>
          </item>
