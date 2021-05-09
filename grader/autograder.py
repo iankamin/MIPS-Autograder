@@ -15,7 +15,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     global ShowAll, io,outputFile,autograderResults
     if IO == None: io = settings(settingsFile)
     else : io=IO
-    tests = io.AllTests
+    AllTests = io.getTests(canShuffle=True)
     outputFile=outputDest
     autograderResults=open(autograderOutput,'w')
     
@@ -40,7 +40,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
 
     prevUserInput=[]
     for testNum in range(TotalNumTests):
-        test=io.AllTests[testNum]
+        test=AllTests[testNum]
         expectedAns=test.ExpectedAnswers
         
         StudentOutput,StudentPrompt= getStudentPromptAndOutputPerTest(output,testNum)
@@ -116,8 +116,10 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
             scores["Extra Credit"]=ectotal
 
     if io.JsonStyle==2:   
-        for i in range(1,TotalNumTests+1):
-            scores["test%i"%i]=testPoints[i-1]
+        test:Test
+        for i in range(0,TotalNumTests):
+            test=AllTests[i]
+            scores["%s%i"%(test.testName,test.testNumber)]=testPoints[i]
     
     JSONscores= {'scores':scores}
 

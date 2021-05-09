@@ -219,9 +219,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numberOfTests=0
 
     def LoadSettings(self):
-        #filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json") #file needs to exist
-        #if not filePath[0]: return
-        filePath=["/home/kamian/MIPS_Autograder/Tests/part4/part4.json"]
+        filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json") #file needs to exist
+        if not filePath[0]: return
+       # filePath=["/home/kamian/MIPS_Autograder/Tests/part4/part4.json"]
         self.DeleteAllTests()
         set=settings(filePath[0])
 
@@ -253,10 +253,10 @@ class MainWindow(QtWidgets.QMainWindow):
             test.TopRow.replaceInfo(**testJS.ToDict())
 
     def RunMips(self):
-        #submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
-        #if not submissionPath: return
+        submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
+        if not submissionPath: return
         #submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
-        submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/iankamin@buffalo.edu_30_handin.s"
+       # submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/iankamin@buffalo.edu_30_handin.s"
         print(submissionPath)
         self.lastSaveLocation=submissionPath
         

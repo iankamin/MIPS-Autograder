@@ -44,7 +44,7 @@ class settings():
         if type(self.RequiresUserInput) is str: self.RequiresUserInput = self.RequiresUserInput.lower()=="true"
         
         self.NumberOfRegularTests=0
-        self.AllTests=self.CreateTests(io["tests"],io,canShuffle=True)
+        self.AllTests=self.CreateTests(io["tests"],io)
 
 
     def empty(self,**kwargs):
@@ -59,17 +59,22 @@ class settings():
         self.RequiresUserInput = False
         self.AllTests=[]
 
-    def CreateTests(self,alltests_json,io,canShuffle=False):
+    def CreateTests(self,alltests_json,io):
         reg,ec=[],[]
         for i,testjs in enumerate(alltests_json):
             test=Test(parent=self,testjs=testjs,testNumber=i)
             if test.ExtraCredit: ec.append(test)
             else:                reg.append(test)
-        if self.Shuffle and canShuffle:
-            random.shuffle(ec)
-            random.shuffle(reg)
+        self.reg=reg
+        self.ec=ec
         self.NumberOfRegularTests=len(reg)
         return reg+ec
+    def getTests(self, canShuffle=True):
+        if self.Shuffle and canShuffle:
+            random.shuffle(self.ec)
+            random.shuffle(self.reg)
+        return self.reg+self.ec
+
 
     def getAllUserInputLines(self):
         for test in self.AllTests:

@@ -8,123 +8,21 @@
     "RequiresUserInput": true,
     "ShowLevel": 0,
     "Shuffle": true,
-    "JsonStyle": 0,
+    "JsonStyle": 2,
     "tests": [
         {
             "name": "Test",
             "ExtraCredit": false,
             "OutOf": 0,
-            "ShowLevel": 3,
-            "UserInput": [
-                "1234+4321"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "5555",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
-                "00+0183"
+                "0001*0000"
             ],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
-                    "CorrectAnswer": "183",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "23+22"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "45",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "3+21"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "24",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "83-9183"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "-9100",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "00-0983"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "-983",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "9999-9"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "9990",
+                    "CorrectAnswer": "0",
                     "reg": "v0"
                 }
             ]
@@ -150,49 +48,15 @@
             "name": "Test",
             "ExtraCredit": false,
             "OutOf": 0,
-            "ShowLevel": 0,
+            "ShowLevel": 3,
             "UserInput": [
-                "1*9999"
+                "1234+4321"
             ],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
-                    "CorrectAnswer": "9999",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "1*1"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "1",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "9999*9999"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "99980001",
+                    "CorrectAnswer": "5555",
                     "reg": "v0"
                 }
             ]
@@ -220,13 +84,98 @@
             "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
-                "0001*0000"
+                "9999-9"
             ],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
-                    "CorrectAnswer": "0",
+                    "CorrectAnswer": "9990",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "00+0183"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "183",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "00-0983"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "-983",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "1*1"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "1",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "3+21"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "24",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "23+22"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "45",
                     "reg": "v0"
                 }
             ]
@@ -250,17 +199,51 @@
         },
         {
             "name": "Test",
-            "ExtraCredit": true,
+            "ExtraCredit": false,
             "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
-                "-1234+-4321"
+                "1*9999"
             ],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
-                    "CorrectAnswer": "-5555",
+                    "CorrectAnswer": "9999",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "83-9183"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "-9100",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "9999*9999"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "99980001",
                     "reg": "v0"
                 }
             ]
@@ -271,13 +254,13 @@
             "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
-                "-23+22"
+                "-9999-9"
             ],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
-                    "CorrectAnswer": "-1",
+                    "CorrectAnswer": "-10008",
                     "reg": "v0"
                 }
             ]
@@ -322,64 +305,30 @@
             "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
-                "1--1"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "2",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": true,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "-9999-9"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "-10008",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": true,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "-1*-9999"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "9999",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": true,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "-1*1"
+                "-23+22"
             ],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
                     "CorrectAnswer": "-1",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": true,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "-987*234"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "-230958",
                     "reg": "v0"
                 }
             ]
@@ -407,13 +356,64 @@
             "OutOf": 0,
             "ShowLevel": 0,
             "UserInput": [
-                "-987*234"
+                "-1*1"
             ],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
-                    "CorrectAnswer": "-230958",
+                    "CorrectAnswer": "-1",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": true,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "-1*-9999"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "9999",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": true,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "1--1"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "2",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": true,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "-1234+-4321"
+            ],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "-5555",
                     "reg": "v0"
                 }
             ]
