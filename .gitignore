@@ -9,6 +9,14 @@ __pycache__
 */__pycache__
 */*/__pycache__
 */*/*/__pycache__
+*/*/*/*/__pycache__
+*/*/*/*/*/__pycache__
+__pycache__
+*/__pycache__
+*/*/__pycache__
+*/*/*/__pycache__
+*/*/*/*/__pycache__
+*/*/*/*/*/__pycache__
 
 MIPS-creator/.vscode/
 MIPS-creator/.vscode/*
@@ -49,3 +57,9 @@ MIPS_creator/mainpage.pyproject.user
 MIPS_creator/mainpage.pyproject.user
 grader/__pycache__/autograder.cpython-38.pyc
 grader/__pycache__/concat.cpython-38.pyc
+
+*/*/*/*/*.pyc
+*/*/*/*.pyc
+*/*/*.pyc
+*/*.pyc
+*.pyc
