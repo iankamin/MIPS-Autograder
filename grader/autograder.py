@@ -24,7 +24,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     if runMips: 
         SPIMerror = mips(concatFile)
         output, header_error, NoneAsciiMSG = GetMipsOutput()
-        completionErr="Program Terminated Early without running all tests" if len(io.AllTests)*3 > len(output) else ""
+        completionErr="Program Terminated Early without running all tests" if len(AllTests)*3 > len(output) else ""
     
         try: lastOutput=output[-1].strip()
         except: lastOutput=""
@@ -33,7 +33,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
         PrintMipsError( "", "", "", "", "", runMips)
         output = []
     
-    TotalNumTests=len(io.AllTests)
+    TotalNumTests=len(AllTests)
     promptPoints = [0 for _ in range(TotalNumTests)]
     testPoints = [0 for _ in range(TotalNumTests)]
     EC_Points = [0 for _ in range(TotalNumTests)]
