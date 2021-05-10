@@ -68,8 +68,11 @@ class settings():
         self.reg=reg
         self.ec=ec
         self.NumberOfRegularTests=len(reg)
+        self.NumberOfExtraCreditTests=len(ec)
         return reg+ec
     def getTests(self, canShuffle=True):
+        self.reg=self.AllTests[:self.NumberOfRegularTests]
+        self.ec=self.AllTests[self.NumberOfRegularTests:]
         if self.Shuffle and canShuffle:
             random.shuffle(self.ec)
             random.shuffle(self.reg)

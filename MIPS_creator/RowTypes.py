@@ -86,13 +86,12 @@ class TestTopRow(QtWidgets.QWidget):
     def GetKwargs(self):
         return {
             'ShowLevel':self.ShowLevel.currentIndex()      ,
-            'testName':self.TestName.text() or "Test"  ,
+            'testName':self.TestName.text() or self.TestName.placeholderText()  ,
             'ExtraCredit':self.ExtraCredit.isChecked(),
             'OutOf':self.MaxPoints.value() 
             }
     def replaceInfo(self,name=None,ShowLevel=None,OutOf=None,ExtraCredit=None,**kwargs):
-        
-        if(name) is not None: self.TestName.setText(name)
+        if (name is not None) and (name != self.TestName.placeholderText()): self.TestName.setText(name)
         if(ShowLevel) is not None: self.ShowLevel.setCurrentIndex(ShowLevel)
         if(ExtraCredit) is not None: self.MaxPoints.setValue(OutOf)
         if(OutOf) is not None: self.ExtraCredit.setChecked(ExtraCredit)
