@@ -145,6 +145,9 @@ selection-color: rgb(118, 0, 1);</string>
        <height>16777215</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The register where the solution is expected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
@@ -164,6 +167,9 @@ selection-color: rgb(118, 0, 1);</string>
        <height>16777215</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The address in memory where a solution is expected to be&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
@@ -174,6 +180,9 @@ selection-color: rgb(118, 0, 1);</string>
    </item>
    <item>
     <widget class="QLineEdit" name="CorrectAnswer">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The expected solution &lt;/p&gt;&lt;p&gt;(please do not use quotation marks as these will be deleted)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>

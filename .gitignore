@@ -47,3 +47,5 @@ MIPS-creator/*/*.s
 MIPS-creator/*.s
 MIPS_creator/mainpage.pyproject.user
 MIPS_creator/mainpage.pyproject.user
+grader/__pycache__/autograder.cpython-38.pyc
+grader/__pycache__/concat.cpython-38.pyc

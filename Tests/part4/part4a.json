@@ -11,7 +11,7 @@
     "JsonStyle": 2,
     "tests": [
         {
-            "name": "AAA",
+            "name": "Test",
             "ExtraCredit": false,
             "OutOf": 0,
             "ShowLevel": 0,

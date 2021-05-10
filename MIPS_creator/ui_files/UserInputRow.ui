@@ -115,6 +115,9 @@ color: rgb(255, 0, 4);</string>
        <height>23</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A string of characters that will be sent to SPIM via STDIN&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
