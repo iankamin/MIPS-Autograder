@@ -5,10 +5,10 @@ grader/*.json
 grader/*.txt
 grader/submission.s
 
-__pycache__/
-*/__pycache__/
-*/*/__pycache__/
-*/*/*/__pycache__/
+__pycache__
+*/__pycache__
+*/*/__pycache__
+*/*/*/__pycache__
 
 MIPS-creator/.vscode/
 MIPS-creator/.vscode/*
