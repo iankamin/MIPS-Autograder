@@ -4,7 +4,7 @@ from PyQt5 import QtWidgets,uic
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.sip import delete
 from PyQt5.QtCore import QRegExp, pyqtSignal
-from .ui_files import ui,Icons
+from ui_files import ui,Icons
 from .utilities import validity
 
 class Row(QtWidgets.QWidget):

@@ -1,3 +1,4 @@
+from types import resolve_bases
 from MIPS_creator.ResultsWindow import ResultsWindow
 from PyQt5 import QtCore, QtWidgets,uic
 from PyQt5.QtGui import QFont
@@ -8,7 +9,7 @@ import os
 from MIPS_creator.collapsibleBox import CollapsibleBox
 from MIPS_creator.utilities import settings,set_Test
 from MIPS_creator.TestLayout import Test
-from MIPS_creator.ui_files.filepaths import ui,Icons
+from ui_files.filepaths import resource_path, ui,Icons
 from MIPS_creator.RowTypes import DataRow, OutputRow, UserInputRow,RegisterRow
 from .grader_controller import initResults, transferFile,showResults, CreateTAR
 
@@ -318,7 +319,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toggleOutputBtn.show()
         initResults(self,"\n\n\n\n   Autograder in progress")
         
-        set_file = os.path.join(os.path.dirname(__file__), "temp.json")
+        set_file = resource_path("temp/temp.json")
         print(set_file)
         success = self.SaveSettings(set_file)
         if not success: return
@@ -344,7 +345,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if not TarDestination: return
         self.lastSaveLocation=TarDestination
 
-        set_file = os.path.join(os.path.dirname(__file__), "temp.json")
+        set_file = resource_path("temp/temp.json")
         print(set_file)
         success = self.SaveSettings(set_file)
         if not success: return

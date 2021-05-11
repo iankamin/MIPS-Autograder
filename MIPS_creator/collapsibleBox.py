@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from enum import Flag
-from MIPS_creator.ui_files.filepaths import Icons
+from ui_files.filepaths import Icons
 class CollapsibleBox(QtWidgets.QWidget):
     ExpandCollapse_finished=QtCore.pyqtSignal()
     def __init__(self, title="", parent=None, btnFunction=None, btnText="Add New",index= None):

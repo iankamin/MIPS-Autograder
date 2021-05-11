@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWidgets,uic,QtGui
-from MIPS_creator.ui_files.filepaths import ui 
+from ui_files.filepaths import ui 
 
 class ResultsWindow(QtWidgets.QDockWidget):
     textBox:QtWidgets.QTextEdit
