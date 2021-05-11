@@ -1,18 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from enum import Flag
+from MIPS_creator.ui_files.filepaths import Icons
 class CollapsibleBox(QtWidgets.QWidget):
     ExpandCollapse_finished=QtCore.pyqtSignal()
     def __init__(self, title="", parent=None, btnFunction=None, btnText="Add New",index= None):
         parent:CollapsibleBox
         self.parent:CollapsibleBox
         super(CollapsibleBox, self).__init__()
-        self.indexUpdated(index)
         self.parent=parent
         self.title=title
         self.toggle_button = QtWidgets.QToolButton( text=title, checkable=True, checked=False)
-
-        self.setObjectName("%s-%s"%(self.title,index or " "))
-        self.toggle_button.setStyleSheet("QToolButton { border: None; }")
+        self.toggle_button.setObjectName("toggle_button")
+        self.toggle_button.setStyleSheet("QToolButton#toggle_button { border: None; }")
         #self.toggle_button.setStyleSheet("background-color: rgb(255, 200, 200);")
         self.toggle_button.setToolButtonStyle( QtCore.Qt.ToolButtonTextBesideIcon)
         self.toggle_button.setMaximumWidth(100000)
@@ -23,12 +22,13 @@ class CollapsibleBox(QtWidgets.QWidget):
         self.toggle_button.pressed.connect(self.on_pressed)
 
         if btnFunction is not None:
-            btnText="  "+btnText
+            btnText=" "+btnText
+            self.AddButton = QtWidgets.QToolButton(text=btnText)
             icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap("ui_files/Icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-            self.AddButton = QtWidgets.QPushButton(text=btnText)
-            self.AddButton.setMaximumWidth(90)
+            icon.addPixmap(QtGui.QPixmap(Icons.add2), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.AddButton.setIcon(icon)
+            self.AddButton.setToolButtonStyle( QtCore.Qt.ToolButtonTextBesideIcon)
+            self.AddButton.setFixedWidth(130)
             self.AddButton.pressed.connect(btnFunction)
             self.AddButton.hide()
         else: 
@@ -45,6 +45,7 @@ class CollapsibleBox(QtWidgets.QWidget):
         self.content_area = QtWidgets.QScrollArea(
             maximumHeight=0, minimumHeight=0
         )
+        self.content_area.setObjectName("content_area")
         self.content_area.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed
         )
@@ -107,10 +108,6 @@ class CollapsibleBox(QtWidgets.QWidget):
 
 
 
-    def indexUpdated(self,index):
-        if index is not None: 
-            if index %2: self.setStyleSheet("background-color: rgb(245, 245, 255)")
-            else:        self.setStyleSheet("background-color: rgb(230, 230, 255)")
     
     def toggle_animation_finished(self):
         if self.parent is not None: self.parent.updateAnimation()
@@ -176,7 +173,11 @@ class CollapsibleBox(QtWidgets.QWidget):
         lay=self.content_area.layout()
         lay.insertWidget(lay.count()-1,widget)
         self.updateHeight(widget)
-
+    def getContents(self):
+        lay = self.content_area.layout()
+        items = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None]
+        return items
+        
     def height(self):
         if self.isOpen: return self.collapsed_height+self.content_height
         else: return self.collapsed_height

@@ -20,6 +20,9 @@ def createTest(main,a,b,c,d):
 if __name__ == '__main__':
     #os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
     app = QtWidgets.QApplication(sys.argv)
+    font=app.font()
+    font.setPointSize(12)
+    app.setFont(font)
     main = MainWindow()
     #createTest(main,1,1,1,1)
     #createTest(main,2,2,2,2)

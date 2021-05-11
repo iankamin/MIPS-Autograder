@@ -1,0 +1,12 @@
+windows setup instructions
+install cygwin
+install pyqt5
+install spim
+
+
+
+linux 
+install bison
+install flex
+in folder spimsimulator:
+    make spim

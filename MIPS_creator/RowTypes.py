@@ -4,7 +4,7 @@ from PyQt5 import QtWidgets,uic
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.sip import delete
 from PyQt5.QtCore import QRegExp, pyqtSignal
-from .ui_files import UserInputRow_ui,TopRow_ui,DataRow_ui,RegInput_ui,RegOutput_ui
+from .ui_files import ui,Icons
 from .utilities import validity
 
 class Row(QtWidgets.QWidget):
@@ -64,7 +64,7 @@ class TestTopRow(QtWidgets.QWidget):
     DeleteButton:QtWidgets.QPushButton
     def __init__(self,name=None,ShowLevel=None,MaxPoints=None,ExtraCredit=None): 
         super(QtWidgets.QWidget, self).__init__()
-        uic.loadUi(TopRow_ui, self)
+        uic.loadUi(ui.TopRow, self)
         self.ShowLevel.wheelEvent = self.wheelEvent
         self.MaxPoints.wheelEvent = self.wheelEvent
         
@@ -101,16 +101,23 @@ class UserInputRow(Row):
     UserInput:QtWidgets.QLineEdit
     def __init__(self,parent=None,text=None): 
         super().__init__()
-        uic.loadUi(UserInputRow_ui, self)
+        uic.loadUi(ui.UserInputRow, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
-        
         if(text) is not None: self.UserInput.setText(text)
 
     def copy(self):
         copy=UserInputRow()
         copy.UserInput.setText(self.UserInput.text())
         return copy
+    def validate(self):
+        if len(self.UserInput.text())== 0: 
+            self.UserInput.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            return False
+        else: 
+            self.UserInput.setStyleSheet("background-color: rgb(255, 255, 255);")
+            return True
+    
     def getKwargs(self): return {"UserInput":self.UserInput.text()}
     
 class DataRow(Row):
@@ -121,7 +128,7 @@ class DataRow(Row):
     reg:QtWidgets.QComboBox
     def __init__(self,parent=None,addr=None,data=None,type=None,reg=None): 
         super().__init__()
-        uic.loadUi(DataRow_ui, self)
+        uic.loadUi(ui.DataRow, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
         
@@ -135,6 +142,22 @@ class DataRow(Row):
         if type is not None: self.type.setCurrentText(type.replace(".",'').lower())
         if addr is not None: self.address.setText(addr)
         if data is not None: self.data.setText(data)
+    def validate(self):
+        valid = True
+        if len(self.data.text())== 0: 
+            self.data.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            valid = False
+        else: 
+            self.data.setStyleSheet("background-color: rgb(255, 255, 255);")
+            valid = valid and True
+        
+        if len(self.address.text())== 0: 
+            self.address.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            valid = False
+        else: 
+            self.address.setStyleSheet("background-color: rgb(255, 255, 255);")
+            valid = valid and True
+        return valid
     def copy(self):
         copy=DataRow()
         copy.address.setText(self.address.text())
@@ -159,14 +182,28 @@ class RegisterRow(Row):
     value:QtWidgets.QLineEdit
     def __init__(self,parent=None,reg=None,value=None): 
         super().__init__()
-        uic.loadUi(RegInput_ui, self)
+        uic.loadUi(ui.RegInput, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
         self.reg.textChanged.connect(self.regLimit)
         
         if reg is not None: self.reg.setText(reg)
         if value is not None: self.value.setText(value)
-
+    def validate(self):
+        valid = True
+        if len(self.reg.text())== 0: 
+            self.reg.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            valid = False
+        else: 
+            self.reg.setStyleSheet("background-color: rgb(255, 255, 255);")
+            valid = valid and True
+        if len(self.value.text())== 0: 
+            self.value.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            valid = False
+        else: 
+            self.value.setStyleSheet("background-color: rgb(255, 255, 255);")
+            valid = valid and True
+        return valid
     def copy(self):
         copy=RegisterRow()
         copy.reg.setText(self.reg.text())
@@ -190,7 +227,7 @@ class OutputRow(Row):
     CorrectAnswer:QtWidgets.QLineEdit
     def __init__(self,parent=None,reg=None,type=None,addr=None,CorrectAnswer=None): 
         super().__init__()
-        uic.loadUi(RegOutput_ui, self)
+        uic.loadUi(ui.RegOutput, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
         self.type.wheelEvent=self.wheelEvent
@@ -210,7 +247,30 @@ class OutputRow(Row):
     def addressChanged(self,text:str):
         if len(text) == 0: return
         #if text[-1] not in "-x0123456789abcdefABCDEF": self.address.setText(text[:-1])
-    
+    def validate(self):
+        valid = True
+        if len(self.CorrectAnswer.text())== 0: 
+            self.CorrectAnswer.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            valid = False
+        else: 
+            self.CorrectAnswer.setStyleSheet("background-color: rgb(255, 255, 255);")
+            valid = valid and True
+        
+        if self.type.currentText()=="String":
+            if len(self.address.text())== 0: 
+                self.address.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+                valid = False
+            else: 
+                self.address.setStyleSheet("background-color: rgb(255, 255, 255);")
+                valid = valid and True
+        else: 
+            if len(self.reg.text())== 0: 
+                self.reg.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+                valid = False
+            else: 
+                self.reg.setStyleSheet("background-color: rgb(255, 255, 255);")
+                valid = valid and True
+        return valid
     def ComboBoxChanged(self,i):
         #print(i)
         if i=="String":

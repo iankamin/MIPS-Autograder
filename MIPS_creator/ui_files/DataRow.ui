@@ -121,11 +121,6 @@ color: rgb(255, 0, 4);</string>
        <height>16777215</height>
       </size>
      </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);
-selection-background-color: rgb(232, 232, 232);
-selection-color: rgb(118, 0, 1);</string>
-     </property>
      <item>
       <property name="text">
        <string>asciiz</string>
@@ -161,11 +156,6 @@ selection-color: rgb(118, 0, 1);</string>
        <width>80</width>
        <height>16777215</height>
       </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);
-selection-background-color: rgb(232, 232, 232);
-selection-color: rgb(118, 0, 1);</string>
      </property>
      <item>
       <property name="text">
@@ -313,9 +303,6 @@ selection-color: rgb(118, 0, 1);</string>
        <height>16777215</height>
       </size>
      </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
      <property name="inputMask">
       <string/>
      </property>
@@ -331,9 +318,6 @@ selection-color: rgb(118, 0, 1);</string>
        <width>275</width>
        <height>0</height>
       </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="readOnly">
       <bool>false</bool>

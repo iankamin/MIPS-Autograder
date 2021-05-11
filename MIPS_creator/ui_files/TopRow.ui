@@ -87,10 +87,6 @@
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of test if desired&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-color: rgb(0, 0, 0);</string>
-         </property>
          <property name="placeholderText">
           <string>Test</string>
          </property>
@@ -157,11 +153,6 @@ color: rgb(0, 0, 0);</string>
          </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Overrides the global Detail level. has no effect if this is a lower level than the global level&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);
-selection-background-color: rgb(232, 232, 232);
-selection-color: rgb(118, 0, 1);</string>
          </property>
          <item>
           <property name="text">
@@ -241,9 +232,6 @@ selection-color: rgb(118, 0, 1);</string>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Overrides Maximum points if you would like this to be worth something more or less than the other tests&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);</string>
-         </property>
          <property name="prefix">
           <string/>
          </property>
@@ -308,9 +296,6 @@ selection-color: rgb(118, 0, 1);</string>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Is this an Extra credit Test?&lt;/p&gt;&lt;p&gt;Extra Credit Tests will be run AFTER all regular tests regardless of shuffle&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(255, 255, 255);</string>
-         </property>
          <property name="text">
           <string/>
          </property>
@@ -348,21 +333,21 @@ selection-color: rgb(118, 0, 1);</string>
          <height>0</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Copy Test&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>COPY</string>
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>Icons/add2.png</normaloff>Icons/add2.png</iconset>
+         <normaloff>Icons/copy.png</normaloff>Icons/copy.png</iconset>
        </property>
        <property name="iconSize">
         <size>
          <width>30</width>
          <height>30</height>
         </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+S</string>
        </property>
        <property name="popupMode">
         <enum>QToolButton::InstantPopup</enum>
@@ -389,21 +374,34 @@ selection-color: rgb(118, 0, 1);</string>
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="DeleteButton">
+      <widget class="QToolButton" name="DeleteButton">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="maximumSize">
+       <property name="minimumSize">
         <size>
-         <width>63</width>
-         <height>16777215</height>
+         <width>50</width>
+         <height>0</height>
         </size>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete Test&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Delete</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>Icons/delete.png</normaloff>Icons/delete.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
        </property>
       </widget>
      </item>

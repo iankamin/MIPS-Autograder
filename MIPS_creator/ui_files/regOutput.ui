@@ -115,11 +115,6 @@ color: rgb(255, 0, 4);</string>
        <height>16777215</height>
       </size>
      </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);
-selection-background-color: rgb(232, 232, 232);
-selection-color: rgb(118, 0, 1);</string>
-     </property>
      <item>
       <property name="text">
        <string>Integer</string>
@@ -148,9 +143,6 @@ selection-color: rgb(118, 0, 1);</string>
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The register where the solution is expected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
      <property name="maxLength">
       <number>2</number>
      </property>
@@ -170,9 +162,6 @@ selection-color: rgb(118, 0, 1);</string>
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The address in memory where a solution is expected to be&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
      <property name="placeholderText">
       <string>Address</string>
      </property>
@@ -182,9 +171,6 @@ selection-color: rgb(118, 0, 1);</string>
     <widget class="QLineEdit" name="CorrectAnswer">
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The expected solution &lt;/p&gt;&lt;p&gt;(please do not use quotation marks as these will be deleted)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="placeholderText">
       <string>Expected Answer</string>

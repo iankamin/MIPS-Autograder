@@ -17,13 +17,15 @@ from .utilities import set_Test,settings
 
 class Test(QtWidgets.QWidget): 
     def __init__(self,index,parent,TopRow=None): 
-        super(QtWidgets.QWidget, self).__init__() 
+        self._index=index
+        super(QtWidgets.QWidget, self).__init__()
+        self.setObjectName("Test")
         self.parent=parent
         if TopRow is None or TopRow.TestName.text()=="": self._name="Test"
         else: self._name = TopRow.TestName.text()
         self.TopRow=TopRow
-        self._index=index
         self.setupUi()
+        self.index=index
 
     @property
     def name(self): return self._name
@@ -39,8 +41,10 @@ class Test(QtWidgets.QWidget):
     @index.setter
     def index(self,i):
         self._index=i
-        self.HidingBox.indexUpdated(i)
         self.HidingBox.toggle_button.setText("{:0>2} - {}".format(self.index,self.name))
+        if i%2: self.setStyleSheet("QToolButton#toggle_button,QScrollArea#content_area {background-color: rgb(245, 245, 255)}")
+        else:   self.setStyleSheet("QToolButton#toggle_button,QScrollArea#content_area {background-color: rgb(230, 230, 255)}")
+
 
     def setupUi(self):
         self.setObjectName("test") 
@@ -52,19 +56,22 @@ class Test(QtWidgets.QWidget):
         if self.TopRow is None:self.TopRow=TestTopRow()
         
         self.HidingBox=CollapsibleBox("%s - %s"%(self.name,self.index),index=self.index)
+        self.setStyleSheet=self.HidingBox.setStyleSheet
+        self.styleSheet=self.HidingBox.styleSheet
+        
         self.HidingBox.content_area.layout().setContentsMargins(20,0,10,0)
         
         self.verticalLayout.addWidget(self.HidingBox)
 
         self.TopRow.TestName.textChanged.connect(self.setName)
         self.HidingBox.addWidget(self.TopRow)
-        self.allUserInput  = CollapsibleBox("User Input"        ,self.HidingBox, lambda: self.addRow(UserInputRow))
-        self.DataInput     = CollapsibleBox("Data Input"        ,self.HidingBox, lambda: self.addRow(DataRow     ))
-        self.InputRegisters= CollapsibleBox("Input Registers"   ,self.HidingBox, lambda: self.addRow(RegisterRow ))
-        self.Outputs       = CollapsibleBox("Output Registers"  ,self.HidingBox, lambda: self.addRow(OutputRow   ))
+        self.allUserInput  = CollapsibleBox("User Input"        ,self.HidingBox, lambda: self.addRow(UserInputRow), btnText="User Input")
+        self.DataInput     = CollapsibleBox("Data Input"        ,self.HidingBox, lambda: self.addRow(DataRow     ), btnText="Data")
+        self.InputRegisters= CollapsibleBox("Input Registers"   ,self.HidingBox, lambda: self.addRow(RegisterRow ), btnText="Register")
+        self.Outputs       = CollapsibleBox("Output Registers"  ,self.HidingBox, lambda: self.addRow(OutputRow   ), btnText="Output")
 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("Icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(Icons.add2), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         
         self.TopRow.CopyButton.pressed.connect(self.Copy) 
         self.TopRow.DeleteButton.pressed.connect(self.deleteSelf)
@@ -76,6 +83,25 @@ class Test(QtWidgets.QWidget):
     def deleteSelf(self): 
         self.parent.deleteTest(self)
     
+    def validate(self):
+        items = []
+        items = items + self.allUserInput.getContents()
+        items = items + self.DataInput.getContents()
+        items = items + self.InputRegisters.getContents()
+        items = items + self.Outputs.getContents()
+
+        valid=len(items)>0
+        for item in items:
+            valid = item.validate() and valid 
+        if not valid: self.ExpandAndCollapseAll(expand=True)
+        return valid           
+
+    def validRow(self,item):
+        if item is UserInputRow: return True
+        if item is OutputRow: return True
+        if item is RegisterRow: return True
+        if item is DataRow: return True
+        return False
     
     def ExpandAndCollapseAll(self,expand):
         toggleAll_animation = QtCore.QParallelAnimationGroup(self)

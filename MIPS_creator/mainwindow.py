@@ -1,14 +1,16 @@
 from MIPS_creator.ResultsWindow import ResultsWindow
 from PyQt5 import QtCore, QtWidgets,uic
 from PyQt5.QtGui import QFont
+from PyQt5 import QtGui
+
 from PyQt5.sip import delete
 import os
 from MIPS_creator.collapsibleBox import CollapsibleBox
 from MIPS_creator.utilities import settings,set_Test
 from MIPS_creator.TestLayout import Test
-from MIPS_creator.ui_files.filepaths import mainwindow_ui
+from MIPS_creator.ui_files.filepaths import ui,Icons
 from MIPS_creator.RowTypes import DataRow, OutputRow, UserInputRow,RegisterRow
-from .grader_controller import transferFile,showResults, CreateTAR
+from .grader_controller import initResults, transferFile,showResults, CreateTAR
 
 class MainWindow(QtWidgets.QMainWindow): 
     allTests:QtWidgets.QVBoxLayout 
@@ -46,7 +48,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self): 
         super(MainWindow, self).__init__() 
-        uic.loadUi(mainwindow_ui, self)
+        uic.loadUi(ui.mainwindow, self)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(Icons.downArrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.ExpandBtn.setIcon(icon)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(Icons.upArrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.CollapseBtn.setIcon(icon)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(Icons.rightArrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.toggleOutputBtn.setIcon(icon)
+
+
+
         self.allTests.addSpacing(600)
         self.allTests.addStretch(500)
         self.AddTestButton.pressed.connect(self.addTest) 
@@ -85,6 +99,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.concatAsmDock.hide()
         self.gradeDock.hide()
         
+        self.outputHidden=False
         self.toggleOutputBtn.hide()
         self.toggleOutputBtn.pressed.connect(self.toggleOutputPressed)
         self.BareMode.pressed.connect(self.tester)
@@ -93,6 +108,14 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.hasFocus(): return QtWidgets.QComboBox.wheelEvent(self, *args, **kwargs)
     
     def toggleOutputPressed(self):
+        icon = QtGui.QIcon()
+        icon.addPixmap(
+            QtGui.QPixmap(Icons.rightArrow)
+            if self.outputHidden else 
+            QtGui.QPixmap(Icons.leftArrow) 
+            ,QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.toggleOutputBtn.setIcon(icon)
+
         self.toggleOutput(self.outputHidden)
         self.outputHidden = not self.outputHidden
 
@@ -170,12 +193,48 @@ class MainWindow(QtWidgets.QMainWindow):
             newTest.name=newTest.name
         self.insertWidget(newTest)
         self.numberOfTests+=1
+        self.setStyleSheet(self.styleSheet())
+        self.setStyle(self.style())
         return newTest
 
+    def validateWindow(self):
+        valid=True
+        if self.subroutine_name.text()=="": 
+            self.subroutine_name.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            valid = False
+        else: 
+            self.subroutine_name.setStyleSheet("background-color: rgb(255, 255, 255);")
+            valid= valid and True
+        if self.TestPoints.value()==0:
+            self.TestPoints.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            valid = False
+        else: 
+            self.TestPoints.setStyleSheet("background-color: rgb(255, 255, 255);")
+            valid= valid and True
+        return valid
+
+    def validate(self):
+        valid=self.validateWindow()
+        
+        if self.numberOfTests == 0: 
+            self.outputHidden=False
+            self.toggleOutputBtn.show()
+            initResults(self,"\n\n\n    No Tests to Run")
+            return False
+
+        lay=self.allTests
+        tests = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None ]
+        for test in tests: 
+            valid= test.validate() and valid
+    
+        if not valid: 
+            self.outputHidden=False
+            self.toggleOutputBtn.show()
+            initResults(self,"\n\n\n\n  Not all tests are completely filled in \n  (or there are blank tests)")
+        return valid
+
     def SaveSettings(self,loc=None,updateSaveLocation=True):
-        sa=False
-        so=False
-        i = self.ShowLevel.currentIndex()
+        if not self.validate(): return False
         setJS = settings(
                     subroutine_name = self.subroutine_name.text()	,
                     PromptGrade	    = self.PromptPoints.value()		,
@@ -189,12 +248,13 @@ class MainWindow(QtWidgets.QMainWindow):
                     JsonStyle       = self.JsonStyle.currentIndex()
                 )
         
+        valid=True
         lay=self.allTests
         tests = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None ]
-        test:Test 
         for test in tests: 
             setJS.AddTest(test.convertToJSON(setting=setJS))
         if len(tests)==0: return False
+        if not valid: return False
 
 
         #output=QtWidgets.QFileDialog.getOpenFileName(self) #file needs to exist
@@ -203,7 +263,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if output[1].replace("*",'') not in output[0]:
                 out=output[0].strip()+output[1].replace("*",'')
             else: out=output[0]
-            if updateSaveLocation: self.lastSaveLocation=out
+            if updateSaveLocation: self.lastSaveLocation=os.path.split(out)[0]+'/'
             if output[1]:
                 with open(out, 'w') as f: f.write(setJS.GetJSON())
         else:
@@ -219,11 +279,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numberOfTests=0
 
     def LoadSettings(self):
-        filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json") #file needs to exist
-        if not filePath[0]: return
+        filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json")[0] #file needs to exist
+        if not filePath: return
+        self.lastSaveLocation=os.path.split(filePath)[0]+'/'
        # filePath=["/home/kamian/MIPS_Autograder/Tests/part4/part4.json"]
         self.DeleteAllTests()
-        set=settings(filePath[0])
+        set=settings(filePath)
 
         self.subroutine_name.setText( set.SubroutineName)
         self.EC_TestPoints.setValue( set.ECTestGrade)
@@ -253,27 +314,32 @@ class MainWindow(QtWidgets.QMainWindow):
             test.TopRow.replaceInfo(**testJS.ToDict())
 
     def RunMips(self):
-        submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
-        if not submissionPath: return
-        #submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
-       # submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/iankamin@buffalo.edu_30_handin.s"
-        print(submissionPath)
-        self.lastSaveLocation=submissionPath
+        self.outputHidden=False
+        self.toggleOutputBtn.show()
+        initResults(self,"\n\n\n\n   Autograder in progress")
         
         set_file = os.path.join(os.path.dirname(__file__), "temp.json")
         print(set_file)
         success = self.SaveSettings(set_file)
         if not success: return
         
+        
+        submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
+        if not submissionPath: return
+        # submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
+        # submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/iankamin@buffalo.edu_30_handin.s"
+        print(submissionPath)
+        self.lastSaveLocation=os.path.split(submissionPath)[0]+'/'
+        
         transferFile( settingsFile=set_file,
                       submissionFile=submissionPath)
         showResults(self)
-        self.toggleOutputBtn.show()
-        self.outputHidden=False
         self.toggleOutput(True)
         self.gradeDock.raise_()
 
     def CreateTar(self):
+        self.outputHidden=False
+        self.toggleOutputBtn.show()
         TarDestination=QtWidgets.QFileDialog.getSaveFileName(self,"Save TAR File as", self.lastSaveLocation,"TAR File (*.tar *.TAR)")[0] #file needs to exist
         if not TarDestination: return
         self.lastSaveLocation=TarDestination
@@ -283,8 +349,6 @@ class MainWindow(QtWidgets.QMainWindow):
         success = self.SaveSettings(set_file)
         if not success: return
         CreateTAR(set_file, TarDestination,self)
-        self.toggleOutputBtn.show()
-        self.outputHidden=False
         self.toggleOutput(True)
         self.makefileDock.raise_()
 

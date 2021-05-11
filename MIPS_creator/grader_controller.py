@@ -30,6 +30,12 @@ w1:ResultsWindow
 w2:ResultsWindow
 w3:ResultsWindow
 w1,w2,w3=None,None,None
+def initResults(parent,msg):
+    parent.gradeDock.isUsed=True
+    parent.gradeDock.setText(msg)
+    parent.gradeDock.show()
+    parent.gradeDock.raise_()
+
 def showResults(parent):
     
     parent.rawMipsDock.displayFile(grader_data_loc+"output.txt",True)

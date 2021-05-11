@@ -121,9 +121,6 @@ color: rgb(255, 0, 4);</string>
        <height>16777215</height>
       </size>
      </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
-     </property>
      <property name="placeholderText">
       <string>Register</string>
      </property>
@@ -136,9 +133,6 @@ color: rgb(255, 0, 4);</string>
        <width>150</width>
        <height>16777215</height>
       </size>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255);</string>
      </property>
      <property name="placeholderText">
       <string>Value</string>

@@ -65,22 +65,23 @@ class settings():
             test=Test(parent=self,testjs=testjs,testNumber=i)
             if test.ExtraCredit: ec.append(test)
             else:                reg.append(test)
+        self.AllTests=reg+ec
         self.reg=reg
         self.ec=ec
-        self.NumberOfRegularTests=len(reg)
-        self.NumberOfExtraCreditTests=len(ec)
-        return reg+ec
-    def getTests(self, canShuffle=True):
-        self.reg=self.AllTests[:self.NumberOfRegularTests]
-        self.ec=self.AllTests[self.NumberOfRegularTests:]
-        if self.Shuffle and canShuffle:
+        if self.Shuffle:
             random.shuffle(self.ec)
             random.shuffle(self.reg)
-        return self.reg+self.ec
+        self.NumberOfRegularTests=len(reg)
+        self.NumberOfExtraCreditTests=len(ec)
+        return self.AllTests
+   
+    def getTests(self, canShuffle=True):
+        if canShuffle: return self.reg+self.ec
+        else: return self.AllTests
 
 
-    def getAllUserInputLines(self):
-        for test in self.AllTests:
+    def getAllUserInputLines(self,canShuffle=True):
+        for test in self.getTests(canShuffle):
             for line in test.UserInput:
                 yield line
 
@@ -100,7 +101,7 @@ class settings():
         io["ShowLevel"]=self.ShowLevel.value
         io["Shuffle"]=self.Shuffle
         io["JsonStyle"]=self.JsonStyle
-        io["tests"]=[t.ToDict() for t in self.AllTests]
+        io["tests"]=[t.ToDict() for t in self.getTests(canShuffle=False)]
         return io
 
 class Test():

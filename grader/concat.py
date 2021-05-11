@@ -178,7 +178,7 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s"):
     illegalSyntax(dataSect,textSect,io.BareMode)
 
     allTests=""
-    for test in io.AllTests:
+    for test in io.getTests(canShuffle=True):
         with open(localDir + 'template/TemplateTrial','r') as S_Trial:
             body = S_Trial.read()
             body=body.replace("<student_subroutine>",io.SubroutineName)

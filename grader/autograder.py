@@ -178,9 +178,9 @@ def mips(concatFile= "concat.s"):
     try:
         subprocess.call(instruction,shell=True,timeout=3)
     except subprocess.TimeoutExpired: 
-        return '    Your Program Timed Out due to an infinite loop in MIPS'
+        return '    Your Program Timed Out due to an infinite loop in MIPS\n'
     except:
-        return "    UH-OH your program failed to run for an unknown reason"
+        return "    UH-OH your program failed to run for an unknown reason\n"
     return ""
     
 def GetMipsOutput():
@@ -252,8 +252,8 @@ def PrintMipsError(headerErr, lastOutput, SPIMerror, NonAsciiMSG,completionErr,r
     if len(allErrors)>0: 
         autograderResults.write(allErrors.strip())
     else: 
-        autograderResults.write("    None\n")
-    autograderResults.write("=============================\n\n")
+        autograderResults.write("    None")
+    autograderResults.write("\n=============================\n\n")
 
 
 def ShowInput(test):
