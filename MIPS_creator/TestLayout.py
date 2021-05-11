@@ -44,6 +44,9 @@ class Test(QtWidgets.QWidget):
         self.HidingBox.toggle_button.setText("{:0>2} - {}".format(self.index,self.name))
         if i%2: self.setStyleSheet("QToolButton#toggle_button,QScrollArea#content_area {background-color: rgb(245, 245, 255)}")
         else:   self.setStyleSheet("QToolButton#toggle_button,QScrollArea#content_area {background-color: rgb(230, 230, 255)}")
+    
+    @property
+    def title(self): return "{:0>2} - {}".format(self.index,self.name)
 
 
     def setupUi(self):
@@ -84,17 +87,31 @@ class Test(QtWidgets.QWidget):
         self.parent.deleteTest(self)
     
     def validate(self):
+        out=''
         items = []
         items = items + self.allUserInput.getContents()
         items = items + self.DataInput.getContents()
         items = items + self.InputRegisters.getContents()
-        items = items + self.Outputs.getContents()
-
-        valid=len(items)>0
+        v1=True
+        if len(items)==0:
+            out+="\n - {title} has no inputs".format(title=self.title)
+            self.ExpandAndCollapseAll(expand=True)
+            v1=False
+        v2=True
+        itemsO = self.Outputs.getContents()
+        if len(itemsO)==0:
+            out+="\n - {title} has no outputs".format(title=self.title)
+            self.ExpandAndCollapseAll(expand=True)
+            v2= False
+        items=items+itemsO
+        v3=True    
         for item in items:
-            valid = item.validate() and valid 
-        if not valid: self.ExpandAndCollapseAll(expand=True)
-        return valid           
+            v3 = item.validate() and v3
+        if not v3:
+            out+="\n - {title} has empty textboxs".format(title=self.title)
+            self.ExpandAndCollapseAll(expand=True)
+        
+        return ((v1 and v2) and v3),out
 
     def validRow(self,item):
         if item is UserInputRow: return True

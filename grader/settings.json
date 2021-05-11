@@ -6,8 +6,8 @@
     "MessageToStudent": "",
     "BareMode": false,
     "RequiresUserInput": true,
-    "ShowLevel": 3,
-    "Shuffle": false,
+    "ShowLevel": 0,
+    "Shuffle": true,
     "JsonStyle": 2,
     "tests": [
         {
@@ -48,7 +48,7 @@
             "name": "CCC",
             "ExtraCredit": false,
             "OutOf": 0,
-            "ShowLevel": 0,
+            "ShowLevel": 3,
             "UserInput": [
                 "1234+4321"
             ],

@@ -7,22 +7,38 @@ class ResultsWindow(QtWidgets.QDockWidget):
     verticalScrollBar:QtWidgets.QScrollBar
     lineNum:QtWidgets.QTextEdit
     scrollArea:QtWidgets.QScrollArea
+    borderLine:QtCore.QLine
+    dividerLine:QtCore.QLine
 
     def __init__(self, title, parent, text=None):
         super(QtWidgets.QDockWidget, self).__init__(parent) 
         uic.loadUi(ui.resultswindow, self)
+        self.setWindowTitle(title)
         header=Header(title)
         header.setStyleSheet("QFrame,QLabel{background-color:rgb(200,200,200)}")
-        header.closeBtn.pressed.connect(self.hide)
+        header.closeBtn.pressed.connect(self.close)
         header.popoutBtn.pressed.connect(self.popout)
         self.setTitleBarWidget(header)
-        self.setWindowTitle(title)
         #self.textBox.textChanged.connect(self.updateScrollBars)
         self.verticalScrollBar=self.textBox.verticalScrollBar()
         self.horizontalScrollBar=self.textBox.horizontalScrollBar()
         self.lineNum.setVerticalScrollBar(self.verticalScrollBar)
        # self.verticalScrollBar.sliderMoved.connect(self.verticalMovement)
-        self.isUsed=False
+        self.isClosed=True
+        self.event
+        
+    
+    def closeEvent(self, i):
+        self.isClosed=True
+        i.accept()
+    
+    def show(self):
+        self.isClosed=False
+        super().show()
+    
+    def canShow(self):
+        return (self.isClosed==False)
+    
     def popout(self):
         self.setFloating(not self.isFloating())    
     def verticalMovement(self) : 
@@ -55,11 +71,12 @@ class ResultsWindow(QtWidgets.QDockWidget):
                 nums+=str(i)+'<br>'
                 i=i+1
             data+=line
-
+        data=data.replace('\n','<br>')
+        data="<p style=\"text-align: left\">%s</p>"%data
         self.textBox.setText(data)
         #self.updateScrollBars()
         if showLineNumbers:
-            nums="<p style=\"text-align: right\">%s"%nums
+            nums="<p style=\"text-align: right\">%s</p>"%nums
             self.lineNum.setHtml(nums)
         else: self.lineNum.hide()
         self.show()
@@ -80,8 +97,6 @@ class Header(QtWidgets.QWidget):
         frame=QtWidgets.QFrame()
         lay.addWidget(frame)
 
-
-
         self.setSizePolicy(sizePolicy)
         self.setMinimumSize(QtCore.QSize(0, 30))
         self.setMaximumSize(QtCore.QSize(16777215, 30))
@@ -90,7 +105,6 @@ class Header(QtWidgets.QWidget):
         self.horizontalLayout.setSpacing(5)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.Title = QtWidgets.QLabel(self,text=title)
-        self.Title.setText(title)
         self.Title.setObjectName("Title")
         self.horizontalLayout.addWidget(self.Title)
         self.popoutBtn = QtWidgets.QToolButton(self)
@@ -105,7 +119,7 @@ class Header(QtWidgets.QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.Title.setText(_translate("header", "TextLabel"))
+        self.Title.setText(_translate("header", self.Title.text()))
         self.popoutBtn.setText(_translate("header", "--"))
         self.closeBtn.setText(_translate("header", "X"))
 

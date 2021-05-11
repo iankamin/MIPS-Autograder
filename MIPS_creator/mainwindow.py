@@ -3,15 +3,16 @@ from MIPS_creator.ResultsWindow import ResultsWindow
 from PyQt5 import QtCore, QtWidgets,uic
 from PyQt5.QtGui import QFont
 from PyQt5 import QtGui
+from PyQt5.QtCore import QObject, QThread
 
 from PyQt5.sip import delete
 import os
 from MIPS_creator.collapsibleBox import CollapsibleBox
-from MIPS_creator.utilities import settings,set_Test
+from MIPS_creator.utilities import settings,set_Test,settingsWorker
 from MIPS_creator.TestLayout import Test
 from ui_files.filepaths import resource_path, ui,Icons
 from MIPS_creator.RowTypes import DataRow, OutputRow, UserInputRow,RegisterRow
-from .grader_controller import initResults, transferFile,showResults, CreateTAR
+from .grader_controller import *
 
 class MainWindow(QtWidgets.QMainWindow): 
     allTests:QtWidgets.QVBoxLayout 
@@ -38,8 +39,11 @@ class MainWindow(QtWidgets.QMainWindow):
     scrollArea:QtWidgets.QScrollArea
     testScroll:QtWidgets.QScrollArea
     testScrollArea:QtWidgets.QWidget
-    rawMipsDock:QtWidgets.QDockWidget
-    gradeDock:QtWidgets.QDockWidget
+    rawMipsDock:ResultsWindow
+    gradeDock:ResultsWindow
+    concatAsmDock:ResultsWindow
+    makefileDock:ResultsWindow
+    errorDock:ResultsWindow
     toggleOutputBtn:QtWidgets.QPushButton
 
     #1080P size
@@ -61,7 +65,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toggleOutputBtn.setIcon(icon)
 
 
-
+        self.threads=[]
+        self.workers=[]
         self.allTests.addSpacing(600)
         self.allTests.addStretch(500)
         self.AddTestButton.pressed.connect(self.addTest) 
@@ -79,28 +84,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gradeDock=ResultsWindow("Grade Output",self)
         self.concatAsmDock=ResultsWindow("ASM File",self)
         self.makefileDock=ResultsWindow("Makefile",self)
-
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.makefileDock)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.rawMipsDock)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.concatAsmDock)
-        self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.gradeDock)
-        self.tabifyDockWidget(self.gradeDock,self.rawMipsDock)
-        self.tabifyDockWidget(self.gradeDock,self.concatAsmDock)
-        self.tabifyDockWidget(self.gradeDock,self.makefileDock)
-#        g=self.gradeDock.geometry()
-#        g=QtCore.QRect(g.x()-200,g.y(),1000,g.height())
-#        self.gradeDock.setGeometry(g)
-#        self.rawMipsDock.setGeometry(g)
-#        self.concatAsmDock.setGeometry(g)
-#        self.makefileDock.setGeometry(g)
-
-        self.outputHidden=True
-        self.makefileDock.hide()
-        self.rawMipsDock.hide()
-        self.concatAsmDock.hide()
-        self.gradeDock.hide()
+        self.errorDock=ResultsWindow("Errors",self)
+        self.docks=[self.gradeDock,self.rawMipsDock,self.concatAsmDock,self.makefileDock,self.errorDock]
+        for dock in self.docks:
+            self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+        for dock in self.docks[1:]:
+            self.tabifyDockWidget(self.docks[0],dock)
         
-        self.outputHidden=False
+        self.outputHidden=True
+        for dock in self.docks:
+            dock.hide()
+
         self.toggleOutputBtn.hide()
         self.toggleOutputBtn.pressed.connect(self.toggleOutputPressed)
         self.BareMode.pressed.connect(self.tester)
@@ -122,15 +116,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def toggleOutput(self, visibile):
         if visibile:
-            if self.makefileDock.isUsed : self.makefileDock.show()
-            if self.rawMipsDock.isUsed : self.rawMipsDock.show()
-            if self.concatAsmDock.isUsed : self.concatAsmDock.show()
-            if self.gradeDock.isUsed : self.gradeDock.show()
+            for dock in self.docks: dock.show() if dock.canShow() else None
         else:
-            self.makefileDock.hide()
-            self.rawMipsDock.hide()
-            self.concatAsmDock.hide()
-            self.gradeDock.hide()
+            for dock in self.docks: dock.hide()
     
 
     # Prevents the scroll wheel from affecting combobox
@@ -144,7 +132,6 @@ class MainWindow(QtWidgets.QMainWindow):
         print(self.makefileDock.width())
         print("grade Dock Size")
         print(self.gradeDock.textBox.width())
-
 
     def ExpandAll(self):
         test:Test
@@ -200,38 +187,48 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def validateWindow(self):
         valid=True
+        data=""
         if self.subroutine_name.text()=="": 
             self.subroutine_name.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            data+="\n - Subroutine Name is required"
             valid = False
         else: 
             self.subroutine_name.setStyleSheet("background-color: rgb(255, 255, 255);")
             valid= valid and True
         if self.TestPoints.value()==0:
             self.TestPoints.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            data+="\n - Test Points Cannot be zero"
             valid = False
         else: 
             self.TestPoints.setStyleSheet("background-color: rgb(255, 255, 255);")
             valid= valid and True
-        return valid
+        
+        return valid,data
 
     def validate(self):
-        valid=self.validateWindow()
+        valid,output=self.validateWindow()
         
         if self.numberOfTests == 0: 
             self.outputHidden=False
             self.toggleOutputBtn.show()
-            initResults(self,"\n\n\n    No Tests to Run")
-            return False
+            output+="\n\n - No Tests to Run"
+            valid = False
 
         lay=self.allTests
-        tests = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None ]
-        for test in tests: 
-            valid= test.validate() and valid
+        tests = [lay.itemAt(i).widget() for i in range(lay.count()) if type(lay.itemAt(i).widget()) is Test ]
+
+        test:Test
+        for test in tests:  
+            v, out=test.validate()
+            if not v:
+                valid = False
+                output+='\n'+out
     
         if not valid: 
             self.outputHidden=False
             self.toggleOutputBtn.show()
-            initResults(self,"\n\n\n\n  Not all tests are completely filled in \n  (or there are blank tests)")
+            output="\n cannot proceed until the following issues are corrected\n==============================================="+output
+            errorDisplay(self,output)
         return valid
 
     def SaveSettings(self,loc=None,updateSaveLocation=True):
@@ -279,14 +276,35 @@ class MainWindow(QtWidgets.QMainWindow):
             self.deleteTest(test)
         self.numberOfTests=0
 
+    def createThread(self,worker:QObject,workerFunction,*onfinish):
+        self.threads.append(QThread())
+        self.workers.append(worker)
+        thread:QThread
+        thread=self.threads[-1]
+        worker=self.workers[-1]
+        worker.moveToThread(thread)
+        thread.started.connect(workerFunction)
+        for f in onfinish:
+            worker.finished.connect(f)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.start()
+
     def LoadSettings(self):
         filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json")[0] #file needs to exist
         if not filePath: return
         self.lastSaveLocation=os.path.split(filePath)[0]+'/'
        # filePath=["/home/kamian/MIPS_Autograder/Tests/part4/part4.json"]
         self.DeleteAllTests()
-        set=settings(filePath)
 
+        worker=settingsWorker(file=filePath)
+        self.createThread(worker,worker.get,self.LoadSettings_2)
+
+
+
+        #set=settings(filePath)
+    def LoadSettings_2(self,set:settings):
         self.subroutine_name.setText( set.SubroutineName)
         self.EC_TestPoints.setValue( set.ECTestGrade)
         self.TestPoints.setValue( set.TestGrade)
@@ -317,7 +335,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def RunMips(self):
         self.outputHidden=False
         self.toggleOutputBtn.show()
-        initResults(self,"\n\n\n\n   Autograder in progress")
+        errorDisplay(self,"\n\n\n\n   Autograder in progress")
         
         set_file = resource_path("temp/temp.json")
         print(set_file)
@@ -332,9 +350,11 @@ class MainWindow(QtWidgets.QMainWindow):
         print(submissionPath)
         self.lastSaveLocation=os.path.split(submissionPath)[0]+'/'
         
-        transferFile( settingsFile=set_file,
-                      submissionFile=submissionPath)
-        showResults(self)
+        mips=MipsWorker ( settingsFile=set_file, submissionFile=submissionPath)
+        self.createThread(mips,mips.run,self.runMips_2)
+
+    def runMips_2(self):
+        outputDisplay(self)
         self.toggleOutput(True)
         self.gradeDock.raise_()
 
@@ -343,11 +363,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toggleOutputBtn.show()
         TarDestination=QtWidgets.QFileDialog.getSaveFileName(self,"Save TAR File as", self.lastSaveLocation,"TAR File (*.tar *.TAR)")[0] #file needs to exist
         if not TarDestination: return
-        self.lastSaveLocation=TarDestination
-
+        self.lastSaveLocation=os.path.split(TarDestination)[0]+'/'
         set_file = resource_path("temp/temp.json")
         print(set_file)
-        success = self.SaveSettings(set_file)
+        success = self.SaveSettings(set_file,updateSaveLocation=False)
         if not success: return
         CreateTAR(set_file, TarDestination,self)
         self.toggleOutput(True)

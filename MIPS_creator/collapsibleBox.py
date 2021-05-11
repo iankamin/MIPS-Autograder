@@ -24,8 +24,7 @@ class CollapsibleBox(QtWidgets.QWidget):
         if btnFunction is not None:
             btnText=" "+btnText
             self.AddButton = QtWidgets.QToolButton(text=btnText)
-            icon = QtGui.QIcon()
-            icon.addPixmap(QtGui.QPixmap(Icons.add2), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon = QtGui.QIcon(QtGui.QPixmap(Icons.add2))
             self.AddButton.setIcon(icon)
             self.AddButton.setToolButtonStyle( QtCore.Qt.ToolButtonTextBesideIcon)
             self.AddButton.setFixedWidth(130)

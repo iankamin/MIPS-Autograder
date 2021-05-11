@@ -12,7 +12,7 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class ui:
-    print(os.listdir(resource_path("")))
+    print(os.listdir(resource_path("ui_files")))
     mainwindow = resource_path( "ui_files/mainwindow.ui")
     resultswindow = resource_path( "ui_files/ResultsWindow.ui")
 
@@ -24,13 +24,13 @@ class ui:
 
 
 class Icons:
-    add     = resource_path( "ui_files/add.png")
-    add2    = resource_path( "ui_files/add2.png")
-    remove  = resource_path( "ui_files/remove.png")
-    remove2 = resource_path( "ui_files/remove2.png")
-    upArrow    = resource_path( "ui_files/up_arrow.png")
-    downArrow    = resource_path( "ui_files/down_arrow.png")
-    leftArrow    = resource_path( "ui_files/left_arrow.png")
-    rightArrow    = resource_path( "ui_files/right_arrow.png")
-    checkmark    = resource_path( "ui_files/checkmark.png")
-    white    = resource_path( "ui_files/white.png")
+    add     = resource_path( "ui_files/Icons/add.png")
+    add2    = resource_path( "ui_files/Icons/add2.png")
+    remove  = resource_path( "ui_files/Icons/remove.png")
+    remove2 = resource_path( "ui_files/Icons/remove2.png")
+    upArrow    = resource_path( "ui_files/Icons/up_arrow.png")
+    downArrow    = resource_path( "ui_files/Icons/down_arrow.png")
+    leftArrow    = resource_path( "ui_files/Icons/left_arrow.png")
+    rightArrow    = resource_path( "ui_files/Icons/right_arrow.png")
+    checkmark    = resource_path( "ui_files/Icons/checkmark.png")
+    white    = resource_path( "ui_files/Icons/white.png")

@@ -1,11 +1,13 @@
 import json,os,sys,random
+
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from grader import settings as gSettings
 from grader import Test as gTest
 from grader import Show as Show
 
-#TODO MAX points need to account for individual tests
-#TODO Prompt Points must ignore extra credit
-#TODO seperate Regular Tests and extra credit Tests
+
+
+
 
 class settings(gSettings):
     def __init__(self, file=None,**kwargs):
@@ -160,14 +162,6 @@ class Test(gTest):
             return d
                 
 
-def isInt(val):
-    try:
-        float(val)
-        return True
-    except:
-        return False
-
-
 if __name__ == "__main__":
     os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
     tt = settings("settings.json")
@@ -176,7 +170,15 @@ if __name__ == "__main__":
     print(j)
 
 
-
-            
-
-
+class settingsWorker(QObject):
+    finished    = pyqtSignal(object)
+    def __init__(self, file=None, **kwargs):
+        super().__init__()
+        self.file=file
+        self.kwargs=kwargs
+    def get(self):
+        self.settings=settings(file=self.file,**self.kwargs)
+        self.finished.emit(self.settings)
+    def getJSON(self):
+        self.settings=settings(file=self.file,**self.kwargs)
+        self.finished.emit(json.dumps(self.settings.ToDict()))
