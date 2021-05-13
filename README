@@ -1,4 +1,16 @@
-windows setup instructions
+TODO
+Create a text editor to make modifications to a submission
+Create a Menu Bar to allow for more control options
+Create an option to hide the header bar from tests
+Add "extra credit" and output method to test name will reduce code complexity
+
+Questions 
+Should Spim be included?
+Should i make an installation script
+How can i get an executable for a mac
+ 
+Can this be run on windows?
+windows setup instructions?
 install cygwin
 install pyqt5
 install spim
@@ -6,7 +18,3 @@ install spim
 
 
 linux 
-install bison
-install flex
-in folder spimsimulator:
-    make spim
