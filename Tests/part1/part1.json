@@ -4,19 +4,19 @@
     "TestGrade":"2",
     "tests":[
         {   
-            "show":"True",
+            "ShowLevel":3,
             "UserInput":[ "1234+4568" ],
             "inputs":[ { "reg":"a0", "val":"0x10000300" } ],
             "outputs":[ { "addr":"0x10000300", "CorrectAnswer": "1234+4568"} ]
         },
         {   
-            "show":"True",
+            "ShowLevel":0,
             "UserInput":[ "12+45" ],
             "inputs":[ { "reg":"a0", "val":"0x10000400" } ],
             "outputs":[ { "addr":"0x10000400", "CorrectAnswer": "12+45"} ]
         },
         {   
-            "show":"True",
+            "ShowLevel":0,
             "UserInput":[ "12-45" ],
             "inputs":[ { "reg":"a0", "val":"0x10000500" } ],
             "outputs":[ { "addr":"0x10000500", "CorrectAnswer": "12-45"} ]

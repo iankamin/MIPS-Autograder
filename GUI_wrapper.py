@@ -1,8 +1,8 @@
 # This Python file uses the following encoding: utf-8
 import sys,os
 from PyQt5 import  QtGui, QtWidgets
-from MIPS_creator import *
-from MIPS_creator.RowTypes import DataRow, OutputRow, RegisterRow, UserInputRow
+from Frontend import Test,MainWindow
+from Frontend.RowTypes import DataRow, OutputRow, RegisterRow, UserInputRow
 def createTest(main,a,b,c,d):
     test:Test
     test=main.addTest()
