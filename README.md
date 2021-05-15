@@ -1,9 +1,3 @@
-Windows
-install WSL 
-
-Linux
-Install 
-
 # MIPS Autograder
 
 This program will generate an autograder for a mips subroution. You provide the input registers, initial data section, Any User Input, and the expected output registers and the correct answer.
