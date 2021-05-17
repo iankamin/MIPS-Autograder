@@ -16,8 +16,9 @@ from .RowTypes import *
 from .utilities import set_Test,settings
 
 class Test(QtWidgets.QWidget): 
-    def __init__(self,index,parent,TopRow=None): 
+    def __init__(self,index,parent,TopRow=None,isSkelton=False): 
         self._index=index
+        self.isSkeleton=isSkelton
         super(QtWidgets.QWidget, self).__init__()
         self.setObjectName("Test")
         self.parent=parent
@@ -71,7 +72,8 @@ class Test(QtWidgets.QWidget):
         self.allUserInput  = CollapsibleBox("User Input"        ,self.HidingBox, lambda: self.addRow(UserInputRow), btnText="User Input")
         self.DataInput     = CollapsibleBox("Data Input"        ,self.HidingBox, lambda: self.addRow(DataRow     ), btnText="Data")
         self.InputRegisters= CollapsibleBox("Input Registers"   ,self.HidingBox, lambda: self.addRow(RegisterRow ), btnText="Register")
-        self.Outputs       = CollapsibleBox("Output Registers"  ,self.HidingBox, lambda: self.addRow(OutputRow   ), btnText="Output")
+        if not self.isSkeleton: 
+            self.Outputs       = CollapsibleBox("Output Registers"  ,self.HidingBox, lambda: self.addRow(OutputRow   ), btnText="Output")
 
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(Icons.add2), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -135,11 +137,13 @@ class Test(QtWidgets.QWidget):
         for anim in self.ExpandAndCollapseAll_AnimationSet(self.allUserInput,expand): toggleAll_animation.addAnimation(anim)
         for anim in self.ExpandAndCollapseAll_AnimationSet(self.DataInput,expand): toggleAll_animation.addAnimation(anim)
         for anim in self.ExpandAndCollapseAll_AnimationSet(self.InputRegisters,expand): toggleAll_animation.addAnimation(anim)
-        for anim in self.ExpandAndCollapseAll_AnimationSet(self.Outputs,expand): toggleAll_animation.addAnimation(anim)
+        if not self.isSkeleton:
+            for anim in self.ExpandAndCollapseAll_AnimationSet(self.Outputs,expand): toggleAll_animation.addAnimation(anim)
         self.allUserInput.isOpen=expand
         self.DataInput.isOpen=expand
         self.InputRegisters.isOpen=expand
-        self.Outputs.isOpen=expand
+        if not self.isSkeleton:
+            self.Outputs.isOpen=expand
 
         if expand: 
             for anim in self.ExpandAndCollapseAll_AnimationSet(self.HidingBox,expand, override=self.HidingBox.isOpen, startHeightOffset=hbox_ch): 
@@ -206,8 +210,13 @@ class Test(QtWidgets.QWidget):
 
     def retranslateUi(self): 
         pass
+    
+    def convertToSettingsTest(self,setting:settings): 
+        """Converts The GUI Layout of a Test to the version needed to run the Autograder
 
-    def convertToJSON(self,setting:settings): 
+        Args:
+            setting (settings): The Settings File to Store this test
+        """
         test_setting=set_Test(parent=setting)
         test_setting.head_init(**self.TopRow.GetKwargs())
 
@@ -228,6 +237,7 @@ class Test(QtWidgets.QWidget):
             layout=self.InputRegisters.content_area.layout(),
             allowedtype=RegisterRow
         )
+        if self.isSkeleton: return test_setting
         
         self.setJSONKwargs(
             setFunction=test_setting.AddOutput,
@@ -251,7 +261,7 @@ class Test(QtWidgets.QWidget):
          
     def __deepcopy__(self,_):
         topRow=self.TopRow.copy()
-        copy = Test(index=self.index,parent=self.parent,TopRow=topRow)
+        copy = Test(index=self.index,parent=self.parent,TopRow=topRow,isSkelton=self.isSkeleton)
         
         lay=self.allUserInput.content_area.layout()
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
@@ -273,7 +283,9 @@ class Test(QtWidgets.QWidget):
             i=type(item)
             if i is not RegisterRow: continue
             copy.addRow(RegisterRow, item.copy())
-        
+
+        if self.isSkeleton: return copy
+
         lay=self.Outputs.content_area.layout()
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
         for item in items: 

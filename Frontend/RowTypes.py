@@ -166,8 +166,8 @@ class DataRow(Row):
         copy.reg.setCurrentIndex(self.reg.currentIndex())
         return copy
     def getKwargs(self):
-        reg=self.reg.currentIndex()
-        if reg == 0: reg=None
+        regI=self.reg.currentIndex()
+        if regI == 0: reg=None
         else: reg=self.reg.currentText()
         return {
             'reg':reg,

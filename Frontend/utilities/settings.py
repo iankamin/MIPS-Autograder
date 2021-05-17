@@ -59,6 +59,12 @@ class Test(Autograder.Test):
     def AddUserInput(self, **kwargs):
         self.UserInput.append(kwargs.get("UserInput") )
     def AddMemInput(self, **kwargs):
+        reg=kwargs.get("reg",None)
+        if reg is not None:
+            reg=self.__RegInput__(reg=kwargs.get('reg'), value=kwargs.get('addr'),memPointer=True)
+            self.RegInputs.append(reg)
+            kwargs['reg']=reg
+
         self.MemInputs.append(self.__MemInput__(**kwargs))
     def AddRegInput(self, **kwargs):
         self.RegInputs.append(self.__RegInput__(**kwargs))

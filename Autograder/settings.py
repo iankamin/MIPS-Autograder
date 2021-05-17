@@ -46,7 +46,6 @@ class settings():
         self.NumberOfRegularTests=0
         self.AllTests=self.CreateTests(io["tests"],io)
 
-
     def empty(self,**kwargs):
         self.io=None
         self.SubroutineName=None
@@ -79,7 +78,6 @@ class settings():
         if canShuffle: return self.reg+self.ec
         else: return self.AllTests
 
-
     def getAllUserInputLines(self,canShuffle=True):
         for test in self.getTests(canShuffle):
             for line in test.UserInput:
@@ -109,6 +107,7 @@ class Test():
     # Initialize from JSON
     def __init__(self,parent, testjs=None,testNumber=0,**kwargs):
         self.parent=parent
+    
         if testjs is None: 
             self.empty(**kwargs)
             return
@@ -125,7 +124,7 @@ class Test():
         # Get Inputs and Outputs
         self.MemInputs,self.RegInputs = self.setInputs(testjs.get("inputs",[]))
         self.ExpectedAnswers,self.Output=self.setOutputs(testjs["outputs"])
-        i=0
+
     def empty(self,**kwargs):
         self.testName = "Test"
     
@@ -204,6 +203,8 @@ class Test():
             self.reg=reg
             
             if "ascii" in type.lower(): 
+                # way to append quotes to end of string
+                # will ignore \"  but will delete "
                 self.data=self.data.replace("\\\"","quote_7654123")
                 self.data=self.data.replace("\"","")
                 self.data=self.data.replace("quote_7654123","\\\"")

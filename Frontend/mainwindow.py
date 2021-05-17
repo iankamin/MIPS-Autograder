@@ -1,3 +1,4 @@
+from Autograder.concat import concat
 from types import resolve_bases
 from Frontend.ResultsWindow import ResultsWindow
 from PyQt5 import QtCore, QtWidgets,uic
@@ -16,7 +17,9 @@ from .grader_controller import *
 import Frontend.utilities  as utilities
 
 class MainWindow(QtWidgets.QMainWindow): 
-    allTests:QtWidgets.QVBoxLayout 
+    AllGradedTests:QtWidgets.QVBoxLayout 
+    AllSampleTests:QtWidgets.QVBoxLayout 
+    AllCurrentTests:QtWidgets.QVBoxLayout 
     subroutine_name:QtWidgets.QLineEdit
     EC_TestPoints:QtWidgets.QDoubleSpinBox
     TestPoints:QtWidgets.QDoubleSpinBox
@@ -40,21 +43,43 @@ class MainWindow(QtWidgets.QMainWindow):
     scrollArea:QtWidgets.QScrollArea
     testScroll:QtWidgets.QScrollArea
     testScrollArea:QtWidgets.QWidget
+    skeletonScrollArea:QtWidgets.QScrollArea
+    currentTestArea:QtWidgets.QWidget
     rawMipsDock:ResultsWindow
     gradeDock:ResultsWindow
     concatAsmDock:ResultsWindow
     makefileDock:ResultsWindow
     errorDock:ResultsWindow
     toggleOutputBtn:QtWidgets.QPushButton
+    tabWidget:QtWidgets.QTabWidget
+    actionGenerate_Skeleton_Code:QtWidgets.QAction
+
 
     #1080P size
     #  Window
     #     width=1536
     #     height=801
 
+
     def __init__(self): 
         super(MainWindow, self).__init__() 
         uic.loadUi(ui.mainwindow, self)
+        self.threads=[]
+        self.workers=[]
+        self.AllGradedTests.addSpacing(600)
+        self.AllGradedTests.addStretch(500)
+        self.AllSampleTests.addSpacing(600)
+        self.AllSampleTests.addStretch(500)
+        self.numberOfTests=0
+        self.numberOfSamples=0
+        self.lastSaveLocation=""
+        self.UI_ButtonConnections()
+        self.UI_SettingsFrame()
+        self.UI_DockWidgets()
+        self.BareMode.pressed.connect(self.tester)
+        self.UI_TabWidget()
+        self.UI_ActionMenu()
+    def UI_ButtonConnections(self):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(Icons.downArrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.ExpandBtn.setIcon(icon)
@@ -64,12 +89,6 @@ class MainWindow(QtWidgets.QMainWindow):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(Icons.rightArrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.toggleOutputBtn.setIcon(icon)
-
-
-        self.threads=[]
-        self.workers=[]
-        self.allTests.addSpacing(600)
-        self.allTests.addStretch(500)
         self.AddTestButton.pressed.connect(self.addTest) 
         self.SaveSettingsBtn.pressed.connect(self.SaveSettings)
         self.LoadSettingsBtn.pressed.connect(self.LoadSettings)
@@ -77,29 +96,50 @@ class MainWindow(QtWidgets.QMainWindow):
         self.CreateTarBtn.pressed.connect(self.CreateTar)
         self.ExpandBtn.pressed.connect(self.ExpandAll)
         self.CollapseBtn.pressed.connect(self.CollapseAll)
-        self.numberOfTests=0
-        self.lastSaveLocation=""
+        self.toggleOutputBtn.pressed.connect(self.toggleOutputPressed)
+    def UI_SettingsFrame(self):
         self.ShowLevel.wheelEvent=self.wheelEvent
         self.JsonStyle.wheelEvent=self.wheelEvent
+    def UI_DockWidgets(self):   
         self.rawMipsDock=ResultsWindow("MIPS Output",self)
         self.gradeDock=ResultsWindow("Grade Output",self)
         self.concatAsmDock=ResultsWindow("ASM File",self)
         self.makefileDock=ResultsWindow("Makefile",self)
         self.errorDock=ResultsWindow("Errors",self)
         self.docks=[self.gradeDock,self.rawMipsDock,self.concatAsmDock,self.makefileDock,self.errorDock]
-        for dock in self.docks:
-            self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
-        for dock in self.docks[1:]:
-            self.tabifyDockWidget(self.docks[0],dock)
+        for dock in self.docks: self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)
+        for dock in self.docks[1:]: self.tabifyDockWidget(self.docks[0],dock)
         
         self.outputHidden=True
         for dock in self.docks:
             dock.hide()
 
         self.toggleOutputBtn.hide()
-        self.toggleOutputBtn.pressed.connect(self.toggleOutputPressed)
-        self.BareMode.pressed.connect(self.tester)
-    
+    def UI_TabWidget(self):
+        self.tabWidget.currentChanged.connect(self.tabChanged)
+        self.tabWidget.setCurrentIndex(1)
+    def UI_ActionMenu(self):
+        self.actionGenerate_Skeleton_Code.triggered.connect(self.createSkeletonCode)
+    @property
+    def currentNumberOfTests(self):
+        if self.tabWidget.currentWidget().objectName() =='skeleton': return self.numberOfSamples
+        if self.tabWidget.currentWidget().objectName() =='grading': return self.numberOfTests
+    @currentNumberOfTests.setter
+    def currentNumberOfTests(self,value):
+        if self.tabWidget.currentWidget().objectName() =='skeleton': self.numberOfSamples = value
+        if self.tabWidget.currentWidget().objectName() =='grading': self.numberOfTests = value
+
+    def tabChanged(self, index):
+        if self.tabWidget.widget(index).objectName()=='skeleton':
+            self.currentTestArea=self.skeletonScrollArea
+            self.AllCurrentTests=self.AllSampleTests
+            self.createSkeleton=True
+
+        if self.tabWidget.widget(index).objectName()=='grading':
+            self.currentTestArea=self.testScrollArea
+            self.AllCurrentTests=self.AllGradedTests
+            self.createSkeleton=False
+            
     def wheelEvent(self, *args, **kwargs): 
         if self.hasFocus(): return QtWidgets.QComboBox.wheelEvent(self, *args, **kwargs)
     
@@ -121,14 +161,13 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             for dock in self.docks: dock.hide()
     
-
     # Prevents the scroll wheel from affecting combobox
     def tester(self):
         print("\n\n")
         print("Window size")
         print(self.width())
         print("Test Size")
-        print(self.allTests.itemAt(0).widget().width())
+        print(self.AllGradedTests.itemAt(0).widget().width())
         print("Makefile Dock Size")
         print(self.makefileDock.width())
         print("grade Dock Size")
@@ -136,7 +175,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def ExpandAll(self):
         test:Test
-        lay=self.allTests
+        lay=self.AllCurrentTests
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
         for test in items: 
             if test is None: continue
@@ -144,18 +183,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def CollapseAll(self):
         test:Test
-        lay=self.allTests
+        lay=self.AllCurrentTests
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
         for test in items: 
             if test is None: continue
             test.ExpandAndCollapseAll(False)
 
     def insertWidget(self,widget): 
-        vlay = self.allTests 
-        vlay.insertWidget(self.numberOfTests,widget)
+        vlay = self.AllCurrentTests 
+        vlay.insertWidget(self.currentNumberOfTests,widget)
 
     def updateAllTestIndices(self):
-        lay=self.allTests
+        lay=self.AllCurrentTests
         items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
         i=0
         test:Test 
@@ -164,24 +203,25 @@ class MainWindow(QtWidgets.QMainWindow):
             test.index=i
             test.name=test.name
             i+=1
-            
+        
     def deleteTest(self,test:Test): 
-        lay=self.allTests
+        lay=self.AllCurrentTests
         lay.removeWidget(test)
-        self.numberOfTests-=1
+        self.currentNumberOfTests-=1
+        self.currentNumberOfTests = 0 if self.currentNumberOfTests < 0 else self.currentNumberOfTests
         delete(test)
         self.updateAllTestIndices()
             
     def addTest(self,newTest=None): 
-        vlay = self.allTests 
-        index=self.numberOfTests
+        vlay = self.AllCurrentTests 
+        index=self.currentNumberOfTests
         if newTest is None: 
-            newTest=Test(index=index,parent=self)
+            newTest=Test(index=index,parent=self,isSkelton=self.createSkeleton)
         else: 
             newTest.index=index
             newTest.name=newTest.name
         self.insertWidget(newTest)
-        self.numberOfTests+=1
+        self.currentNumberOfTests+=1
         self.setStyleSheet(self.styleSheet())
         self.setStyle(self.style())
         return newTest
@@ -209,13 +249,13 @@ class MainWindow(QtWidgets.QMainWindow):
     def validate(self):
         valid,output=self.validateWindow()
         
-        if self.numberOfTests == 0: 
+        if self.currentNumberOfTests == 0: 
             self.outputHidden=False
             self.toggleOutputBtn.show()
             output+="\n\n - No Tests to Run"
             valid = False
 
-        lay=self.allTests
+        lay=self.AllGradedTests
         tests = [lay.itemAt(i).widget() for i in range(lay.count()) if type(lay.itemAt(i).widget()) is Test ]
 
         test:Test
@@ -232,9 +272,8 @@ class MainWindow(QtWidgets.QMainWindow):
             errorDisplay(self,output)
         return valid
 
-    def SaveSettings(self,loc=None,updateSaveLocation=True):
-        if not self.validate(): return False
-        setJS = settings(
+    def convertToSettings(self,layout):
+        setting = settings(
                     subroutine_name = self.subroutine_name.text()	,
                     PromptGrade	    = self.PromptPoints.value()		,
                     TestGrade		= self.TestPoints.value()		,
@@ -248,13 +287,20 @@ class MainWindow(QtWidgets.QMainWindow):
                 )
         
         valid=True
-        lay=self.allTests
-        tests = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None ]
+        tests = [layout.itemAt(i).widget() for i in range(layout.count()) if layout.itemAt(i).widget() is not None ]
         for test in tests: 
-            setJS.AddTest(test.convertToJSON(setting=setJS))
-        if len(tests)==0: return False
-        if not valid: return False
+            setting.AddTest(test.convertToSettingsTest(setting=setting))
+        if len(tests)==0: return False,None
+        if not valid: return False,None
 
+        return True,setting
+
+    def SaveSettings(self,loc=None,updateSaveLocation=True):
+        self.tabWidget.setCurrentIndex(1)
+        if not self.validate(): return False
+
+        success,setting = self.convertToSettings(self.AllGradedTests)
+        if not success: return False
 
         #output=QtWidgets.QFileDialog.getOpenFileName(self) #file needs to exist
         if loc is None:
@@ -264,13 +310,13 @@ class MainWindow(QtWidgets.QMainWindow):
             else: out=output[0]
             if updateSaveLocation: self.lastSaveLocation=os.path.split(out)[0]+'/'
             if output[1]:
-                with open(out, 'w') as f: f.write(setJS.GetJSON())
+                with open(out, 'w') as f: f.write(setting.GetJSON())
         else:
-            with open(loc, 'w') as f: f.write(setJS.GetJSON())
+            with open(loc, 'w') as f: f.write(setting.GetJSON())
         return True
     
     def DeleteAllTests(self):
-        lay=self.allTests
+        lay=self.AllGradedTests
         tests = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None]
         test:Test 
         for test in tests: 
@@ -293,6 +339,7 @@ class MainWindow(QtWidgets.QMainWindow):
         thread.start()
 
     def LoadSettings(self):
+        self.tabWidget.setCurrentIndex(1)
         filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json")[0] #file needs to exist
         if not filePath: return
         self.lastSaveLocation=os.path.split(filePath)[0]+'/'
@@ -301,8 +348,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         worker=utilities.settingsWorker(file=filePath)
         self.createThread(worker,worker.get,self.LoadSettings_2)
-
-
 
         #set=settings(filePath)
     def LoadSettings_2(self,set:settings):
@@ -316,7 +361,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.JsonStyle.setCurrentIndex( set.JsonStyle)
         self.message.setText(set.MessageToStudent)
         self.ShowLevel.setCurrentIndex(set.ShowLevel.value)
-        
         
         testJS:utilities.set_Test
         for testJS in set.AllTests:
@@ -333,7 +377,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
             test.TopRow.replaceInfo(**testJS.ToDict())
 
+    def createSkeletonCode(self):
+        self.tabWidget.setCurrentIndex(0)
+        success,setting = self.convertToSettings(self.AllSampleTests)
+        if not success: return
+        Autograder.createSkeletonCode(setting)
+        
+        
+
+
+        pass
+
     def RunMips(self):
+        self.tabWidget.setCurrentIndex(1)
         self.outputHidden=False
         self.toggleOutputBtn.show()
         errorDisplay(self,"\n\n\n\n   Autograder in progress")
@@ -360,6 +416,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.gradeDock.raise_()
 
     def CreateTar(self):
+        self.tabWidget.setCurrentIndex(1)
         self.outputHidden=False
         self.toggleOutputBtn.show()
         TarDestination=QtWidgets.QFileDialog.getSaveFileName(self,"Save TAR File as", self.lastSaveLocation,"TAR File (*.tar *.TAR)")[0] #file needs to exist

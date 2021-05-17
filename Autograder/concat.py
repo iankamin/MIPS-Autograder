@@ -1,3 +1,4 @@
+from Autograder.settings import settings
 import json
 import os, sys
 import re
@@ -154,7 +155,29 @@ def removeComments(submission):
             line = line[:line.index("#")]
         out += line+"\n"
     return out
-def concat(IO=None,sfile="submission.s",concatFile="concat.s"):
+
+
+def createSkeletonCode(io:settings,destFile=localDir+"Skeleton.s"):
+    allTrials=""
+    dataSect=""
+
+    with open(localDir + 'template/TemplateSkeletonTrial','r') as f: trialTemplate = f.read()
+    trialTemplate = trialTemplate.replace("<student_subroutine>",io.SubroutineName)
+    for test in io.getTests(canShuffle=False):
+        inputs,memory = CreateAllInputs(test)
+        trial = trialTemplate.replace("<inputs>",inputs)
+        
+        dataSect+=memory
+        allTrials+=trial
+
+    with open(localDir + 'template/TemplateSkeleton','r') as f: output=f.read()
+    output=output.replace("<TRIALS>",allTrials)
+    output=output.replace("<DATA SECTION>",dataSect)
+    with open(destFile,'w') as f: f.write(output)
+    return output
+
+
+def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
     global inputs,io
     global runMips,output,S_Header,S_Trailer
     if concatFile == "concat.s": output=open(localDir + 'concat.s','w')
@@ -177,22 +200,26 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s"):
     illegalSyntax(dataSect,textSect,io.BareMode)
 
     allTests=""
+    memorySect=""
+    test:Autograder.Test
     for test in io.getTests(canShuffle=True):
         with open(localDir + 'template/TemplateTrial','r') as S_Trial:
             body = S_Trial.read()
             body=body.replace("<student_subroutine>",io.SubroutineName)
             body=body.replace("<TEST NAME>",test.testName)
-                
             body=body.replace("<TEST NUMBER>",str(test.testNumber))
 
-        inputs=CreateAllInputs(test)
+        inputs,memory=CreateAllInputs(test)
+        memorySect+=memory       
         outputs=CreateAllOutputs(test)
 
         body=body.replace("<inputs>",inputs)
         body=body.replace("<outputs>",outputs)
         allTests+=body
         #print(allTests)
-        
+
+    output.write(memorySect)
+
     S_Trailer=open(localDir + 'template/TemplateStaticTrailer','r')
     output.write(S_Trailer.read().replace("<TRIALS>",allTests))
     output.write(textSect)
@@ -202,14 +229,15 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s"):
 def CreateAllInputs(test):
     global io
     inputs=""
+    memory=""
 
     for inp in test.MemInputs:
-        output.write(createInputMem(inp.addr,inp.data,inp.type))
+        memory+=createInputMem(inp.addr,inp.data,inp.type)
     
     for inp in test.RegInputs:
         inputs+=createInputReg(inp.reg,inp.value)
 
-    return inputs
+    return inputs,memory
         
 def CreateAllOutputs(test):
     outputs=""
@@ -255,11 +283,6 @@ def createOutput(out):
         contents=contents.replace("<type>",out.type)
         return contents
     
-
-
-
-
-
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
