@@ -68,3 +68,5 @@ grader/__pycache__/concat.cpython-38.pyc
 dist/
 dist/*
 Autograder/Skeleton.s
+Frontend/grader_data/UI.tar
+Frontend/resources/temp/temp.json

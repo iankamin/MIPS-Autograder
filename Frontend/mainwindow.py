@@ -1,5 +1,4 @@
 from typing import List, Tuple
-from Autograder.concat import concat
 from types import resolve_bases
 from Frontend.ResultsWindow import ResultsWindow
 from PyQt5 import QtCore, QtWidgets,uic
@@ -10,12 +9,11 @@ from PyQt5.QtCore import QObject, QThread
 from PyQt5.sip import delete
 import os
 import Autograder
-from Frontend.collapsibleBox import CollapsibleBox
-from Frontend.TestLayout import Test
-from Frontend.resources.filepaths import resource_path, ui,Icons
-from Frontend.RowTypes import DataRow, OutputRow, UserInputRow,RegisterRow
+from .resources.filepaths import resource_path, ui,Icons
 from .grader_controller import *
-import Frontend.utilities  as utilities
+from .utilities import settings,settingsWorker
+from .TestLayout import Test
+from .RowTypes import DataRow,RegisterRow,UserInputRow,OutputRow
 
 class MainWindow(QtWidgets.QMainWindow): 
     AllGradedTests:QtWidgets.QVBoxLayout 
@@ -375,7 +373,7 @@ class MainWindow(QtWidgets.QMainWindow):
        # filePath=["/home/kamian/MIPS_Autograder/Tests/part4/part4.json"]
         self.DeleteAllTests()
 
-        worker=utilities.settingsWorker(file=filePath)
+        worker=settingsWorker(file=filePath)
         self.createThread(worker,worker.get,self.LoadSettings_2)
 
         #set=settings(filePath)
@@ -391,7 +389,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.message.setText(set.MessageToStudent)
         self.ShowLevel.setCurrentIndex(set.ShowLevel.value)
         
-        testJS:utilities.set_Test
+        testJS:settings.set_Test
         for testJS in set.AllTests:
             #TODO ADD TOP ROW
             test=self.addTest()

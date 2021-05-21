@@ -1,4 +1,3 @@
-from .autograder import autograder
 from .concat import concat,createSkeletonCode
 from .settings import settings, Show
 from .settings import Test

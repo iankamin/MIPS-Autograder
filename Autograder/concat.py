@@ -1,8 +1,9 @@
-from Autograder.settings import settings
 import json
 import os, sys
 import re
-import Autograder 
+
+try: from .settings import settings,Test,Show
+except: from settings import settings,Test,Show
 
 localDir = os.path.dirname(__file__)+"/"
 StorageDir=localDir
@@ -183,7 +184,7 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
     if concatFile == "concat.s": output=open(localDir + 'concat.s','w')
     else: output=open(concatFile,'w')
 
-    if IO == None: io =Autograder.settings("settings.json")
+    if IO == None: io =settings("settings.json")
     else : io=IO
     
     runMips=True
@@ -201,7 +202,7 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
 
     allTests=""
     memorySect=""
-    test:Autograder.Test
+    test:Test
     for test in io.getTests(canShuffle=True):
         with open(localDir + 'template/TemplateTrial','r') as S_Trial:
             body = S_Trial.read()

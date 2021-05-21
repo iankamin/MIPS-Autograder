@@ -1,6 +1,12 @@
 from subprocess import run
 import sys,os
-import Autograder
+try: from .concat import concat
+except: from concat import concat
+try: from .settings import settings,Test,Show
+except: from settings import settings,Test,Show
+try: from .autograder import autograder
+except: from autograder import autograder
+
 
 
 def runGrader(settingsFile="settings.json",submissionFile="submission.s",
@@ -10,15 +16,13 @@ def runGrader(settingsFile="settings.json",submissionFile="submission.s",
     except: _ShowAll=False # overrides json "show" and shows the StudentOutputs of every test
     _ShowAll=_ShowAll or ShowAll
 
-    io=Autograder.settings(settingsFile)
+    io=settings(settingsFile)
 
-    runMips=Autograder.concat(IO=io,sfile=submissionFile,concatFile=concatFile)
-    Autograder.autograder(IO=io,_ShowAll=_ShowAll, runMips=runMips,outputDest=outputFile, concatFile=concatFile,
+    runMips=concat(IO=io,sfile=submissionFile,concatFile=concatFile)
+    autograder(IO=io,_ShowAll=_ShowAll, runMips=runMips,outputDest=outputFile, concatFile=concatFile,
     autograderOutput=autograderOutput,printResults=printResults)
 
 
 if __name__ == "__main__":
-    
-    
     os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
     runGrader()

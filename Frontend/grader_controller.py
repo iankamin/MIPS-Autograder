@@ -1,15 +1,20 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 import Autograder
 from Frontend.utilities.settings import settings
-import os
+import os,sys
 from shutil import copyfile
 from Autograder import runGrader
 from Frontend.ResultsWindow import ResultsWindow
 from subprocess import call,PIPE
 
 
-grader_data_loc = os.path.join(os.path.dirname(__file__), "grader_data/")
-grader_file_loc = os.path.join(os.path.dirname(__file__), "grader/")
+def filepath(dir):
+    try: path = os.path.join(sys._MEIPASS,dir)
+    except Exception: path = os.path.join(os.path.dirname(__file__),dir)
+    return path
+grader_data_loc = filepath("grader_data/")
+grader_file_loc = filepath("grader/")
+    
 class MipsWorker(QObject):
     finished=pyqtSignal()
     def __init__(self,settingsFile,submissionFile) :
@@ -65,14 +70,33 @@ def outputDisplay(parent):
     
     os.system("make clean")
     os.system("make UI_clean")
-
-    
     
 def CreateTAR(settingsFile, tarDestination,parent):
     destSettingsFile="Autograder/settings.json"
     copyfile(settingsFile,destSettingsFile)
-    os.system("make UI_tar")
-    tarPath = grader_data_loc+"UI.tar"
-    copyfile(tarPath,tarDestination)
+    #os.system("make UI_tar")
+    make_tarfile(tarDestination, "Autograder")
+#    tarPath = grader_data_loc+"UI.tar"
+#    copyfile(tarPath,tarDestination)
     
     parent.makefileDock.displayFile(grader_data_loc+"Makefile",False)
+
+def MakeClean(self):
+    deleteFile("Autograder/error.txt")
+    deleteFile("Autograder/concatErrors.txt")
+    deleteFile("Autograder/input.txt")
+    deleteFile("Autograder/output.txt")
+    deleteFile("Autograder/submission.s")
+    deleteFile("Autograder/concat.s")
+    deleteFile("Autograder/skeleton.s")
+    deleteFile("Frontend/grader_data/UI.tar")
+
+def deleteFile(self,filepathk):
+    if os.path.exists(filepath): os.remove(filepath)
+
+import tarfile
+import os.path
+
+def make_tarfile(output_filename, source_dir):
+    with tarfile.open(output_filename, "w:gz") as tar:
+        tar.add(source_dir, arcname=os.path.basename(source_dir))

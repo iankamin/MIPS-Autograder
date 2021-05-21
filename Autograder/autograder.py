@@ -3,7 +3,8 @@ import os
 import sys
 import subprocess
 import re
-from Autograder.settings import settings,Test,Show
+try: from .settings import settings,Test,Show
+except: from settings import settings,Test,Show
 
 localDir = os.path.dirname(__file__)+"/"
 
