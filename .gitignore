@@ -5,6 +5,7 @@ grader/*.json
 grader/*.txt
 grader/submission.s
 build
+dist/
 __pycache__
 */__pycache__
 */*/__pycache__
