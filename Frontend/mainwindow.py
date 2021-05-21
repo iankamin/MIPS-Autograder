@@ -452,6 +452,7 @@ class MainWindow(QtWidgets.QMainWindow):
         success = self.SaveSettings(set_file,updateSaveLocation=False)
         if not success: return
         CreateTAR(set_file, TarDestination,self)
+        deleteFile(set_file)
         self.toggleOutput(True)
         self.makefileDock.raise_()
 

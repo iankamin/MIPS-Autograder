@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['GUI_wrapper.py'],
+a = Analysis(['MIPS_Autograder.py'],
              pathex=['/home/kamian/MIPS_Autograder'],
              binaries=[],
              datas=[ ('Frontend/resources/*', '.'),
@@ -29,7 +29,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='GUI_wrapper',
+          name='MIPS_Autograder',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

@@ -68,14 +68,17 @@ def outputDisplay(parent):
     parent.gradeDock.show()
     parent.concatAsmDock.show()
     
-    os.system("make clean")
-    os.system("make UI_clean")
+    MakeClean()
+    #os.system("make UI_clean")
     
 def CreateTAR(settingsFile, tarDestination,parent):
+    MakeClean()
     destSettingsFile="Autograder/settings.json"
     copyfile(settingsFile,destSettingsFile)
     #os.system("make UI_tar")
     make_tarfile(tarDestination, "Autograder")
+    deleteFile(destSettingsFile)
+    deleteFile(settingsFile)
 #    tarPath = grader_data_loc+"UI.tar"
 #    copyfile(tarPath,tarDestination)
     
