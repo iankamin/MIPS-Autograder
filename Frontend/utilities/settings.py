@@ -24,11 +24,6 @@ class settings(Autograder.settings):
         self.RequiresUserInput = kwargs.get("RequiresUserInput")
         self.Shuffle = kwargs.get("Shuffle",False)
         self.AllTests = []
-        
-    
-
-
-
 
     def AddTest(self,test):
         self.AllTests.append(test)
@@ -43,13 +38,11 @@ class Test(Autograder.Test):
         super().__init__(parent,testjs,testNumber)
 
     def head_init(self,**kwargs):
-        
         self.ShowLevel = max(Autograder.Show(kwargs.get("ShowLevel",0)),self.parent.ShowLevel)
         self.testName   = kwargs.get("testName","Test")
         self.ExtraCredit= kwargs.get("ExtraCredit",False) 
         self.OutOf      = kwargs.get("OutOf", 0)
         if self.OutOf==0:self.OutOf=self.parent.ECTestGrade if self.ExtraCredit else self.parent.TestGrade
-        
         
         self.UserInput  = []
         self.MemInputs=[]
@@ -59,18 +52,22 @@ class Test(Autograder.Test):
     def AddUserInput(self, **kwargs):
         self.UserInput.append(kwargs.get("UserInput") )
     def AddMemInput(self, **kwargs):
+        reg=kwargs.get("reg",None)
+        if reg is not None:
+            reg=self.__RegInput__(reg=kwargs.get('reg'), value=kwargs.get('addr'),memPointer=True)
+            self.RegInputs.append(reg)
+            kwargs['reg']=reg
+
         self.MemInputs.append(self.__MemInput__(**kwargs))
     def AddRegInput(self, **kwargs):
         self.RegInputs.append(self.__RegInput__(**kwargs))
     def AddOutput(self, **kwargs):
         self.Output.append(self.__Output__(**kwargs))
 
-
     def setInputs(self, inputs):
         memInputs=[]
         regInputs=[]
         for inp in inputs:
-
             try: 
                 memInputs.append( self.__MemInput__( inp["addr"], inp["data"],inp["type"]))
                 try: 
@@ -126,7 +123,8 @@ class Test(Autograder.Test):
         
         def ToDict(self):
             d = { "type":self.type, "addr":self.addr, 'data':self.data.replace("\"","") }
-            if self.reg is not None: d["reg"]=self.reg.replace("$","")
+            if self.reg is not None: 
+                d["reg"]=self.reg.reg.replace("$","")
             return d
     
     class __Output__:

@@ -166,8 +166,8 @@ class DataRow(Row):
         copy.reg.setCurrentIndex(self.reg.currentIndex())
         return copy
     def getKwargs(self):
-        reg=self.reg.currentIndex()
-        if reg == 0: reg=None
+        regI=self.reg.currentIndex()
+        if regI == 0: reg=None
         else: reg=self.reg.currentText()
         return {
             'reg':reg,
@@ -229,9 +229,11 @@ class OutputRow(Row):
         super().__init__()
         uic.loadUi(ui.RegOutput, self)
         self.parent=parent
+        self.address.hide()
+        self.type.currentTextChanged.connect(self.ComboBoxChanged)
+        
         self.DeleteButton.pressed.connect(self.delete)
         self.type.wheelEvent=self.wheelEvent
-        self.address.hide()
         
         if type is not None: 
             type=self.getSyscall(type)
@@ -241,7 +243,6 @@ class OutputRow(Row):
         if addr is not None: self.address.setText(addr)
         if CorrectAnswer is not None: self.CorrectAnswer.setText(CorrectAnswer)
         
-        self.type.currentTextChanged.connect(self.ComboBoxChanged)
         self.reg.textChanged.connect(self.regLimit)
         self.address.textChanged.connect(self.addressChanged)
     def addressChanged(self,text:str):

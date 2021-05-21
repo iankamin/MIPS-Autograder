@@ -1,86 +1,6 @@
 from PyQt5 import QtCore, QtWidgets,uic,QtGui
 from Frontend.resources.filepaths import ui 
 
-class ResultsWindow(QtWidgets.QDockWidget):
-    textBox:QtWidgets.QTextEdit
-    horizontalScrollBar:QtWidgets.QScrollBar
-    verticalScrollBar:QtWidgets.QScrollBar
-    lineNum:QtWidgets.QTextEdit
-    scrollArea:QtWidgets.QScrollArea
-    borderLine:QtCore.QLine
-    dividerLine:QtCore.QLine
-
-    def __init__(self, title, parent, text=None):
-        super(QtWidgets.QDockWidget, self).__init__(parent) 
-        uic.loadUi(ui.resultswindow, self)
-        self.setWindowTitle(title)
-        header=Header(title)
-        header.setStyleSheet("QFrame,QLabel{background-color:rgb(200,200,200)}")
-        header.closeBtn.pressed.connect(self.close)
-        header.popoutBtn.pressed.connect(self.popout)
-        self.setTitleBarWidget(header)
-        #self.textBox.textChanged.connect(self.updateScrollBars)
-        self.verticalScrollBar=self.textBox.verticalScrollBar()
-        self.horizontalScrollBar=self.textBox.horizontalScrollBar()
-        self.lineNum.setVerticalScrollBar(self.verticalScrollBar)
-       # self.verticalScrollBar.sliderMoved.connect(self.verticalMovement)
-        self.isClosed=True
-        self.event
-        
-    
-    def closeEvent(self, i):
-        self.isClosed=True
-        i.accept()
-    
-    def show(self):
-        self.isClosed=False
-        super().show()
-    
-    def canShow(self):
-        return (self.isClosed==False)
-    
-    def popout(self):
-        self.setFloating(not self.isFloating())    
-    def verticalMovement(self) : 
-        self.lineNum.verticalScrollBar().setValue(self.verticalScrollBar.value())
-
- 
-    #def resizevent(self, event): 
-#        self.scrollArea.setMinimumWidth(self.width())
-#        self.scrollArea.setMaximumWidth(self.width())
-#        self.scrollArea.setMinimumHeight(self.height())
-#        self.scrollArea.setMaximumHeight(self.height())
-
-    def setText(self,text): self.textBox.setText(text)    
-
-    def displayFile(self,filepath, showLineNumbers=False):
-        data=""
-        nums=""
-        try:
-            with open(filepath,'r') as f: 
-                flist=f.readlines()
-        except FileNotFoundError: 
-            self.hide()
-            self.isUsed=False
-            return False
-
-        self.isUsed=True
-        i=1
-        for line in flist:
-            if showLineNumbers:
-                nums+=str(i)+'<br>'
-                i=i+1
-            data+=line
-        data=data.replace('\n','<br>')
-        data="<p style=\"text-align: left\">%s</p>"%data
-        self.textBox.setText(data)
-        #self.updateScrollBars()
-        if showLineNumbers:
-            nums="<p style=\"text-align: right\">%s</p>"%nums
-            self.lineNum.setHtml(nums)
-        else: self.lineNum.hide()
-        self.show()
-        return True
 
 class Header(QtWidgets.QWidget):
     def __init__(self,title):
@@ -122,4 +42,109 @@ class Header(QtWidgets.QWidget):
         self.Title.setText(_translate("header", self.Title.text()))
         self.popoutBtn.setText(_translate("header", "--"))
         self.closeBtn.setText(_translate("header", "X"))
+class ResultsWindow(QtWidgets.QDockWidget):
+    textBox:QtWidgets.QTextEdit
+    horizontalScrollBar:QtWidgets.QScrollBar
+    verticalScrollBar:QtWidgets.QScrollBar
+    lineNum:QtWidgets.QTextEdit
+    scrollArea:QtWidgets.QScrollArea
+    borderLine:QtCore.QLine
+    dividerLine:QtCore.QLine
+    header:Header
+    def __init__(self, title, parent, text=None):
+        super(QtWidgets.QDockWidget, self).__init__(parent) 
+        uic.loadUi(ui.resultswindow, self)
+        self.setWindowTitle(title)
+        self.header=Header(title)
+        self.header.setStyleSheet("QFrame,QLabel{background-color:rgb(200,200,200)}")
+        self.header.closeBtn.pressed.connect(self.close)
+        self.header.popoutBtn.pressed.connect(self.popout)
+        self.setTitleBarWidget(self.header)
+        #self.textBox.textChanged.connect(self.updateScrollBars)
+        self.verticalScrollBar=self.textBox.verticalScrollBar()
+        self.horizontalScrollBar=self.textBox.horizontalScrollBar()
+        self.lineNum.setVerticalScrollBar(self.verticalScrollBar)
+       # self.verticalScrollBar.sliderMoved.connect(self.verticalMovement)
+        self.isClosed=True
+        self.event
+
+    @property
+    def Title(self):
+        return self.header.Title.text()
+    @Title.setter
+    def Title(self,value):
+        self.header.Title.setText(value)
+    
+    def closeEvent(self, i):
+        self.isClosed=True
+        i.accept()
+    
+    def show(self):
+        self.isClosed=False
+        super().show()
+    
+    def canShow(self):
+        return (self.isClosed==False)
+    
+    def popout(self):
+        self.setFloating(not self.isFloating())    
+    def verticalMovement(self) : 
+        self.lineNum.verticalScrollBar().setValue(self.verticalScrollBar.value())
+
+ 
+    #def resizevent(self, event): 
+#        self.scrollArea.setMinimumWidth(self.width())
+#        self.scrollArea.setMaximumWidth(self.width())
+#        self.scrollArea.setMinimumHeight(self.height())
+#        self.scrollArea.setMaximumHeight(self.height())
+
+    def setText(self,text): self.textBox.setText(text)    
+    def setContents(self,text,showLineNumbers=False):
+        text=text.split('\n')
+        data=""
+        nums=""
+        self.isUsed=True
+        i=1
+        for line in text:
+            if showLineNumbers:
+                nums+=str(i)+'<br>'
+                i=i+1
+            data+=line+'<br>'
+        #data=data.replace('\n','<br>')
+        data="<p style=\"text-align: left\">%s</p>"%data
+        self.textBox.setText(data)
+        #self.updateScrollBars()
+        if showLineNumbers:
+            nums="<p style=\"text-align: right\">%s</p>"%nums
+            self.lineNum.setHtml(nums)
+        else: self.lineNum.hide()
+        self.show()
+        return True
+    def displayFile(self,filepath, showLineNumbers=False):
+        data=""
+        nums=""
+        try:
+            with open(filepath,'r') as f: 
+                flist=f.readlines()
+        except FileNotFoundError: 
+            self.hide()
+            self.isUsed=False
+            return False
+
+        self.isUsed=True
+        i=1
+        for line in flist:
+            if showLineNumbers:
+                nums+=str(i)+'<br>'
+                i=i+1
+            data+=line+'<br>'
+        data="<p style=\"text-align: left\">%s</p>"%data
+        self.textBox.setText(data)
+        #self.updateScrollBars()
+        if showLineNumbers:
+            nums="<p style=\"text-align: right\">%s</p>"%nums
+            self.lineNum.setHtml(nums)
+        else: self.lineNum.hide()
+        self.show()
+        return True
 

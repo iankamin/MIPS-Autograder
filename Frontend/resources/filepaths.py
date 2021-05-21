@@ -34,3 +34,5 @@ class Icons:
     rightArrow    = resource_path( iconPath+"right_arrow.png")
     checkmark    = resource_path( iconPath+"checkmark.png")
     white    = resource_path( iconPath+"white.png")
+    copy    = resource_path( iconPath+"copy.png")
+    delete    = resource_path( iconPath+"delete.png")
