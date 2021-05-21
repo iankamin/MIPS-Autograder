@@ -24,20 +24,18 @@ For instance if the given subroutine does not initialize registers then there co
 
 ### Build Instructions
 If you would like to make modifications to the autograder then the folowing programs are needed
-* SPIM
-* PyQt5
+* SPIM - ```sudo apt install spim```
+* PyQt5 - to run the user interface ( provided with virtualEnv )
 * VirtualEnv
-* (optional) Pyinstaller
-
+* (optional) Pyinstaller - to generate an executable
 
 
 ## Deployment
 To use this program the subroutine must be written using a Skeleton Code
 
 To run executable
-1. Go to the project root
-2. Type ```./GUI_Wrapper```
-
+1. download the release file
+2. Type ```./MIPS_Autograder.linux```
 
 To run with User Interface 
 1. Go to the project root
