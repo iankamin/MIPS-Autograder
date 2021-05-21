@@ -1,4 +1,3 @@
 
 .data <addr>
-	<type> <data>
-    
+    <type> <data>

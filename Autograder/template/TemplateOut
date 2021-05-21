@@ -1,13 +1,13 @@
-
-sw $a0, 0($sp)
-sw $v0, 4($sp)
-
-lui <lui_reg>, <upper_addr>
-addi $a0, <reg>, <lower_addr>
-addi $v0, $0, <type>
-syscall
-
-lw $a0, 0($sp)
-lw $v0, 4($sp)
-
-jal zzzneaten
+    
+    sw $a0, 0($sp)
+    sw $v0, 4($sp)
+    
+    lui <lui_reg>, <upper_addr>
+    addi $a0, <reg>, <lower_addr>
+    addi $v0, $0, <type>
+    syscall
+    
+    lw $a0, 0($sp)
+    lw $v0, 4($sp)
+    
+    jal zzzneaten

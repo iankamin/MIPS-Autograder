@@ -1,3 +1,4 @@
+from typing import List, Tuple
 from Autograder.concat import concat
 from types import resolve_bases
 from Frontend.ResultsWindow import ResultsWindow
@@ -52,7 +53,18 @@ class MainWindow(QtWidgets.QMainWindow):
     errorDock:ResultsWindow
     toggleOutputBtn:QtWidgets.QPushButton
     tabWidget:QtWidgets.QTabWidget
+    actionSave_Settings:QtWidgets.QAction
+    actionLoad_Settings:QtWidgets.QAction
+    actionCreate_TAR_File:QtWidgets.QAction
+    
+    actionRun_MIPS_File:QtWidgets.QAction
+    actionAdd_New_Test:QtWidgets.QAction
     actionGenerate_Skeleton_Code:QtWidgets.QAction
+
+    actionExpand_All_Tests:QtWidgets.QAction
+    actionCollapse_All_Tests:QtWidgets.QAction
+    actionValidate_Tests:QtWidgets.QAction
+    actionHide_Output_Window:QtWidgets.QAction
 
 
     #1080P size
@@ -120,6 +132,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tabWidget.setCurrentIndex(1)
     def UI_ActionMenu(self):
         self.actionGenerate_Skeleton_Code.triggered.connect(self.createSkeletonCode)
+        self.actionAdd_New_Test.triggered.connect(self.addTest) 
+        self.actionSave_Settings.triggered.connect(self.SaveSettings)
+        self.actionLoad_Settings.triggered.connect(self.LoadSettings)
+        self.actionRun_MIPS_File.triggered.connect(self.RunMips)
+        self.actionCreate_TAR_File.triggered.connect(self.CreateTar)
+        self.actionExpand_All_Tests.triggered.connect(self.ExpandAll)
+        self.actionCollapse_All_Tests.triggered.connect(self.CollapseAll)
+        self.actionHide_Output_Window.triggered.connect(self.toggleOutputPressed)
+        self.actionValidate_Tests.triggered.connect(self.validate)
+
     @property
     def currentNumberOfTests(self):
         if self.tabWidget.currentWidget().objectName() =='skeleton': return self.numberOfSamples
@@ -129,18 +151,18 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.tabWidget.currentWidget().objectName() =='skeleton': self.numberOfSamples = value
         if self.tabWidget.currentWidget().objectName() =='grading': self.numberOfTests = value
 
-    def tabChanged(self, index):
+    def tabChanged(self, index) -> None:
         if self.tabWidget.widget(index).objectName()=='skeleton':
             self.currentTestArea=self.skeletonScrollArea
             self.AllCurrentTests=self.AllSampleTests
-            self.createSkeleton=True
+            self.SkeltonCreatorMode=True
 
         if self.tabWidget.widget(index).objectName()=='grading':
             self.currentTestArea=self.testScrollArea
             self.AllCurrentTests=self.AllGradedTests
-            self.createSkeleton=False
+            self.SkeltonCreatorMode=False
             
-    def wheelEvent(self, *args, **kwargs): 
+    def wheelEvent(self, *args, **kwargs) -> None: 
         if self.hasFocus(): return QtWidgets.QComboBox.wheelEvent(self, *args, **kwargs)
     
     def toggleOutputPressed(self):
@@ -175,18 +197,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def ExpandAll(self):
         test:Test
-        lay=self.AllCurrentTests
-        items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+        items=self.getTests()
         for test in items: 
             if test is None: continue
             test.ExpandAndCollapseAll(True)
-
     def CollapseAll(self):
         test:Test
         lay=self.AllCurrentTests
-        items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+        items=self.getTests()
         for test in items: 
-            if test is None: continue
             test.ExpandAndCollapseAll(False)
 
     def insertWidget(self,widget): 
@@ -194,15 +213,11 @@ class MainWindow(QtWidgets.QMainWindow):
         vlay.insertWidget(self.currentNumberOfTests,widget)
 
     def updateAllTestIndices(self):
-        lay=self.AllCurrentTests
-        items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
-        i=0
+        items=self.getTests()
         test:Test 
-        for test in items: 
-            if test is None: continue
+        for i,test in enumerate(items): 
             test.index=i
             test.name=test.name
-            i+=1
         
     def deleteTest(self,test:Test): 
         lay=self.AllCurrentTests
@@ -216,7 +231,7 @@ class MainWindow(QtWidgets.QMainWindow):
         vlay = self.AllCurrentTests 
         index=self.currentNumberOfTests
         if newTest is None: 
-            newTest=Test(index=index,parent=self,isSkelton=self.createSkeleton)
+            newTest=Test(index=index,parent=self,isSkelton=self.SkeltonCreatorMode)
         else: 
             newTest.index=index
             newTest.name=newTest.name
@@ -225,54 +240,69 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setStyleSheet(self.styleSheet())
         self.setStyle(self.style())
         return newTest
+    def getTests(self,lay=None) -> List[Test]:
+        if lay is None: lay=self.AllCurrentTests
+        items = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget()is not None ]
+        return items
 
-    def validateWindow(self):
+    def validateWindow(self) -> Tuple[bool,str]:
         valid=True
-        data=""
+        output=""
+
         if self.subroutine_name.text()=="": 
             self.subroutine_name.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
-            data+="\n - Subroutine Name is required"
+            output+="\n - Subroutine Name is required"
             valid = False
         else: 
             self.subroutine_name.setStyleSheet("background-color: rgb(255, 255, 255);")
             valid= valid and True
+        
+        if self.SkeltonCreatorMode: return valid,output
+        
         if self.TestPoints.value()==0:
             self.TestPoints.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
-            data+="\n - Test Points Cannot be zero"
+            output+="\n - Test Points Cannot be zero"
             valid = False
         else: 
             self.TestPoints.setStyleSheet("background-color: rgb(255, 255, 255);")
             valid= valid and True
         
-        return valid,data
-
-    def validate(self):
-        valid,output=self.validateWindow()
+        return valid,output
+    def validateTests(self) -> Tuple[bool,str]:
+        output=""
+        valid = True
         
         if self.currentNumberOfTests == 0: 
-            self.outputHidden=False
-            self.toggleOutputBtn.show()
             output+="\n\n - No Tests to Run"
             valid = False
-
-        lay=self.AllGradedTests
-        tests = [lay.itemAt(i).widget() for i in range(lay.count()) if type(lay.itemAt(i).widget()) is Test ]
-
+            return valid,output
+       
         test:Test
+        tests = self.getTests(self.AllGradedTests)
         for test in tests:  
             v, out=test.validate()
             if not v:
                 valid = False
                 output+='\n'+out
+        return valid,output
+
+    def validate(self) -> bool:
+        validWind,outputWind=self.validateWindow()
+        validTests,outputTests=self.validateTests()
+        valid = validWind and validTests
     
         if not valid: 
             self.outputHidden=False
             self.toggleOutputBtn.show()
-            output="\n cannot proceed until the following issues are corrected\n==============================================="+output
+            output="\n cannot proceed until the following issues are corrected\n===============================================\n"
+            output+=outputWind+outputTests
             errorDisplay(self,output)
+        else:
+            errorDisplay(self,"")
+            
         return valid
 
-    def convertToSettings(self,layout):
+    def convertToSettings(self,layout) -> Tuple[bool,settings]:
         setting = settings(
                     subroutine_name = self.subroutine_name.text()	,
                     PromptGrade	    = self.PromptPoints.value()		,
@@ -283,11 +313,10 @@ class MainWindow(QtWidgets.QMainWindow):
                     Shuffle 		= self.Shuffle.isChecked() 	,
                     RequiresUserInput=self.RequireUserInput.isChecked(),
                     ShowLevel       = self.ShowLevel.currentIndex(),
-                    JsonStyle       = self.JsonStyle.currentIndex()
-                )
-        
+                    JsonStyle       = self.JsonStyle.currentIndex())
+
         valid=True
-        tests = [layout.itemAt(i).widget() for i in range(layout.count()) if layout.itemAt(i).widget() is not None ]
+        tests = self.getTests(layout)
         for test in tests: 
             setting.AddTest(test.convertToSettingsTest(setting=setting))
         if len(tests)==0: return False,None
@@ -295,7 +324,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return True,setting
 
-    def SaveSettings(self,loc=None,updateSaveLocation=True):
+    def SaveSettings(self,loc=None,updateSaveLocation=True) -> bool:
         self.tabWidget.setCurrentIndex(1)
         if not self.validate(): return False
 
@@ -317,7 +346,7 @@ class MainWindow(QtWidgets.QMainWindow):
     
     def DeleteAllTests(self):
         lay=self.AllGradedTests
-        tests = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget() is not None]
+        tests = self.getTests(self.AllGradedTests)
         test:Test 
         for test in tests: 
             self.deleteTest(test)
@@ -379,14 +408,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def createSkeletonCode(self):
         self.tabWidget.setCurrentIndex(0)
+        if not self.validate(): return
         success,setting = self.convertToSettings(self.AllSampleTests)
         if not success: return
-        Autograder.createSkeletonCode(setting)
-        
-        
-
-
-        pass
+        code=Autograder.createSkeletonCode(setting)
+        self.concatAsmDock.setContents(code,showLineNumbers=True)
+        self.concatAsmDock.raise_()
 
     def RunMips(self):
         self.tabWidget.setCurrentIndex(1)

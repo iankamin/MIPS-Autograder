@@ -1058,7 +1058,7 @@ background-color: rgb(255, 255, 255);</string>
     <addaction name="actionSave_Settings"/>
     <addaction name="actionLoad_Settings"/>
     <addaction name="separator"/>
-    <addaction name="actionCreate_TAR_file"/>
+    <addaction name="actionCreate_TAR_File"/>
    </widget>
    <widget class="QMenu" name="menuBuild">
     <property name="title">
@@ -1076,16 +1076,11 @@ background-color: rgb(255, 255, 255);</string>
     <addaction name="actionExpand_All_Tests"/>
     <addaction name="actionCollapse_All_Tests"/>
     <addaction name="actionValidate_Tests"/>
-   </widget>
-   <widget class="QMenu" name="menuasdf">
-    <property name="title">
-     <string>asdf</string>
-    </property>
+    <addaction name="actionHide_Output_Window"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuBuild"/>
    <addaction name="menuView"/>
-   <addaction name="menuasdf"/>
   </widget>
   <action name="actionSave_Settings">
    <property name="text">
@@ -1097,9 +1092,9 @@ background-color: rgb(255, 255, 255);</string>
     <string>Load Settings</string>
    </property>
   </action>
-  <action name="actionCreate_TAR_file">
+  <action name="actionCreate_TAR_File">
    <property name="text">
-    <string>Create TAR file</string>
+    <string>Create TAR File</string>
    </property>
   </action>
   <action name="actionRun_MIPS_File">
@@ -1130,6 +1125,11 @@ background-color: rgb(255, 255, 255);</string>
   <action name="actionValidate_Tests">
    <property name="text">
     <string>Validate Tests</string>
+   </property>
+  </action>
+  <action name="actionHide_Output_Window">
+   <property name="text">
+    <string>Hide Output Window</string>
    </property>
   </action>
  </widget>

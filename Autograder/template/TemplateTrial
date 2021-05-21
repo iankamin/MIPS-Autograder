@@ -2,23 +2,21 @@
 # ============================
 # <TEST NAME>    <TEST NUMBER>
 
-	jal zzzdivider
-	add $0, $0, $0
+    jal zzzdivider
+    add $0, $0, $0
 
-	<inputs>
+    <inputs>
 
-	jal <student_subroutine>
-	add $0,$0,$0
+    jal <student_subroutine>
+    add $0,$0,$0
 
-	jal zzzdivider
-	add $0, $0, $0
+    jal zzzdivider
+    add $0, $0, $0
 
-	#add $t0, $0, $a0
-	#add $t1, $0, $v0
+    #add $t0, $0, $a0
+    #add $t1, $0, $v0
 
-	<outputs>
+    <outputs>
 
-
-	jal zzzdivider
-	add $0, $0, $0
-
+    jal zzzdivider
+    add $0, $0, $0
