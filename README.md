@@ -39,7 +39,7 @@ To run executable
 1. download the release file
 2. Type ```./MIPS_Autograder.linux```
 
-To run with User Interface 
+To run python code
 1. Go to the project root
 2. type ```python3 GUI_wrapper.py```
 
