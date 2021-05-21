@@ -16,22 +16,18 @@ def createTest(main,a,b,c,d):
     for _ in range(c): test.addRow(RegisterRow)
     for _ in range(d): test.addRow(OutputRow)
 
+def folderGenerate(dir):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+
 if __name__ == '__main__':
-    #os.chdir(os.path.dirname(sys.argv[0])) # ensures proper initial directory
+    folderGenerate("Frontend")
+
     app = QtWidgets.QApplication(sys.argv)
     font=app.font()
     font.setPointSize(12)
     app.setFont(font)
     main = MainWindow()
-    #createTest(main,1,1,1,1)
-    #createTest(main,2,2,2,2)
-    ##createTest(main,3,1,2,5)
-    ##createTest(main,5,4,2,1)
-    ##input("clicktoDelete")
-    ##main.DeleteAllTests()
-    ##createTest(main,3,3,3,3)
     print(main.geometry())
-    #main.LoadSettings()
-    #main.RunMips()
     main.showMaximized()
     sys.exit(app.exec_())
