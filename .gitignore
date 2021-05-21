@@ -1,11 +1,11 @@
 .vscode/*
 .vscode
 
-grader/*.json
-grader/*.txt
-grader/submission.s
+Autograder/*.json
+Autograder/*.txt
+Autograder/submission.s
+Autograder/*.s
 build
-dist/
 __pycache__
 */__pycache__
 */*/__pycache__
@@ -64,4 +64,7 @@ grader/__pycache__/concat.cpython-38.pyc
 */*/*.pyc
 */*.pyc
 *.pyc
-dist/MIPS Autograder (Linux)
+
+dist/
+dist/*
+Autograder/Skeleton.s
