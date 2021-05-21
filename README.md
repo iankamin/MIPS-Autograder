@@ -33,7 +33,7 @@ If you would like to make modifications to the autograder then the folowing prog
 ## Deployment
 To use this program the subroutine must be written using a Skeleton Code
 To create Executable
-``` pyinstaller 
+```pyinstaller MIPS_Autograder.spec```
 
 To run executable
 1. download the release file
