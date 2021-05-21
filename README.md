@@ -32,12 +32,14 @@ If you would like to make modifications to the autograder then the folowing prog
 
 ## Deployment
 To use this program the subroutine must be written using a Skeleton Code
+To create Executable
+```pyinstaller MIPS_Autograder.spec```
 
 To run executable
 1. download the release file
 2. Type ```./MIPS_Autograder.linux```
 
-To run with User Interface 
+To run python code
 1. Go to the project root
 2. type ```python3 GUI_wrapper.py```
 
