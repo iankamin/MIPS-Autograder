@@ -84,7 +84,7 @@ def CreateTAR(settingsFile, tarDestination,parent):
     
     parent.makefileDock.displayFile(grader_data_loc+"Makefile",False)
 
-def MakeClean(self):
+def MakeClean():
     deleteFile("Autograder/error.txt")
     deleteFile("Autograder/concatErrors.txt")
     deleteFile("Autograder/input.txt")
@@ -93,9 +93,14 @@ def MakeClean(self):
     deleteFile("Autograder/concat.s")
     deleteFile("Autograder/skeleton.s")
     deleteFile("Frontend/grader_data/UI.tar")
+    deleteFile(grader_data_loc+"output.txt")
+    deleteFile(grader_data_loc+"concat.s")
+    deleteFile(grader_data_loc+"graderResults.txt")
+    deleteFile(grader_data_loc+"settings.json")
+    deleteFile(grader_data_loc+"submission.s")
 
-def deleteFile(self,filepathk):
-    if os.path.exists(filepath): os.remove(filepath)
+def deleteFile(_filepath):
+    if os.path.exists(_filepath): os.remove(_filepath)
 
 import tarfile
 import os.path

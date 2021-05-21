@@ -95,6 +95,7 @@ class Test(QtWidgets.QWidget):
         
         self.HidingBox.content_area.layout().setContentsMargins(20,0,10,0)
         self.HidingBox.toggle_button.setMinimumHeight(30)
+        self.HidingBox.collapsed_height=(30)
         
         self.verticalLayout.addWidget(self.HidingBox)
 

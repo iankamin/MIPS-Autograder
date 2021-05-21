@@ -419,7 +419,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toggleOutputBtn.show()
         errorDisplay(self,"\n\n\n\n   Autograder in progress")
         
-        set_file = resource_path("temp/temp.json")
+        set_file = resource_path("temp.json")
         print(set_file)
         success = self.SaveSettings(set_file)
         if not success: return
@@ -447,7 +447,7 @@ class MainWindow(QtWidgets.QMainWindow):
         TarDestination=QtWidgets.QFileDialog.getSaveFileName(self,"Save TAR File as", self.lastSaveLocation,"TAR File (*.tar *.TAR)")[0] #file needs to exist
         if not TarDestination: return
         self.lastSaveLocation=os.path.split(TarDestination)[0]+'/'
-        set_file = resource_path("temp/temp.json")
+        set_file = resource_path("temp.json")
         print(set_file)
         success = self.SaveSettings(set_file,updateSaveLocation=False)
         if not success: return
