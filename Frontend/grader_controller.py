@@ -73,10 +73,11 @@ def outputDisplay(parent):
     
 def CreateTAR(settingsFile, tarDestination,parent):
     MakeClean()
-    destSettingsFile="Autograder/settings.json"
-    copyfile(settingsFile,destSettingsFile)
+    destSettingsFile=filepath("Autograder/settings.json")
+    print(settingsFile)
+    copyfile(src=settingsFile,dst=destSettingsFile)
     #os.system("make UI_tar")
-    make_tarfile(tarDestination, "Autograder")
+    make_tarfile(tarDestination, filepath("Autograder"))
     deleteFile(destSettingsFile)
     deleteFile(settingsFile)
 #    tarPath = grader_data_loc+"UI.tar"
@@ -85,19 +86,19 @@ def CreateTAR(settingsFile, tarDestination,parent):
     parent.makefileDock.displayFile(grader_data_loc+"Makefile",False)
 
 def MakeClean():
-    deleteFile("Autograder/error.txt")
-    deleteFile("Autograder/concatErrors.txt")
-    deleteFile("Autograder/input.txt")
-    deleteFile("Autograder/output.txt")
-    deleteFile("Autograder/submission.s")
-    deleteFile("Autograder/concat.s")
-    deleteFile("Autograder/skeleton.s")
-    deleteFile("Frontend/grader_data/UI.tar")
+    deleteFile(filepath("Autograder/error.txt"))
+    deleteFile(filepath("Autograder/concatErrors.txt"))
+    deleteFile(filepath("Autograder/input.txt"))
+    deleteFile(filepath("Autograder/output.txt"))
+    deleteFile(filepath("Autograder/submission.s"))
+    deleteFile(filepath("Autograder/concat.s"))
+    deleteFile(filepath("Autograder/skeleton.s"))
+    deleteFile(filepath("Frontend/grader_data/UI.tar"))
     deleteFile(grader_data_loc+"output.txt")
     deleteFile(grader_data_loc+"concat.s")
     deleteFile(grader_data_loc+"graderResults.txt")
-    deleteFile(grader_data_loc+"settings.json")
     deleteFile(grader_data_loc+"submission.s")
+    deleteFile(grader_data_loc+"settings.json")
 
 def deleteFile(_filepath):
     if os.path.exists(_filepath): os.remove(_filepath)

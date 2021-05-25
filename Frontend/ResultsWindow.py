@@ -64,6 +64,7 @@ class ResultsWindow(QtWidgets.QDockWidget):
         self.verticalScrollBar=self.textBox.verticalScrollBar()
         self.horizontalScrollBar=self.textBox.horizontalScrollBar()
         self.lineNum.setVerticalScrollBar(self.verticalScrollBar)
+        self.lineNum.setAlignment(QtCore.Qt.AlignRight)
        # self.verticalScrollBar.sliderMoved.connect(self.verticalMovement)
         self.isClosed=True
         self.event
@@ -105,18 +106,14 @@ class ResultsWindow(QtWidgets.QDockWidget):
         nums=""
         self.isUsed=True
         i=1
+        nl='\n'
         for line in text:
             if showLineNumbers:
-                nums+=str(i)+'<br>'
+                nums+=str(i)+nl
                 i=i+1
-            data+=line+'<br>'
-        #data=data.replace('\n','<br>')
-        data="<p style=\"text-align: left\">%s</p>"%data
+            data+=line+nl
         self.textBox.setText(data)
-        #self.updateScrollBars()
-        if showLineNumbers:
-            nums="<p style=\"text-align: right\">%s</p>"%nums
-            self.lineNum.setHtml(nums)
+        if showLineNumbers: self.lineNum.setText(nums)
         else: self.lineNum.hide()
         self.show()
         return True
@@ -133,17 +130,15 @@ class ResultsWindow(QtWidgets.QDockWidget):
 
         self.isUsed=True
         i=1
+        nl='\n'
         for line in flist:
             if showLineNumbers:
-                nums+=str(i)+'<br>'
+                nums+=str(i)+nl
                 i=i+1
-            data+=line+'<br>'
-        data="<p style=\"text-align: left\">%s</p>"%data
+            data+=line
         self.textBox.setText(data)
-        #self.updateScrollBars()
         if showLineNumbers:
-            nums="<p style=\"text-align: right\">%s</p>"%nums
-            self.lineNum.setHtml(nums)
+            self.lineNum.setText(nums)
         else: self.lineNum.hide()
         self.show()
         return True
