@@ -73,11 +73,13 @@ def outputDisplay(parent):
     
 def CreateTAR(settingsFile, tarDestination,parent):
     MakeClean()
-    destSettingsFile=filepath("Autograder/settings.json")
+    try: base_path = sys._MEIPASS+"/Autograder"
+    except Exception: base_path = os.path.dirname(__file__)+'/../Autograder'
+    destSettingsFile=base_path+"/settings.json"
     print(settingsFile)
     copyfile(src=settingsFile,dst=destSettingsFile)
     #os.system("make UI_tar")
-    make_tarfile(tarDestination, filepath("Autograder"))
+    make_tarfile(tarDestination, base_path)
     deleteFile(destSettingsFile)
     deleteFile(settingsFile)
 #    tarPath = grader_data_loc+"UI.tar"
@@ -86,14 +88,17 @@ def CreateTAR(settingsFile, tarDestination,parent):
     parent.makefileDock.displayFile(grader_data_loc+"Makefile",False)
 
 def MakeClean():
-    deleteFile(filepath("Autograder/error.txt"))
-    deleteFile(filepath("Autograder/concatErrors.txt"))
-    deleteFile(filepath("Autograder/input.txt"))
-    deleteFile(filepath("Autograder/output.txt"))
-    deleteFile(filepath("Autograder/submission.s"))
-    deleteFile(filepath("Autograder/concat.s"))
-    deleteFile(filepath("Autograder/skeleton.s"))
-    deleteFile(filepath("Frontend/grader_data/UI.tar"))
+    try: base_path = sys._MEIPASS+"/Autograder/"
+    except Exception: base_path = os.path.dirname(__file__)+'/../Autograder/'
+ 
+    deleteFile(base_path+"error.txt")
+    deleteFile(base_path+"concatErrors.txt")
+    deleteFile(base_path+"input.txt")
+    deleteFile(base_path+"output.txt")
+    deleteFile(base_path+"submission.s")
+    deleteFile(base_path+"concat.s")
+    deleteFile(base_path+"skeleton.s")
+    deleteFile(base_path+"grader_data/UI.tar")
     deleteFile(grader_data_loc+"output.txt")
     deleteFile(grader_data_loc+"concat.s")
     deleteFile(grader_data_loc+"graderResults.txt")
