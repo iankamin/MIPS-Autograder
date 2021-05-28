@@ -28,8 +28,8 @@ However this program can be used as a testbench for MIPS code as well.
 1. You may be able to type ```brew install spim``` into terminal
 
 alternative (Compile SPIM yourself)
-1. download the SPIM file [here](https://sourceforge.net/p/spimsimulator/code/HEAD/tree/)
-2. go to the install location
+1. download the SPIM source code [here](https://sourceforge.net/p/spimsimulator/code/HEAD/tree/)
+2. go to the install location in terminal
 3. type ```cd spim```
 4. type ```make spim```
 5. to verify type ```make test```

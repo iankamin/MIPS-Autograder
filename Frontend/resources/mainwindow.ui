@@ -21,7 +21,9 @@
 }
 QMainWindow{
 	background-color: rgb(0, 0, 0);
-
+}
+QWidget{
+	color:rgb(0,0,0)
 }
 QWidget#settings{
   background-color: rgb(220, 220, 255);
@@ -45,6 +47,10 @@ QTextEdit,QLineEdit{
 QCheckBox,QDoubleSpinBox,QComboBox,QPushButton,QLineEdit,QTextEdit{
   background-color: rgb(255, 255, 255);
 }
+QWidget#testScrollArea{ 
+	background-color:rgb(245,245,255);
+}
+
 </string>
   </property>
   <widget class="QWidget" name="centralWidget">
