@@ -25,7 +25,7 @@
   <property name="maximumSize">
    <size>
     <width>700</width>
-    <height>23</height>
+    <height>16777215</height>
    </size>
   </property>
   <property name="baseSize">
@@ -115,6 +115,12 @@ color: rgb(255, 0, 4);</string>
    </item>
    <item>
     <widget class="QLineEdit" name="reg">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="maximumSize">
       <size>
        <width>70</width>
@@ -128,6 +134,12 @@ color: rgb(255, 0, 4);</string>
    </item>
    <item>
     <widget class="QLineEdit" name="value">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="maximumSize">
       <size>
        <width>150</width>

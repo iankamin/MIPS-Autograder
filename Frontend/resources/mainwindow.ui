@@ -328,6 +328,12 @@ QWidget#skeletonScrollArea{
        </property>
        <item>
         <widget class="QFrame" name="creator_frame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="styleSheet">
           <string notr="true"/>
          </property>
@@ -456,6 +462,12 @@ QWidget#skeletonScrollArea{
            </item>
            <item row="1" column="0" colspan="2">
             <widget class="QLineEdit" name="subroutine_name">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The name of the Subroutine the student must create&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
@@ -603,7 +615,7 @@ background-color: rgb(255, 255, 255);</string>
            <item row="8" column="0" colspan="2">
             <widget class="QComboBox" name="ShowLevel">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -662,6 +674,12 @@ selection-color: rgb(118, 0, 1);</string>
            </item>
            <item row="11" column="1">
             <widget class="QDoubleSpinBox" name="PromptPoints">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -700,6 +718,12 @@ selection-color: rgb(118, 0, 1);</string>
            </item>
            <item row="12" column="1">
             <widget class="QDoubleSpinBox" name="TestPoints">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -729,6 +753,12 @@ selection-color: rgb(118, 0, 1);</string>
            </item>
            <item row="13" column="1">
             <widget class="QDoubleSpinBox" name="EC_TestPoints">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -812,10 +842,16 @@ selection-color: rgb(118, 0, 1);</string>
            <item row="19" column="0" colspan="2">
             <widget class="QTextEdit" name="message">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <sizepolicy hsizetype="Ignored" vsizetype="MinimumExpanding">
                <horstretch>0</horstretch>
-               <verstretch>190</verstretch>
+               <verstretch>255</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>0</height>
+              </size>
              </property>
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;a message to students that will be displayed at the top of the autograder.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
