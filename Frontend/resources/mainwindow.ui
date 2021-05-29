@@ -20,14 +20,14 @@
    <string notr="true">@QMainWindow{
 }
 QWidget{
-	color:rgb(0,0,0);
+	color:black;
 	font-size:15px;
 }
 QMainWindow{
 	background-color: rgb(0, 0, 0);
 }
 
-QPushButton{
+QPushButton,QToolButton,QTabWidget{
   background-color: rgb(230, 230, 230);
 }
 
