@@ -4,8 +4,10 @@ from PyQt5 import QtWidgets,uic
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.sip import delete
 from PyQt5.QtCore import QRegExp, pyqtSignal
-from Frontend.resources import ui,Icons
-from .utilities import validity
+try: from .resources import ui,Icons
+except: from resources import ui,Icons
+try: from .utilities import validity
+except: from utilities import validity
 
 class Row(QtWidgets.QWidget):
     Deleted = pyqtSignal(QtWidgets.QWidget,QtWidgets.QAbstractScrollArea)

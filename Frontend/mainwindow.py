@@ -9,11 +9,16 @@ from PyQt5.QtCore import QObject, QThread
 from PyQt5.sip import delete
 import os
 import Autograder
-from .resources.filepaths import resource_path, ui,Icons
-from .grader_controller import *
-from .utilities import settings,settingsWorker
-from .TestLayout import Test
-from .RowTypes import DataRow,RegisterRow,UserInputRow,OutputRow
+try: from .resources.filepaths import resource_path, ui,Icons
+except: from resources.filepaths import resource_path, ui,Icons
+try: from .grader_controller import *
+except: from grader_controller import *
+try: from .utilities import settings,settingsWorker
+except: from utilities import settings,settingsWorker
+try: from .TestLayout import Test
+except: from TestLayout import Test
+try: from .RowTypes import DataRow,RegisterRow,UserInputRow,OutputRow
+except: from RowTypes import DataRow,RegisterRow,UserInputRow,OutputRow
 
 class MainWindow(QtWidgets.QMainWindow): 
     AllGradedTests:QtWidgets.QVBoxLayout 

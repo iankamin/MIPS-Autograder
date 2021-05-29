@@ -12,9 +12,12 @@ from typing import List, Tuple
 from PyQt5 import QtCore, QtGui, QtWidgets
 from copy import deepcopy
 from time import sleep
-from .collapsibleBox import CollapsibleBox
-from .RowTypes import *
-from .utilities import set_Test,settings
+try: from .collapsibleBox import CollapsibleBox
+except: from collapsibleBox import CollapsibleBox
+try: from .RowTypes import *
+except: from RowTypes import *
+try: from .utilities import set_Test,settings
+except: from utilities import set_Test,settings
 
 class Test(QtWidgets.QWidget): 
     def __init__(self,index,parent,TopRow=None,isSkelton=False): 

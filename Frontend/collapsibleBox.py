@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from enum import Flag
-from Frontend.resources.filepaths import Icons
+try: from .resources.filepaths import Icons
+except: from resources.filepaths import Icons
 class CollapsibleBox(QtWidgets.QWidget):
     ExpandCollapse_finished=QtCore.pyqtSignal()
     def __init__(self, title="", parent=None, *buttons):

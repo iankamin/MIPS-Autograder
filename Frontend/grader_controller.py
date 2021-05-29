@@ -1,10 +1,12 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 import Autograder
-from Frontend.utilities.settings import settings
+try: from .utilities.settings import settings
+except: from utilities.settings import settings
 import os,sys
 from shutil import copyfile
 from Autograder import runGrader
-from Frontend.ResultsWindow import ResultsWindow
+try: from .ResultsWindow import ResultsWindow
+except: from ResultsWindow import ResultsWindow
 from subprocess import call,PIPE
 
 

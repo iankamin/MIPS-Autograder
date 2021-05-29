@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtWidgets,uic,QtGui
-from Frontend.resources.filepaths import ui 
+try: from .resources.filepaths import ui 
+except: from resources.filepaths import ui 
 
 
 class Header(QtWidgets.QWidget):

@@ -339,7 +339,7 @@ QToolTip { color: #000; background-color: #fff;
        <item>
         <widget class="QFrame" name="creator_frame">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
