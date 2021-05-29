@@ -1,6 +1,7 @@
 from typing import List, Tuple
 from types import resolve_bases
-from Frontend.ResultsWindow import ResultsWindow
+try: from .ResultsWindow import ResultsWindow
+except: from ResultsWindow import ResultsWindow
 from PyQt5 import QtCore, QtWidgets,uic
 from PyQt5.QtGui import QFont
 from PyQt5 import QtGui
