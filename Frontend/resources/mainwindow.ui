@@ -19,13 +19,18 @@
   <property name="styleSheet">
    <string notr="true">@QMainWindow{
 }
-QMainWindow{
-	background-color: rgb(0, 0, 0);
-}
 QWidget{
 	color:rgb(0,0,0);
 	font-size:15px;
 }
+QMainWindow{
+	background-color: rgb(0, 0, 0);
+}
+
+QPushButton{
+  background-color: rgb(230, 230, 230);
+}
+
 QWidget#settings{
   background-color: rgb(220, 220, 255);
 }
@@ -43,6 +48,9 @@ QComboBox{
   selection-background-color: rgb(232, 232, 232);
   selection-color: rgb(118, 0, 1);
 }
+QTabBar::tab {background: rgb(220,220,220);}
+QTabBar::tab:selected {background:  rgb(245,245,245);;}
+
 QTextEdit,QLineEdit{
   border-style: outset;
   border-color: black;
@@ -57,7 +65,8 @@ QWidget#testScrollArea{
 QWidget#skeletonScrollArea{ 
 	background-color:rgb(245,245,255);
 }
-
+QToolTip { color: #000; background-color: #fff;
+}
 
 
 
@@ -636,9 +645,7 @@ background-color: rgb(255, 255, 255);</string>
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;How much feedback should students receive for each tests&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 255, 255);
-selection-background-color: rgb(232, 232, 232);
-selection-color: rgb(118, 0, 1);</string>
+              <string notr="true"/>
              </property>
              <item>
               <property name="text">
@@ -795,9 +802,7 @@ selection-color: rgb(118, 0, 1);</string>
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;What format would you like the Autograder Response to be?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">background-color: rgb(255, 255, 255);
-selection-background-color: rgb(232, 232, 232);
-selection-color: rgb(118, 0, 1);</string>
+              <string notr="true"/>
              </property>
              <item>
               <property name="text">
@@ -930,7 +935,16 @@ background-color: rgb(255, 255, 255);</string>
        <item row="0" column="0">
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
+         </property>
+         <property name="usesScrollButtons">
+          <bool>false</bool>
+         </property>
+         <property name="tabsClosable">
+          <bool>false</bool>
+         </property>
+         <property name="movable">
+          <bool>false</bool>
          </property>
          <widget class="QWidget" name="skeleton">
           <attribute name="title">

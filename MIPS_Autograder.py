@@ -11,6 +11,9 @@ if __name__ == '__main__':
     folderGenerate("Frontend")
 
     app = QtWidgets.QApplication(sys.argv)
+    #app.setStyle('macintosh')
+    #app.setStyle('windows')
+    #app.setStyle('windowsvista')
     app.setStyle('Fusion')
 
     font=app.font()
