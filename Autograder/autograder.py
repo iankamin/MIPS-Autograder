@@ -3,6 +3,7 @@ import os
 import sys
 import subprocess
 import re
+from typing import List
 try: from .settings import settings,Test,Show
 except: from settings import settings,Test,Show
 
@@ -12,7 +13,7 @@ localDir = os.path.dirname(__file__)+"/"
 def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
                outputDest="output.txt",autograderOutput="graderResults.txt",
                settingsFile="settings.json",concatFile="concat.s"):
-    global ShowAll, io,outputFile,autograderResults
+    global io,outputFile,autograderResults
     if IO == None: io = settings(settingsFile)
     else : io=IO
     AllTests = io.getTests(canShuffle=True)
@@ -47,6 +48,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
 
         if len(test.UserInput)>0:
             UserInput=test.UserInput
+            RegexChecks=test.PromptRegex
             [prevUserInput.append(f) for f in UserInput]
             prevUserInput.sort(key=len)
             prevUserInput.reverse()
@@ -56,18 +58,18 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
 
         EC_Points[testNum] = test.ExtraCredit
 
-        if io.PromptGrade > 0: ShowDetails(testNum+1,test,StudentOutput,StudentPrompt)
-        else:                  ShowDetails(testNum+1,test,StudentOutput,None)
 
         # grades student prompt
         if io.PromptGrade > 0:
             for line in prevUserInput: StudentPrompt = StudentPrompt.replace(line,"")    # removes user input if they decided to print it out
             if ("<NON ASCII DATA>" in StudentPrompt): 
                 autograderResults.write("\nNon-Ascii characters were found in your prompt credit cannot be given \n")
-            elif ("<NO PROMPT FOUND>") in StudentPrompt:
-                None
+            elif ("<NO PROMPT FOUND>") in StudentPrompt: None
             else:
-                if len(StudentPrompt.strip())>3: promptPoints[testNum]=1
+                promptPoints[testNum]=GradePrompt(StudentPrompt,RegexChecks)
+        
+        if io.PromptGrade > 0: ShowDetails(testNum+1,test,StudentOutput,StudentPrompt,RegexChecks,promptPoints[testNum])
+        else:                  ShowDetails(testNum+1,test,StudentOutput)
 
         numOfrequiredAns=len(expectedAns)
         for i,line in enumerate(StudentOutput):
@@ -130,6 +132,26 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     if printResults: print(open(autograderResults.name).read())
     return
 
+def GradePrompt(prompt:str,regexArr:List[str]) -> (int):
+    if len(regexArr) == 0:    # if there are no Regex Checks than the grade will be based on printing at least 3 characters
+        if len(prompt.strip())>3: return 1
+        else: return 0
+    else: 
+        return CheckPromptForRegex(prompt,regexArr)
+
+def CheckPromptForRegex(prompt:str,regexArr:List[str]):
+    value=1/len(regexArr)
+    total=0
+    for regex in regexArr:
+        i=1+1
+        if regex.strip() == '*':
+            total=value+total
+        r = re.compile(regex)
+        if r.search(prompt):
+            total=total+value
+    return total
+
+        
 def getStudentPromptAndOutputPerTest(output,testNum):
     # Split and clean MIPS results
     try: StudentPrompt=output[testNum*3].strip()
@@ -262,14 +284,16 @@ def ShowInput(test):
     printUserInput(test)
     print('\n')
 
-def ShowOutput(test,StudentOutput,StudentPrompt):
+def ShowOutput(test,StudentOutput,StudentPrompt,RegexChecks,testPromptPoints):
     PrintStudentPrompt(StudentPrompt)
+    PrintRegexChecks(RegexChecks,testPromptPointsj)
     printOutput(test,StudentOutput, True)
 
-def ShowAll(test,StudentOutput,StudentPrompt):
+def ShowAll(test,StudentOutput,StudentPrompt,RegexChecks,testPromptPoints):
     PrintMemInputs(test)
     PrintRegInputs(test)
     PrintStudentPrompt(StudentPrompt)
+    PrintRegexChecks(RegexChecks,testPromptPoints)
     printUserInput(test)
     printOutput(test,StudentOutput, True)
 
@@ -277,7 +301,7 @@ def ShowAll(test,StudentOutput,StudentPrompt):
 
         
 
-def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None):
+def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=None,testPromptPoints=None):
     global io
     if io.ShowLevel!=Show.ALL: autograderResults.write("%s %i "%(test.testName,test.testNumber))
     
@@ -295,10 +319,10 @@ def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None):
     
     if test.ShowLevel==Show.OUTPUT:
         autograderResults.write("(Output Only)\n")
-        ShowOutput(test,StudentOutput, StudentPrompt)
+        ShowOutput(test,StudentOutput, StudentPrompt,RegexChecks,testPromptPoints)
     
     if test.ShowLevel==Show.ALL:
-        ShowAll(test,StudentOutput,StudentPrompt)
+        ShowAll(test,StudentOutput,StudentPrompt,RegexChecks,testPromptPoints)
 
     autograderResults.write("%s %i"%(test.testName,test.testNumber))
 
@@ -322,6 +346,12 @@ def PrintStudentPrompt(StudentPrompt):
         else: 
             autograderResults.write("   %s\n"%StudentPrompt)
 
+def PrintRegexChecks(RegexChecks,percentageFound):
+    if RegexChecks != None and len(RegexChecks)>0:
+        autograderResults.write("\n Found %s%% of The Following Regex Expressions -->\n"%(percentageFound*100))
+        for r in RegexChecks:
+            autograderResults.write("   %s\n"%r)
+
 def printUserInput(test):
     fl = test.UserInput
     if len(fl)>0: autograderResults.write("\nUser Input -->\n")   
@@ -338,7 +368,6 @@ def printOutput(test,StudentOutput, _printHeader):
             try:
                 studentAns = GetHexAndDecOrString(StudentOutput[i],int(Eoutput.type))
                 autograderResults.write("   Actual   %s = %s\n\n"%(Eoutput.reg,studentAns))
-
             except:
                 try: 
                     StudentOutput[i] # test for value before printing anything

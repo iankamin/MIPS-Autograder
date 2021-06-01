@@ -6,9 +6,9 @@
     "MessageToStudent": "",
     "BareMode": false,
     "RequiresUserInput": true,
-    "ShowLevel": 0,
-    "Shuffle": true,
-    "JsonStyle": 2,
+    "ShowLevel": 3,
+    "Shuffle": false,
+    "JsonStyle": 1,
     "tests": [
         {
             "name": "Test",
@@ -17,6 +17,11 @@
             "ShowLevel": 0,
             "UserInput": [
                 "0001*0000"
+            ],
+            "PromptRegex": [
+                "as",
+                "ds",
+                "ffgf"
             ],
             "inputs": [],
             "outputs": [
@@ -35,6 +40,7 @@
             "UserInput": [
                 "19-9"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -48,10 +54,11 @@
             "name": "Test",
             "ExtraCredit": false,
             "OutOf": 0,
-            "ShowLevel": 3,
+            "ShowLevel": 0,
             "UserInput": [
                 "1234+4321"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -69,6 +76,7 @@
             "UserInput": [
                 "1*0"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -86,6 +94,7 @@
             "UserInput": [
                 "9999-9"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -103,6 +112,7 @@
             "UserInput": [
                 "00+0183"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -120,6 +130,7 @@
             "UserInput": [
                 "00-0983"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -137,6 +148,7 @@
             "UserInput": [
                 "1*1"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -154,6 +166,7 @@
             "UserInput": [
                 "3+21"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -171,6 +184,7 @@
             "UserInput": [
                 "23+22"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -188,6 +202,7 @@
             "UserInput": [
                 "987*234"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -205,6 +220,7 @@
             "UserInput": [
                 "1*9999"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -222,6 +238,7 @@
             "UserInput": [
                 "83-9183"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -239,11 +256,48 @@
             "UserInput": [
                 "9999*9999"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
                     "CorrectAnswer": "99980001",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "19-9"
+            ],
+            "PromptRegex": [],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "10",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "19-9"
+            ],
+            "PromptRegex": [],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "10",
                     "reg": "v0"
                 }
             ]
@@ -256,6 +310,7 @@
             "UserInput": [
                 "-9999-9"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -273,6 +328,7 @@
             "UserInput": [
                 "3+-21"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -290,6 +346,7 @@
             "UserInput": [
                 "-83--9183"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -307,6 +364,7 @@
             "UserInput": [
                 "-23+22"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -324,6 +382,7 @@
             "UserInput": [
                 "-987*234"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -341,6 +400,7 @@
             "UserInput": [
                 "9999*-9999"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -358,6 +418,7 @@
             "UserInput": [
                 "-1*1"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -375,6 +436,7 @@
             "UserInput": [
                 "-1*-9999"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
@@ -392,45 +454,12 @@
             "UserInput": [
                 "1--1"
             ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {
                     "type": 1,
                     "CorrectAnswer": "2",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": true,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "-1234+-4321"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "-5555",
-                    "reg": "v0"
-                }
-            ]
-        },
-        {
-            "name": "Test",
-            "ExtraCredit": true,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "-0001*0001"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "-1",
                     "reg": "v0"
                 }
             ]

@@ -48,7 +48,8 @@ class Test(Autograder.Test):
         self.MemInputs=[]
         self.RegInputs=[]
         self.Output=[]
-    
+    def AddPromptRegex(self,**kwargs):
+        self.PromptRegex.append(kwargs.get("PromptRegex") )
     def AddUserInput(self, **kwargs):
         self.UserInput.append(kwargs.get("UserInput") )
     def AddMemInput(self, **kwargs):

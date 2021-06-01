@@ -105,6 +105,7 @@ class Test(QtWidgets.QWidget):
         self.TopRow.TestName.textChanged.connect(self.setName)
         if not self.isSkeleton: self.HidingBox.addWidget(self.TopRow)
         if not self.isSkeleton: 
+            self.RegexChecks = CollapsibleBox("Prompt Regex Checks",self.HidingBox, self.addButton(connectFunc=lambda: self.addRow(PromptRegexRow), text="Regex Exp") )
             self.allUserInput  = CollapsibleBox("User Input"       ,self.HidingBox, self.addButton(connectFunc=lambda: self.addRow(UserInputRow), text="User Input"))
         self.DataInput         = CollapsibleBox("Data Input"       ,self.HidingBox, self.addButton(connectFunc=lambda: self.addRow(DataRow     ), text="Data") )
         self.InputRegisters    = CollapsibleBox("Input Registers"  ,self.HidingBox, self.addButton(connectFunc=lambda: self.addRow(RegisterRow ), text="Register"))
@@ -116,7 +117,7 @@ class Test(QtWidgets.QWidget):
 
     def deleteSelf(self): self.parent.deleteTest(self)
 
-    def validateEmpty(self) -> Tuple[bool,str,List[Row]]:
+    def validateEmpty(self) -> (Tuple[bool,str,List[Row]]):
         out=''
 
         # ensure program has INPUTS
@@ -124,6 +125,7 @@ class Test(QtWidgets.QWidget):
         items = items + self.allUserInput.getContents()
         items = items + self.DataInput.getContents()
         items = items + self.InputRegisters.getContents()
+        items = items + self.RegexChecks.getContents()
         v1=True
         if len(items)==0:
             out+="(WARNING) \n - {title} has no inputs".format(title=self.title)
@@ -140,7 +142,7 @@ class Test(QtWidgets.QWidget):
         items=items+itemsO
         return (v1 and v2), out, items
 
-    def validate(self) -> Tuple[bool,str]:
+    def validate(self) -> (Tuple[bool,str]):
         _,outputString,items=self.validateEmpty()
         #verify that every input and output is filled in completely
         blankBoxes=True    
@@ -152,11 +154,12 @@ class Test(QtWidgets.QWidget):
         
         return blankBoxes,outputString
 
-    def validRow(self,item) -> bool:
+    def validRow(self,item) -> (bool):
         if item is UserInputRow: return True
         if item is OutputRow: return True
         if item is RegisterRow: return True
         if item is DataRow: return True
+        if item is PromptRegexRow: return True
         return False
     
     def ExpandAndCollapseAll(self,expand):
@@ -176,11 +179,13 @@ class Test(QtWidgets.QWidget):
         if not self.isSkeleton:
             for anim in self.ExpandAndCollapseAll_AnimationSet(self.allUserInput,expand): toggleAll_animation.addAnimation(anim)
             for anim in self.ExpandAndCollapseAll_AnimationSet(self.Outputs,expand): toggleAll_animation.addAnimation(anim)
+            for anim in self.ExpandAndCollapseAll_AnimationSet(self.RegexChecks,expand): toggleAll_animation.addAnimation(anim)
         self.DataInput.isOpen=expand
         self.InputRegisters.isOpen=expand
         if not self.isSkeleton:
             self.allUserInput.isOpen=expand
             self.Outputs.isOpen=expand
+            self.RegexChecks.isOpen=expand
 
         if expand: 
             for anim in self.ExpandAndCollapseAll_AnimationSet(self.HidingBox,expand, override=self.HidingBox.isOpen, startHeightOffset=hbox_ch): 
@@ -223,10 +228,12 @@ class Test(QtWidgets.QWidget):
         if rowType is None and row is None: raise Exception("either row or rowType must be defined")
         if row is not None: rowType=type(row)
         
+
         if rowType is UserInputRow:  destination=self.allUserInput
         elif rowType is DataRow:     destination=self.DataInput
         elif rowType is RegisterRow: destination=self.InputRegisters
         elif rowType is OutputRow:   destination=self.Outputs
+        elif rowType is PromptRegexRow:   destination=self.RegexChecks
         else: raise Exception("unusable type %s"%rowType)
         
         if row is None: row=rowType(parent=destination,**kwargs)
@@ -255,6 +262,7 @@ class Test(QtWidgets.QWidget):
         self.setJSONKwargs( setFunction=test_setting.AddMemInput, layout=self.DataInput.content_area.layout(), allowedtype=DataRow)
         self.setJSONKwargs( setFunction=test_setting.AddRegInput, layout=self.InputRegisters.content_area.layout(), allowedtype=RegisterRow)
         if not self.isSkeleton: self.setJSONKwargs( setFunction=test_setting.AddOutput, layout=self.Outputs.content_area.layout(), allowedtype=OutputRow)
+        if not self.isSkeleton: self.setJSONKwargs( setFunction=test_setting.AddPromptRegex, layout=self.RegexChecks.content_area.layout(), allowedtype=PromptRegexRow)
         
         return test_setting
         
@@ -268,7 +276,7 @@ class Test(QtWidgets.QWidget):
         """
         items = [layout.itemAt(i).widget() for i in range(layout.count()) ]
         for item in items: 
-            if type(item) is not allowedtype: continue
+            if not issubclass(type(item),Row): continue
             setFunction(**item.getKwargs())
         return
          
@@ -306,6 +314,13 @@ class Test(QtWidgets.QWidget):
                 i=type(item)
                 if i is not OutputRow: continue
                 copy.addRow(OutputRow, item.copy())
+            
+            lay=self.RegexChecks.content_area.layout()
+            items = [lay.itemAt(i).widget() for i in range(lay.count()) ]
+            for item in items: 
+                i=type(item)
+                if i is not PromptRegexRow: continue
+                copy.addRow(PromptRegexRow, item.copy())
             
 
         return copy

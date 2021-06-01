@@ -98,6 +98,29 @@ class TestTopRow(QtWidgets.QWidget):
         if(ExtraCredit) is not None: self.MaxPoints.setValue(OutOf)
         if(OutOf) is not None: self.ExtraCredit.setChecked(ExtraCredit)
 
+class PromptRegexRow(Row):
+    DeleteButton:QtWidgets.QPushButton
+    RegexExp:QtWidgets.QLineEdit
+    def __init__(self,parent=None,text=None): 
+        super().__init__()
+        uic.loadUi(ui.RegexRow, self)
+        self.parent=parent
+        self.DeleteButton.pressed.connect(self.delete)
+        if(text) is not None: self.RegexExp.setText(text)
+
+    def copy(self):
+        copy=PromptRegexRow()
+        copy.RegexExp.setText(self.RegexExp.text())
+        return copy
+    def validate(self):
+        if len(self.RegexExp.text())== 0: 
+            self.RegexExp.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
+            return False
+        else: 
+            self.RegexExp.setStyleSheet("background-color: rgb(255, 255, 255);")
+            return True
+    def getKwargs(self): return {"PromptRegex":self.RegexExp.text()}
+
 class UserInputRow(Row):
     DeleteButton:QtWidgets.QPushButton
     UserInput:QtWidgets.QLineEdit
@@ -119,7 +142,6 @@ class UserInputRow(Row):
         else: 
             self.UserInput.setStyleSheet("background-color: rgb(255, 255, 255);")
             return True
-    
     def getKwargs(self): return {"UserInput":self.UserInput.text()}
     
 class DataRow(Row):

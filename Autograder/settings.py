@@ -118,13 +118,13 @@ class Test():
         self.ExtraCredit= testjs.get("ExtraCredit",False) 
         self.OutOf      = testjs.get("OutOf",0) or (parent.ECTestGrade if self.ExtraCredit else parent.TestGrade)
         self.UserInput  = testjs.get("UserInput",[])
+        self.PromptRegex  = testjs.get("PromptRegex",[])
         
         if type(self.ExtraCredit) is str: self.ExtraCredit= self.ExtraCredit.lower()=="true"
         
         # Get Inputs and Outputs
         self.MemInputs,self.RegInputs = self.setInputs(testjs.get("inputs",[]))
         self.ExpectedAnswers,self.Output=self.setOutputs(testjs["outputs"])
-
     def empty(self,**kwargs):
         self.testName = "Test"
     
@@ -132,6 +132,7 @@ class Test():
         self.ShowLevel=Show.NONE
         self.OutOf = 0
         self.UserInput = []
+        self.PromptRegex=[]
 
         self.MemInputs=[]
         self.RegInputs=[]
@@ -146,6 +147,7 @@ class Test():
         else: testjs["OutOf"]=self.OutOf 
         testjs["ShowLevel"]=Show.NONE.value if self.ShowLevel == self.parent.ShowLevel else self.ShowLevel.value
         testjs["UserInput"]=self.UserInput
+        testjs["PromptRegex"]=self.PromptRegex
         testjs["inputs"]=[i.ToDict() for i in self.MemInputs]
         testjs["inputs"] += [i.ToDict() for i in self.RegInputs if not i.memPointer]
         testjs["outputs"]=[i.ToDict() for i in self.Output]

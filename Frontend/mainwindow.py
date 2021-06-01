@@ -1,3 +1,4 @@
+from Frontend.RowTypes import PromptRegexRow
 from typing import List, Tuple
 from types import resolve_bases
 try: from .ResultsWindow import ResultsWindow
@@ -155,7 +156,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.tabWidget.currentWidget().objectName() =='skeleton': self.numberOfSamples = value
         if self.tabWidget.currentWidget().objectName() =='grading': self.numberOfTests = value
 
-    def tabChanged(self, index) -> None:
+    def tabChanged(self, index) -> (None):
         if self.tabWidget.widget(index).objectName()=='skeleton':
             self.currentTestArea=self.skeletonScrollArea
             self.AllCurrentTests=self.AllSampleTests
@@ -166,7 +167,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.AllCurrentTests=self.AllGradedTests
             self.SkeltonCreatorMode=False
             
-    def wheelEvent(self, *args, **kwargs) -> None: 
+    def wheelEvent(self, *args, **kwargs) -> (None): 
         if self.hasFocus(): return QtWidgets.QComboBox.wheelEvent(self, *args, **kwargs)
     
     def toggleOutputPressed(self):
@@ -244,12 +245,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setStyleSheet(self.styleSheet())
         self.setStyle(self.style())
         return newTest
-    def getTests(self,lay=None) -> List[Test]:
+    def getTests(self,lay=None) -> (List[Test]):
         if lay is None: lay=self.AllCurrentTests
         items = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget()is not None ]
         return items
 
-    def validateWindow(self) -> Tuple[bool,str]:
+    def validateWindow(self) -> (Tuple[bool,str]):
         valid=True
         output=""
 
@@ -272,7 +273,7 @@ class MainWindow(QtWidgets.QMainWindow):
             valid= valid and True
         
         return valid,output
-    def validateTests(self) -> Tuple[bool,str]:
+    def validateTests(self) -> (Tuple[bool,str]):
         output=""
         valid = True
         
@@ -290,7 +291,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 output+='\n'+out
         return valid,output
 
-    def validate(self) -> bool:
+    def validate(self) -> (bool):
         validWind,outputWind=self.validateWindow()
         validTests,outputTests=self.validateTests()
         valid = validWind and validTests
@@ -306,7 +307,7 @@ class MainWindow(QtWidgets.QMainWindow):
             
         return valid
 
-    def convertToSettings(self,layout) -> Tuple[bool,settings]:
+    def convertToSettings(self,layout) -> (Tuple[bool,settings]):
         setting = settings(
                     subroutine_name = self.subroutine_name.text()	,
                     PromptGrade	    = self.PromptPoints.value()		,
@@ -328,7 +329,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return True,setting
 
-    def SaveSettings(self,loc=None,updateSaveLocation=True) -> bool:
+    def SaveSettings(self,loc=None,updateSaveLocation=True) -> (bool):
         self.tabWidget.setCurrentIndex(1)
         if not self.validate(): return False
 
@@ -407,6 +408,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 test.addRow(RegisterRow,**i.ToDict())
             for i in testJS.UserInput: test.addRow(UserInputRow, text=i)
             for i in testJS.Output: test.addRow(OutputRow, **i.ToDict())
+            for i in testJS.PromptRegex: test.addRow(PromptRegexRow, text=i)
 
             test.TopRow.replaceInfo(**testJS.ToDict())
 
@@ -439,7 +441,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lastSaveLocation=os.path.split(submissionPath)[0]+'/'
         
         mips=MipsWorker ( settingsFile=set_file, submissionFile=submissionPath)
-        self.createThread(mips,mips.run,self.runMips_2)
+        mips.run()
+        self.runMips_2()
+        #self.createThread(mips,mips.run,self.runMips_2)
 
     def runMips_2(self):
         outputDisplay(self)

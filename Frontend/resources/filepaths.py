@@ -19,6 +19,7 @@ class ui:
     DataRow      = resource_path( "DataRow.ui")
     TopRow       = resource_path( "TopRow.ui")
     UserInputRow = resource_path( "UserInputRow.ui")
+    RegexRow     = resource_path( "RegexRow.ui")
 
 
 class Icons:
