@@ -8,6 +8,7 @@ def folderGenerate(dir):
         os.makedirs(dir)
 
 if __name__ == '__main__':
+    print(sys.platform)
     folderGenerate("Frontend")
 
     app = QtWidgets.QApplication(sys.argv)

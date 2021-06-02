@@ -20,7 +20,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     outputFile=outputDest
     autograderResults=open(autograderOutput,'w')
     
-    io.printHeader()
+    io.printHeader(outputFile)
 
     if runMips: 
         SPIMerror = mips(concatFile)
@@ -55,9 +55,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
         else: UserInput=[]
 
         # check if test it extra credit
-
         EC_Points[testNum] = test.ExtraCredit
-
 
         # grades student prompt
         if io.PromptGrade > 0:
@@ -151,7 +149,6 @@ def CheckPromptForRegex(prompt:str,regexArr:List[str]):
             total=total+value
     return total
 
-        
 def getStudentPromptAndOutputPerTest(output,testNum):
     # Split and clean MIPS results
     try: StudentPrompt=output[testNum*3].strip()
@@ -184,6 +181,17 @@ def mips(concatFile= "concat.s"):
     subprocess.call("echo \"\" > %s"%outputFile, shell=True)
     subprocess.call("echo \"\" > %serror.txt"%localDir, shell=True)
     
+    try: # PyInstaller creates a temp folder and stores path in _MEIPASS
+        SPIM_PATH = sys._MEIPASS + "\spim"
+    except Exception:
+        SPIM_PATH=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\spim")
+    print(SPIM_PATH)
+    command = ""
+    if sys.platform.startswith('win32') or sys.platform.startswith('cygwin') or sys.platform.startswith('msys'):
+        command = os.path.join(SPIM_PATH, "spim.exe")
+    else:
+        command = 'spim'
+    exceptionPath = SPIM_PATH+"\exceptions.s"
 
     userInput = generateInput()
     
@@ -192,11 +200,10 @@ def mips(concatFile= "concat.s"):
     errorpath=localDir+'error.txt'
     if concatFile == "concat.s": concatpath=localDir+'concat.s'
     else: concatpath = concatFile
-    instruction="spim {baremode} -file {concat} {userinput} >> {output} 2>> {error}".format(
-        baremode=BareMode,
+    instruction="{command} {baremode} -exception_file {exceptionPath} -file {concat} {userinput} >> {output} 2>> {error}".format(
+        command=command, baremode=BareMode, exceptionPath=exceptionPath,
         concat=concatpath,    error=errorpath,
-        userinput=userInput,  output=outputFile
-    )
+        userinput=userInput,  output=outputFile )
     try:
         subprocess.call(instruction,shell=True,timeout=3)
     except subprocess.TimeoutExpired: 

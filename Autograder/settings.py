@@ -83,10 +83,15 @@ class settings():
             for line in test.UserInput:
                 yield line
 
-    def printHeader(self):
-        print("\n\nREQUIRED ROUTINE: %s"%self.SubroutineName)
-        if self.MessageToStudent:
-            print("GENERAL MESSAGE: %s\n"%self.MessageToStudent)
+    def printHeader(self,WriteFile):
+        msg="\n\nREQUIRED ROUTINE: %s"%self.SubroutineName
+        if self.MessageToStudent: msg=msg+"GENERAL MESSAGE: %s\n"%self.MessageToStudent
+
+        try:
+            WriteFile.write(msg)
+        except: 
+            print(msg)
+        
     def ToDict(self):
         io={}
         io["subroutine_name"]=self.SubroutineName
