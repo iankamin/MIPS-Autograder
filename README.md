@@ -23,29 +23,10 @@ However this program can be used as a testbench for MIPS code as well.
 ## **Installation**
 
 ### Mac
-* Install SPIM terminal emulator
-* I dont have access to a Mac so this is all guesses based on research at the moment
-1. You may be able to type ```brew install spim``` into terminal
-
-alternative (Compile SPIM yourself)
-1. download the SPIM source code [here](https://sourceforge.net/p/spimsimulator/code/HEAD/tree/)
-2. go to the install location in terminal
-3. type ```cd spim```
-4. type ```make spim```
-5. to verify type ```make test```
+* currently the compiled program fails to run on Mac. To use this must be run on Mac
 
 ### Windows
-- This program does not work natively on Windows.
-- To use on windows you will need **_Windows Subsystem for Linux (WSL 2)_** and an **_X Server_**
-1. Install WSL2 - <https://www.omgubuntu.co.uk/how-to-install-wsl2-on-windows-10>
-2. install Ubuntu from the windows Store - <https://www.microsoft.com/store/productId/9N6SVWS3RX71>
-3. Setup Ubuntu  
-   - NOTE: while in ubuntu your local system is located at the directory "/mnt/c/Users/"
-4. Install X Server - <https://sourceforge.net/projects/vcxsrv/>
-5. Create Firewall acception for WSL - <https://skeptric.com/wsl2-xserver/>
-6. Open The Ubuntu App
-8. Type ``` sudo apt install spim ```
-7. From this point on follow instructions for use with Linux
+Donwload The latest release and your good to go.
 
 ### Linux
 - To use this program you will need the terminal based spim emulator. 
