@@ -182,16 +182,16 @@ def mips(concatFile= "concat.s"):
     subprocess.call("echo \"\" > %serror.txt"%localDir, shell=True)
     
     try: # PyInstaller creates a temp folder and stores path in _MEIPASS
-        SPIM_PATH = sys._MEIPASS + "\spim"
+        SPIM_PATH = os.path.join(sys._MEIPASS,"spim")
     except Exception:
-        SPIM_PATH=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..\spim")
+        SPIM_PATH=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..","spim")
     print(SPIM_PATH)
     command = ""
     if sys.platform.startswith('win32') or sys.platform.startswith('cygwin') or sys.platform.startswith('msys'):
         command = os.path.join(SPIM_PATH, "spim.exe")
     else:
         command = 'spim'
-    exceptionPath = SPIM_PATH+"\exceptions.s"
+    exceptionPath = os.path.join(SPIM_PATH,"exceptions.s")
 
     userInput = generateInput()
     

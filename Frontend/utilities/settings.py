@@ -23,6 +23,7 @@ class settings(Autograder.settings):
         self.BareMode = kwargs.get("BareMode")
         self.RequiresUserInput = kwargs.get("RequiresUserInput")
         self.Shuffle = kwargs.get("Shuffle",False)
+        self.BannedISA = kwargs.get("BannedISA",[])
         self.AllTests = []
 
     def AddTest(self,test):

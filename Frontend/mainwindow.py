@@ -1,8 +1,5 @@
-from Frontend.RowTypes import PromptRegexRow
 from typing import List, Tuple
 from types import resolve_bases
-try: from .ResultsWindow import ResultsWindow
-except: from ResultsWindow import ResultsWindow
 from PyQt5 import QtCore, QtWidgets,uic
 from PyQt5.QtGui import QFont
 from PyQt5 import QtGui
@@ -11,6 +8,8 @@ from PyQt5.QtCore import QObject, QThread
 from PyQt5.sip import delete
 import os
 import Autograder
+try: from .ResultsWindow import ResultsWindow
+except: from ResultsWindow import ResultsWindow
 try: from .resources.filepaths import resource_path, ui,Icons
 except: from resources.filepaths import resource_path, ui,Icons
 try: from .grader_controller import *
@@ -19,22 +18,36 @@ try: from .utilities import settings,settingsWorker
 except: from utilities import settings,settingsWorker
 try: from .TestLayout import Test
 except: from TestLayout import Test
-try: from .RowTypes import DataRow,RegisterRow,UserInputRow,OutputRow
-except: from RowTypes import DataRow,RegisterRow,UserInputRow,OutputRow
+try: from .RowTypes import DataRow,RegisterRow,UserInputRow,OutputRow,PromptRegexRow
+except: from RowTypes import DataRow,RegisterRow,UserInputRow,OutputRow,PromptRegexRow
 
 class MainWindow(QtWidgets.QMainWindow): 
     AllGradedTests:QtWidgets.QVBoxLayout 
     AllSampleTests:QtWidgets.QVBoxLayout 
     AllCurrentTests:QtWidgets.QVBoxLayout 
     subroutine_name:QtWidgets.QLineEdit
+    subroutine_nameLabel:QtWidgets.QLabel
     EC_TestPoints:QtWidgets.QDoubleSpinBox
+    EC_TestPointsLabel:QtWidgets.QLabel
     TestPoints:QtWidgets.QDoubleSpinBox
+    TestPointsLabel:QtWidgets.QLabel
     PromptPoints:QtWidgets.QDoubleSpinBox
+    PromptPointsLabel:QtWidgets.QLabel
     RequireUserInput:QtWidgets.QCheckBox
+    RequireUserInputLabel:QtWidgets.QLabel
     BareMode:QtWidgets.QCheckBox
+    BareModeLabel:QtWidgets.QLabel
     Shuffle:QtWidgets.QCheckBox
-    ShowLevel:QtWidgets.QComboBox
+    ShuffleLabel:QtWidgets.QLabel
+    JsonStyle:QtWidgets.QComboBox
+    JsonStyleLabel:QtWidgets.QLabel
     message:QtWidgets.QTextEdit
+    messageLabel:QtWidgets.QLabel
+    ShowLevel:QtWidgets.QComboBox
+    BannedISAList:QtWidgets.QListWidget
+    BannedISAAddBtn:QtWidgets.QToolButton
+    BannedISALabel:QtWidgets.QLabel
+
     SaveSettingsBtn:QtWidgets.QPushButton
     LoadSettingsBtn:QtWidgets.QPushButton
     ExpandBtn:QtWidgets.QPushButton
@@ -43,9 +56,8 @@ class MainWindow(QtWidgets.QMainWindow):
     CreateTarBtn:QtWidgets.QPushButton
     AddTestButton:QtWidgets.QPushButton
     fontComboBox:QtWidgets.QFontComboBox
-    JsonStyle:QtWidgets.QComboBox
     resultsDock:QtWidgets.QDockWidget
-    frame:QtWidgets.QFrame
+    sidepanelFrame:QtWidgets.QFrame
     scrollArea:QtWidgets.QScrollArea
     testScroll:QtWidgets.QScrollArea
     testScrollArea:QtWidgets.QWidget
@@ -72,12 +84,6 @@ class MainWindow(QtWidgets.QMainWindow):
     actionHide_Output_Window:QtWidgets.QAction
 
 
-    #1080P size
-    #  Window
-    #     width=1536
-    #     height=801
-
-
     def __init__(self): 
         super(MainWindow, self).__init__() 
         uic.loadUi(ui.mainwindow, self)
@@ -93,9 +99,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.UI_ButtonConnections()
         self.UI_SettingsFrame()
         self.UI_DockWidgets()
-        self.BareMode.pressed.connect(self.tester)
+        #self.BareMode.pressed.connect(self.tester) # this was used to vertify sizes of various objects
         self.UI_TabWidget()
         self.UI_ActionMenu()
+    
     def UI_ButtonConnections(self):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(Icons.downArrow), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -114,6 +121,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ExpandBtn.pressed.connect(self.ExpandAll)
         self.CollapseBtn.pressed.connect(self.CollapseAll)
         self.toggleOutputBtn.pressed.connect(self.toggleOutputPressed)
+        self.BannedISAAddBtn.pressed.connect(self.AddBannedISA)
+        self.BannedISAList.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.BannedISAList.customContextMenuRequested.connect(self.BannedISA_ContextRequest)
+
+        
     def UI_SettingsFrame(self):
         self.ShowLevel.wheelEvent=self.wheelEvent
         self.JsonStyle.wheelEvent=self.wheelEvent
@@ -147,6 +159,25 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actionHide_Output_Window.triggered.connect(self.toggleOutputPressed)
         self.actionValidate_Tests.triggered.connect(self.validate)
 
+    def AddBannedISA(self,text="New Item"):
+        #line=PromptRegexRow()
+        #line.setPlaceholderText("banned ISA instruction (regex is allowed)")
+        #self.BannedISALayout.addChildWidget(line)
+        line=QtWidgets.QListWidgetItem(parent=self.BannedISAList)
+        line.setFlags(line.flags()|QtCore.Qt.ItemIsEditable)
+        line.setText(text)
+        self.BannedISAList.addItem(line)
+    
+    def BannedISA_ContextRequest(self,position):
+        if self.BannedISAList.itemAt(position):
+            popMenu = QtWidgets.QMenu()
+            delAct =QtWidgets.QAction("Delete",self)
+            popMenu.addAction(delAct)
+            
+            delAct.triggered.connect(lambda : self.BannedISAList.takeItem(self.BannedISAList.currentRow()))
+            popMenu.exec_(self.BannedISAList.mapToGlobal(position))
+ 
+
     @property
     def currentNumberOfTests(self):
         if self.tabWidget.currentWidget().objectName() =='skeleton': return self.numberOfSamples
@@ -161,12 +192,33 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentTestArea=self.skeletonScrollArea
             self.AllCurrentTests=self.AllSampleTests
             self.SkeltonCreatorMode=True
+            self.SetEnabledUponTabChange(False)
 
         if self.tabWidget.widget(index).objectName()=='grading':
             self.currentTestArea=self.testScrollArea
             self.AllCurrentTests=self.AllGradedTests
             self.SkeltonCreatorMode=False
-            
+            self.SetEnabledUponTabChange(True)
+    def SetEnabledUponTabChange(self, newState:bool) -> (None):
+        self.EC_TestPoints.setEnabled(newState)
+        self.EC_TestPointsLabel.setEnabled(newState)
+        self.TestPoints.setEnabled(newState)
+        self.TestPointsLabel.setEnabled(newState)
+        self.PromptPoints.setEnabled(newState)
+        self.PromptPointsLabel.setEnabled(newState)
+        self.RequireUserInput.setEnabled(newState)
+        self.RequireUserInputLabel.setEnabled(newState)
+        self.Shuffle.setEnabled(newState)
+        self.ShuffleLabel.setEnabled(newState)
+        self.message.setEnabled(newState)
+        self.messageLabel.setEnabled(newState)
+        self.ShowLevel.setEnabled(newState)
+        self.JsonStyle.setEnabled(newState)
+        self.JsonStyleLabel.setEnabled(newState)
+        self.BannedISAAddBtn.setEnabled(newState)
+        self.BannedISALabel.setEnabled(newState)
+        self.BannedISAList.setEnabled(newState)
+
     def wheelEvent(self, *args, **kwargs) -> (None): 
         if self.hasFocus(): return QtWidgets.QComboBox.wheelEvent(self, *args, **kwargs)
     
@@ -231,6 +283,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.currentNumberOfTests = 0 if self.currentNumberOfTests < 0 else self.currentNumberOfTests
         delete(test)
         self.updateAllTestIndices()
+    def DeleteAllTests(self):
+        lay=self.AllGradedTests
+        tests = self.getTests(self.AllGradedTests)
+        test:Test 
+        for test in tests: 
+            self.deleteTest(test)
+        self.numberOfTests=0
             
     def addTest(self,newTest=None): 
         vlay = self.AllCurrentTests 
@@ -290,7 +349,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 valid = False
                 output+='\n'+out
         return valid,output
-
     def validate(self) -> (bool):
         validWind,outputWind=self.validateWindow()
         validTests,outputTests=self.validateTests()
@@ -308,6 +366,8 @@ class MainWindow(QtWidgets.QMainWindow):
         return valid
 
     def convertToSettings(self,layout) -> (Tuple[bool,settings]):
+        lw = self.BannedISAList
+        bannedISA = [lw.item(i).text()  for i in range(lw.count()) if not (lw.item(i).text() == "New Item")]
         setting = settings(
                     subroutine_name = self.subroutine_name.text()	,
                     PromptGrade	    = self.PromptPoints.value()		,
@@ -318,7 +378,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     Shuffle 		= self.Shuffle.isChecked() 	,
                     RequiresUserInput=self.RequireUserInput.isChecked(),
                     ShowLevel       = self.ShowLevel.currentIndex(),
-                    JsonStyle       = self.JsonStyle.currentIndex())
+                    JsonStyle       = self.JsonStyle.currentIndex(),
+                    BannedISA       = bannedISA)
 
         valid=True
         tests = self.getTests(layout)
@@ -348,14 +409,6 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             with open(loc, 'w') as f: f.write(setting.GetJSON())
         return True
-    
-    def DeleteAllTests(self):
-        lay=self.AllGradedTests
-        tests = self.getTests(self.AllGradedTests)
-        test:Test 
-        for test in tests: 
-            self.deleteTest(test)
-        self.numberOfTests=0
 
     def createThread(self,worker:QObject,workerFunction,*onfinish):
         self.threads.append(QThread())
@@ -395,6 +448,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.JsonStyle.setCurrentIndex( set.JsonStyle)
         self.message.setText(set.MessageToStudent)
         self.ShowLevel.setCurrentIndex(set.ShowLevel.value)
+
+        while self.BannedISAList.count()>0: self.BannedISAList.takeItem(0)
+        for b in set.BannedISA: self.AddBannedISA(text=b)
         
         testJS:settings.set_Test
         for testJS in set.AllTests:

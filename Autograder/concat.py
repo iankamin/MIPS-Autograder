@@ -1,3 +1,4 @@
+from io import FileIO
 import json
 import os, sys
 import re
@@ -84,9 +85,29 @@ def bareModeIllegalSyntax(data, text, errors):
             vvv = inst in line
             if vvv:
                 if notComment(line, ".text"): 
-                    used_inst.append("the pseudoinstruction \' %s\' was used here -> %s\n"%(inst, line.strip()))
+                    used_inst.append("the (NON-BAREMODE) pseudoinstruction \" %s \" was used here -> %s\n"%(inst, line.strip()))
                     runMips=False
     errors.writelines(used_inst)
+
+def bannedISA_SyntaxChecks(text,errors:FileIO):
+    global runMips
+    pseudo_list = io.BannedISA
+    
+    used_inst=[]
+    for inst in pseudo_list:
+        inst=inst.lower()
+        inst=inst.strip()+' '
+        for line in text.split('\n'):
+            linelow=line.lower().strip()
+            found = inst in linelow
+            if found:
+                if notComment(linelow, ".text"): 
+                    used_inst.append("the instruction \" %s\" is banned for this assignement but was used here -> %s\n"%(inst, line.strip()))
+                    runMips=False
+
+    errors.writelines(used_inst)
+
+
 
 def illegalSyscalls(line, syscode):
         if "$v0" not in line: return False
@@ -105,6 +126,7 @@ def illegalSyntax(data, text, bareMode):
     errors=open(localDir + "concatErrors.txt","a+")
     errors.writelines("\n")
     if io.BareMode: bareModeIllegalSyntax(data,text, errors)
+    bannedISA_SyntaxChecks(text,errors)
     
     if ".text" in data.lower(): errors.writelines("your .text section was found somplace it shouldn't be\n")
 
@@ -119,6 +141,7 @@ def illegalSyntax(data, text, bareMode):
         errors.writelines("   Subroutine \" %s \" not found in test section\n"%io.SubroutineName)
 
     illegalLines=[]
+    bannedLines=[]
     for line in text.split('\n'):
         line = line + ' '
         line = line.replace('#', ' #')
@@ -130,6 +153,8 @@ def illegalSyntax(data, text, bareMode):
                 continue
         
         if illegalSyscalls(linelow, 10): errors.writelines("your program is a subroutine it must not terminate with syscall 10\n")
+
+
 
         if not io.RequiresUserInput:
             if illegalSyscalls(linelow, 5) or illegalSyscalls(linelow, 6) or illegalSyscalls(linelow, 7) or illegalSyscalls(linelow, 8) or illegalSyscalls(linelow, 12) : 
@@ -174,6 +199,11 @@ def createSkeletonCode(io:settings,destFile=localDir+"Skeleton.s"):
     with open(localDir + 'template/TemplateSkeleton','r') as f: output=f.read()
     output=output.replace("<TRIALS>",allTrials)
     output=output.replace("<DATA SECTION>",dataSect)
+    if io.BareMode:
+        output=output.replace("<STUDENT_ADDRESS>",'0x10000000')
+    else:
+        output=output.replace("<STUDENT_ADDRESS>",'0x10010000')
+
     with open(destFile,'w') as f: f.write(output)
     return output
 

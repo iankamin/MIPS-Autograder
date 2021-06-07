@@ -38,6 +38,7 @@ class settings():
         self.Shuffle = io.get("Shuffle",False)
         self.JsonStyle = io.get("JsonStyle",0)
         self.RequiresUserInput = io.get("RequiresUserInput",False)
+        self.BannedISA = io.get("BannedISA",[])
         
         if type(self.BareMode) is str: self.BareMode = self.BareMode.lower()=="true"
         if type(self.Shuffle)  is str: self.Shuffle  = self.Shuffle.lower() =="true"
@@ -56,6 +57,7 @@ class settings():
         self.ShowLevel=Show.NONE
         self.BareMode = False
         self.RequiresUserInput = False
+        self.BannedISA=[]
         self.AllTests=[]
 
     def CreateTests(self,alltests_json,io):
@@ -104,6 +106,7 @@ class settings():
         io["ShowLevel"]=self.ShowLevel.value
         io["Shuffle"]=self.Shuffle
         io["JsonStyle"]=self.JsonStyle
+        io["BannedISA"]=self.BannedISA
         io["tests"]=[t.ToDict() for t in self.getTests(canShuffle=False)]
         return io
 

@@ -15,6 +15,5 @@ main:
 
 # your code begins here
 
-
-#.data 0x10010000  # uncomment this line 
+#.data <STUDENT_ADDRESS>  # uncomment this line 
 # your data goes here

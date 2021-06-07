@@ -106,7 +106,13 @@ class PromptRegexRow(Row):
         uic.loadUi(ui.RegexRow, self)
         self.parent=parent
         self.DeleteButton.pressed.connect(self.delete)
-        if(text) is not None: self.RegexExp.setText(text)
+        
+        self.setText=self.RegexExp.setText
+        self.text=self.RegexExp.text
+        self.textChanged=self.RegexExp.textChanged
+        self.placeholderText = self.RegexExp.placeholderText
+        self.setPlaceholderText = self.RegexExp.setPlaceholderText
+        if(text) is not None: self.setText(text)
 
     def copy(self):
         copy=PromptRegexRow()

@@ -9,6 +9,9 @@
     "ShowLevel": 3,
     "Shuffle": false,
     "JsonStyle": 1,
+    "BannedISA": [
+        "add"
+    ],
     "tests": [
         {
             "name": "Test",
