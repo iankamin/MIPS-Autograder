@@ -484,7 +484,7 @@ class MainWindow(QtWidgets.QMainWindow):
         errorDisplay(self,"\n\n\n\n   Autograder in progress")
         
         set_file = resource_path("temp.json")
-        print(set_file)
+        #print(set_file)
         success = self.SaveSettings(set_file)
         if not success: return
         
@@ -493,7 +493,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if not submissionPath: return
         # submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
         # submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/iankamin@buffalo.edu_30_handin.s"
-        print(submissionPath)
+        #print(submissionPath)
         self.lastSaveLocation=os.path.split(submissionPath)[0]+'/'
         
         mips=MipsWorker ( settingsFile=set_file, submissionFile=submissionPath)
@@ -514,7 +514,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if not TarDestination: return
         self.lastSaveLocation=os.path.split(TarDestination)[0]+'/'
         set_file = resource_path("temp.json")
-        print(set_file)
+        #print(set_file)
         success = self.SaveSettings(set_file,updateSaveLocation=False)
         if not success: return
         CreateTAR(set_file, TarDestination,self)

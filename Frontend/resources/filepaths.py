@@ -10,7 +10,6 @@ def resource_path(relative_path):
     return os.path.join(base_path, relative_path)
 
 class ui:
-    print(os.listdir(resource_path(".")))
     mainwindow = resource_path( "mainwindow.ui")
     resultswindow = resource_path( "ResultsWindow.ui")
 

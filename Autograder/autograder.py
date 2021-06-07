@@ -20,7 +20,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     outputFile=outputDest
     autograderResults=open(autograderOutput,'w')
     
-    io.printHeader(outputFile)
+    io.printHeader(autograderResults)
 
     if runMips: 
         SPIMerror = mips(concatFile)

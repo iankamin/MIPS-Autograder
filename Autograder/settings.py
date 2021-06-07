@@ -86,13 +86,9 @@ class settings():
                 yield line
 
     def printHeader(self,WriteFile):
-        msg="\n\nREQUIRED ROUTINE: %s"%self.SubroutineName
+        msg="\nREQUIRED ROUTINE: %s\n"%self.SubroutineName
         if self.MessageToStudent: msg=msg+"GENERAL MESSAGE: %s\n"%self.MessageToStudent
-
-        try:
-            WriteFile.write(msg)
-        except: 
-            print(msg)
+        WriteFile.write(msg+'\n')
         
     def ToDict(self):
         io={}
