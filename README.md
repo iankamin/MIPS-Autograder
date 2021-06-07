@@ -9,79 +9,75 @@ This Program was intended for use by teachers and was designed to be used with [
 ## Table of Contents
 - [MIPS Autograder](#mips-autograder)
   - [Table of Contents](#table-of-contents)
-  - [**Installation**](#installation)
-    - [Mac](#mac)
-    - [Windows](#windows)
-    - [Linux](#linux)
+- [**Installation**](#installation)
+  - [Mac](#mac)
+  - [Windows](#windows)
+  - [Linux](#linux)
     - [Build Instructions](#build-instructions)
-  - [Deployment](#deployment)
   - [Usage Instructions (TODO)](#usage-instructions-todo)
   - [Author](#author)
+  - [Copyright Information](#copyright-information)
 
 However this program can be used as a testbench for MIPS code as well.
 
-## **Installation**
+# **Installation**
 
-### Mac
-* Install SPIM terminal emulator
-* I dont have access to a Mac so this is all guesses based on research at the moment
-1. You may be able to type ```brew install spim``` into terminal
+## Mac
+Currently There is no executable for mac
+1. Clone The Repo
+   ~~~
+   git clone https://github.com/iankamin/MIPS-Autograder
+   ~~~
+2. install required python modules
+   ~~~
+   pip3 install PyQt5
+   ~~~ 
+3. Install Homebrew
+   ~~~
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ~~~
+4. Install SPIM
+   ~~~
+   brew install spim
+   ~~~
+5. run the program
+   ~~~
+   cd MIPS_Autograder
+   python3 
+   ~~~
 
-alternative (Compile SPIM yourself)
-1. download the SPIM source code [here](https://sourceforge.net/p/spimsimulator/code/HEAD/tree/)
-2. go to the install location in terminal
-3. type ```cd spim```
-4. type ```make spim```
-5. to verify type ```make test```
+## Windows
+1. This program has no dependencies for Windows simply download the latest release and you're good to go
+2. Download latest .exe release file here https://github.com/iankamin/MIPS-Autograder/release
+3. double click to run
 
-### Windows
-- This program does not work natively on Windows.
-- To use on windows you will need **_Windows Subsystem for Linux (WSL 2)_** and an **_X Server_**
-1. Install WSL2 - <https://www.omgubuntu.co.uk/how-to-install-wsl2-on-windows-10>
-2. install Ubuntu from the windows Store - <https://www.microsoft.com/store/productId/9N6SVWS3RX71>
-3. Setup Ubuntu  
-   - NOTE: while in ubuntu your local system is located at the directory "/mnt/c/Users/"
-4. Install X Server - <https://sourceforge.net/projects/vcxsrv/>
-5. Create Firewall acception for WSL - <https://skeptric.com/wsl2-xserver/>
-6. Open The Ubuntu App
-8. Type ``` sudo apt install spim ```
-7. From this point on follow instructions for use with Linux
+## Linux
+1.  install SPIM emulator
+    ~~~
+    sudo apt install spim
+    ~~~
+2. Download latest .bin release file here https://github.com/iankamin/MIPS-Autograder/releases
+   
 
-### Linux
-- To use this program you will need the terminal based spim emulator. 
-1. Type ``` sudo apt install spim ```
 
 ### Build Instructions
-If you would like to make modifications to the autograder then the folowing programs are needed
-- SPIM - ```sudo apt install spim```
-- PyQt5 - to run the user interface ( provided with virtualEnv )
-- VirtualEnv
+Instructions for setup and execution without Executable 
+
+- SPIM 
+- PyQt5
 - (optional) Pyinstaller - to generate an executable
-
-
-## Deployment
-With Executable 
-1. Download executable [here](https://github.com/iankamin/MIPS-Autograder/releases)
-2. Go to the install location in terminal
-3. Type ```./MIPS_Autograder.linux```
-
-From Python files
-1. The Required python modules are
-   - VirtualEnv
-   - PyQt5 (included with ```./venv/bin/activate```)
-2. Clone the project
-3. Go to the project root folder in terminal
-4. Type ```python3 MIPS_Autograder.py```
-
-To Create Executable
-1. Clone the project
-
-2. Go to the project root folder in terminal
-3. install pyinstaller
-   - ```pip install pyinstaller```
-4. run pyinstaller
-   - ```pyinstaller MIPS_Autograder.spec```
-
+  ~~~
+  sudo apt install spim
+  pip3 install PyQt5 Pyinstaller
+  ~~~
+- To run the program
+  ~~~
+  python3 MIPS_Autograder.py
+  ~~~
+- to create Executable 
+  ~~~
+  pyinstaller MIPS_Autograder.py
+  ~~~
 
 ## Usage Instructions (TODO)
 
@@ -90,7 +86,10 @@ Explain how to create tests for this system
 ```
 Give an example
 ```
-
 ## Author
 
 * **Ian Kaminer**  
+
+## Copyright Information
+This Project was built upon the MIPS Emulator the source code can be found here
+https://sourceforge.net/p/spimsimulator/code/HEAD/tree/
