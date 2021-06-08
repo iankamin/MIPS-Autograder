@@ -2,6 +2,7 @@ from io import FileIO
 import json
 import os, sys
 import re
+from typing import List, Tuple
 
 try: from .settings import settings,Test,Show
 except: from settings import settings,Test,Show
@@ -11,11 +12,16 @@ StorageDir=localDir
 
 '''
 splits student submission 
-submission[0] - expected data section
-submission[1] - skelton code
-submission[2] - .text section
 '''    
-def getSubmission(sfile):
+def getSubmission(sfile:FileIO) -> (tuple([str,str])):
+    """[summary]
+
+    Args:
+        sfile (FileIO): [description]
+
+    Returns:
+        (data,text) (str,str): returns the data and text sections of the student submission 
+    """
     with open(localDir + "concatErrors.txt",'w') as f: f.write('\n') 
     try:
         with open(sfile,'r') as f: 
@@ -35,45 +41,58 @@ def getSubmission(sfile):
             sub=submission[linestart:s]+'X'*(e-s)+submission[e:lineend]
             problems+=sub+'\n'
         with open (localDir + "concatErrors.txt",'a+') as f: f.write("NON ASCII CHARACTER was found in your program\nAttempting to fix but may cause additional issues\nplease check your code and remove potential problems\nPotential Problems denoted with \'X\' :\n%s\n"%problems)
-        
+    
+    submission = removeComments(submission)
+    submission = AddLineNumbers(submission)
     submission = submission.replace("XXAAXX783908782388289038339",'#XXAAXX783908782388289038339 #')
     submission = submission.replace(".globl",'#.globl')
     submission = submission.replace(".global",'#.global')
-    submission = submission.replace("XXFFVV3793","studentGBG") #just in case its coincidentally used by the student
+    submission = submission.replace("XXFFVV3793","studentGBG") #just in case the unique print marker is used by the student coincidentally used by the student
     submission = submission.split("XXAAXX783908782388289038339")
+    dataSectT,textSect=mergeMemory(submission[0])
+    dataSectB,textSectB=mergeMemory(submission[2])
+    textSect+=textSectB
+
+       
     #print(submission)
-    return submission
+    return '\n'.join(dataSectT),'\n'.join(dataSectB),'\n'.join(textSect)
+def AddLineNumbers(submission):
+    out=''
+    for i,line in enumerate(submission.split('\n')):
+        if line.strip() == "": 
+            out += '\n' #uncomment to increase readability of ASM concat file
+            continue
+        if len(line) < 30: 
+            line = "{0: <30}".format(line)
+        line += " # line %s\n"%(i+1)
+        out = out+line
+    return out
 
 '''
 If the student places .data at the bottom of the code this will move it to the top 
 (hopefully this should preserve the location of data in memory)
 '''
-def mergeMemory(submission):
+def mergeMemory(sub):
     dataConcat = ""#".global main\n"
-
+    dataSect=[]
+    textSect=[]
     # splits expected .text section if .data is found
-    
-    
-    dataCheck = submission[2].split(".data")
-    if len(dataCheck)>1:                    # True is '.data' is present
-        submission[2]=dataCheck[0]          # assumes .text section is first (should be)
-        for sect in dataCheck[1:]:          # adds the term '.data' back after split
-            dataConcat+='\n.data'+sect      
-    
-    #   Gets the static memory data
+    sects = sub.split(".data")
+    sects:list
+    topText=sects.pop(0)
+    if '.text' in topText:
+        textSect.append(topText)
+    for sect in sects:
+        sect = sect.split(".text")
+        dataSect.append(".data"+sect.pop(0))
+        for text in sect:
+            textSect.append(".text"+text)
 
-    S_Header=open(localDir + 'template/TemplateStaticHeader','r')
-    dataConcat+='\n'+S_Header.read()
-    
-    # organizes data found in submission[0] .global is placed at the top everything else is placed at the bottom
-    for line in submission[0].split('\n'):
-        line=line+'\n'
-        if ".global" in line or ".globl" in line:
-            dataConcat= line + dataConcat
-        else:
-            dataConcat+= line
-    
-    return dataConcat,submission[2]
+    return dataSect,textSect
+
+
+
+
 
 def bareModeIllegalSyntax(data, text, errors):
     global runMips
@@ -84,8 +103,8 @@ def bareModeIllegalSyntax(data, text, errors):
         for inst in pseudo_list:
             vvv = inst in line
             if vvv:
-                if notComment(line, ".text"): 
-                    used_inst.append("the (NON-BAREMODE) pseudoinstruction \" %s \" was used here -> %s\n"%(inst, line.strip()))
+                if notComment(line, inst): 
+                    used_inst.append("the (NON-BAREMODE) pseudoinstruction \"%s\" was used here -> %s\n"%(inst.strip(), line.strip()))
                     runMips=False
     errors.writelines(used_inst)
 
@@ -101,8 +120,8 @@ def bannedISA_SyntaxChecks(text,errors:FileIO):
             linelow=line.lower().strip()
             found = inst in linelow
             if found:
-                if notComment(linelow, ".text"): 
-                    used_inst.append("the instruction \" %s\" is banned for this assignement but was used here -> %s\n"%(inst, line.strip()))
+                if notComment(linelow, inst): 
+                    used_inst.append("the instruction \"%s\" is banned for this assignement but was used here -> %s\n"%(inst.strip(), line.strip()))
                     runMips=False
 
     errors.writelines(used_inst)
@@ -128,17 +147,15 @@ def illegalSyntax(data, text, bareMode):
     if io.BareMode: bareModeIllegalSyntax(data,text, errors)
     bannedISA_SyntaxChecks(text,errors)
     
-    if ".text" in data.lower(): errors.writelines("your .text section was found somplace it shouldn't be\n")
-
-
     for line in data.split('\n') :
         linelow=line.lower()
         if io.SubroutineName in linelow:
             if notComment(linelow, io.SubroutineName):
-                errors.writelines("   %s cannot be used as a label in the data section\n"%io.SubroutineName)
+                errors.writelines("   The Required Subroutine \"%s\" cannot be used as a label in the data section -> %s\n"%(io.SubroutineName, line.strip()))
+
 
     if io.SubroutineName not in text:
-        errors.writelines("   Subroutine \" %s \" not found in test section\n"%io.SubroutineName)
+        errors.writelines("   The Required Subroutine \"%s\" was not found in the text section\n"%io.SubroutineName)
 
     illegalLines=[]
     bannedLines=[]
@@ -147,14 +164,7 @@ def illegalSyntax(data, text, bareMode):
         line = line.replace('#', ' #')
         
         linelow=line.lower()
-        if ".text" in linelow:
-            if notComment(linelow, ".text"): 
-                errors.writelines("The only .text should be in the skeleton code\n")
-                continue
-        
-        if illegalSyscalls(linelow, 10): errors.writelines("your program is a subroutine it must not terminate with syscall 10\n")
-
-
+        if illegalSyscalls(linelow, 10): errors.writelines("your program is a subroutine it must not terminate with syscall 10 -> %s\n"%line)
 
         if not io.RequiresUserInput:
             if illegalSyscalls(linelow, 5) or illegalSyscalls(linelow, 6) or illegalSyscalls(linelow, 7) or illegalSyscalls(linelow, 8) or illegalSyscalls(linelow, 12) : 
@@ -162,21 +172,42 @@ def illegalSyntax(data, text, bareMode):
                 illegalLines.append(line)
     
     if len(illegalLines)>0:
-        errors.writelines("You should not be requesting user input in this submission. \nyou program will not run until the following lines are removed or modified\n")
+        errors.writelines("\nYou should not be requesting user input in this submission. \nyou program will not run until the following lines are removed or modified\n")
         for line in illegalLines:
-            errors.writelines("    %s\n"%line)
+            errors.writelines("    %s\n"%line.strip())
 
     errors.close()
         
-def notComment(line, substr)           :
+def notComment(line:str, substr:str) -> (bool):
+    """ determines if a given substring is a comment.
+        The comment marker is '#'
+
+    Args:
+        line (str): the line of text to search through
+        substr (str): the substring to check if is/is not a comment
+
+    Returns:
+        [bool]: False if substring is a comment
+    """
     index=line.find(substr)
     comment=line.find('#')
     if comment == -1: return True
     return index<comment
 
-def removeComments(submission):
+def removeComments(submission:str) -> (str):
+    """removes all comments(#) from a block of code
+
+    Args:
+        submission (str): the original code
+
+    Returns:
+        [str]: the comment free version of code
+    """
     out=""
     for i,line in enumerate(submission.split("\n")):
+        if "XXAAXX783908782388289038339" in line: 
+            out += line+"\n"
+            continue
         if "#" in line:
             line = line[:line.index("#")]
         out += line+"\n"
@@ -221,14 +252,12 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
     
     #with open("mipsCreator.json") as j: io=json.load(j)
 
-    submission = getSubmission(sfile)
-    submission[0] = removeComments(submission[0])
-    submission[1] = removeComments(submission[1])
-    submission[2] = removeComments(submission[2])
-    dataSect,textSect=mergeMemory(submission)
-    output.write(dataSect)
-
-    illegalSyntax(dataSect,textSect,io.BareMode)
+    dataSectT,dataSectB,textSect = getSubmission(sfile)
+    output.write(dataSectT)
+    with open(localDir + 'template/TemplateStaticHeader','r') as h: 
+        output.write('\n'+h.read())
+    
+    illegalSyntax(dataSectT+dataSectB,textSect,io.BareMode)
 
     allTests=""
     memorySect=""
@@ -254,10 +283,11 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
     S_Trailer=open(localDir + 'template/TemplateStaticTrailer','r')
     output.write(S_Trailer.read().replace("<TRIALS>",allTests))
     output.write(textSect)
+    output.write(dataSectB)
     output.close()
     return runMips
 
-def CreateAllInputs(test):
+def CreateAllInputs(test:Test):
     global io
     inputs=""
     memory=""

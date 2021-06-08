@@ -1,5 +1,7 @@
+from io import FileIO
 import json,os,sys,random
 from enum import Enum
+from typing import List
 
 class Show(Enum):
     NONE=0
@@ -17,7 +19,16 @@ class Show(Enum):
 #TODO Prompt Points must ignore extra credit
 #TODO seperate Regular Tests and extra credit Tests
 class settings():
-
+    SubroutineName:str
+    PromptGrade:int
+    TestGrade:int
+    ECTestGrade:int
+    ShowLevel:int
+    MessageToStudent:str
+    BareMode:bool
+    Shuffle:bool
+    JsonStyle:int
+    RequiresUserInput:bool
 
     def __init__(self, file=None,**kwargs):
         if file is None:
@@ -27,13 +38,12 @@ class settings():
         with open(file, 'r') as f: io = json.load(f)
         self.io=io
 
-        self.SubroutineName=io["subroutine_name"]
-        
+        self.SubroutineName=io["subroutine_name"].strip()
         self.PromptGrade=float(io.get("PromptGrade",0))
         self.TestGrade=float(io.get("TestGrade",1))
         self.ECTestGrade=float(io.get("ECTestGrade",self.TestGrade))
         self.ShowLevel=Show(io.get("ShowLevel",0))
-        self.MessageToStudent=io.get("MessageToStudent","")
+        self.MessageToStudent=io.get("MessageToStudent","").strip()
         self.BareMode = io.get("BareMode",False)
         self.Shuffle = io.get("Shuffle",False)
         self.JsonStyle = io.get("JsonStyle",0)
@@ -92,7 +102,7 @@ class settings():
         
     def ToDict(self):
         io={}
-        io["subroutine_name"]=self.SubroutineName
+        io["subroutine_name"]=self.SubroutineName.strip()
         io["PromptGrade"]=self.PromptGrade
         io["TestGrade"]=self.TestGrade
         io["ECTestGrade"]=self.ECTestGrade
@@ -107,7 +117,7 @@ class settings():
         return io
 
 class Test():
-    parent:settings
+    
     # Initialize from JSON
     def __init__(self,parent, testjs=None,testNumber=0,**kwargs):
         self.parent=parent
@@ -247,7 +257,20 @@ class Test():
             if self.addr is not None: d["addr"]=self.addr
             if self.reg is not None: d["reg"]=self.reg.replace("$","")
             return d
-                
+    
+    parent:settings
+    ShowLevel:int
+    testName:str
+    testNumber:int
+    ExtraCredit:bool
+    OutOf:int
+    UserInput:List[str]
+    PromptRegex:List[str]
+    MemInputs:List[__MemInput__]
+    RegInputs:List[__RegInput__]
+    ExpectedAnswers:List[str]
+    Output:List[__Output__]
+
 
 def isInt(val):
     try:

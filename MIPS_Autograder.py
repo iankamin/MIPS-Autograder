@@ -8,7 +8,7 @@ def folderGenerate(dir):
         os.makedirs(dir)
 
 if __name__ == '__main__':
-    print(sys.platform)
+    #print(sys.platform)
     folderGenerate("Frontend")
 
     app = QtWidgets.QApplication(sys.argv)
@@ -21,6 +21,5 @@ if __name__ == '__main__':
     font.setPointSize(12)
     app.setFont(font)
     main = MainWindow()
-    print(main.geometry())
     main.showMaximized()
     sys.exit(app.exec_())

@@ -78,7 +78,7 @@ def CreateTAR(settingsFile, tarDestination,parent):
     try: base_path = sys._MEIPASS+"/Autograder"
     except Exception: base_path = os.path.dirname(__file__)+'/../Autograder'
     destSettingsFile=base_path+"/settings.json"
-    print(settingsFile)
+    #print(settingsFile)
     copyfile(src=settingsFile,dst=destSettingsFile)
     #os.system("make UI_tar")
     make_tarfile(tarDestination, base_path)
