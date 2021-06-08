@@ -386,7 +386,8 @@ def printUserInput(test):
     for line in fl:
         autograderResults.write("   %s\n"%line)
 
-def printOutput(test,StudentOutput, _printHeader):    
+def printOutput(test:Test, StudentOutput, _printHeader:bool):    
+    if len(test.Output)==0: return
     if _printHeader: 
         autograderResults.write("\nOutput -->\n")
     for i, Eoutput in enumerate(test.Output):
