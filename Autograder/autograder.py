@@ -71,11 +71,14 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
                 # if the Prompt Points are empty Then any regex expressions will be graded as part of the Test
                 else: 
                     promptPoints[testNum],regMatches=GradePrompt(StudentPrompt,RegexChecks)
+            dispStudentPrompt=StudentPrompt
+        else :
+            dispStudentPrompt=None
         
         if io.PromptGrade == 0: testPoints[testNum]=(promptPoints[testNum]*len(RegexChecks)) * (test.OutOf / numOfrequiredAns)
 
-        if io.PromptGrade > 0: ShowDetails(testNum+1,test,StudentOutput,StudentPrompt,regMatches)
-        else:                  ShowDetails(testNum+1,test,StudentOutput,RegexChecks=regMatches)
+        if io.PromptGrade > 0: ShowDetails(testNum+1,test,StudentOutput,dispStudentPrompt,regMatches)
+        else:                  ShowDetails(testNum+1,test,StudentOutput,dispStudentPrompt,regMatches)
 
         for i,line in enumerate(StudentOutput):
             try:    ea=expectedAns[i]
@@ -283,7 +286,7 @@ def PrintMipsError(headerErr, lastOutput, SPIMerror, NonAsciiMSG,completionErr,r
     if(runMips):
         with open(localDir + 'error.txt', 'r') as f:  
             MIPSerr = f.read().strip()
-    else: MIPSerr = "program was never run due to potential illegal syscalls"
+    else: MIPSerr = "program was never run due to the use of an illegal instruction"
     if len(MIPSerr)>0:  allErrors += "runtime error:\n   %s\n"%MIPSerr
     if ("Attempt to execute non-instruction" in MIPSerr):
         allErrors += "   ^^^ Your subroutine must terminate with a JUMP RETURN\n\n"

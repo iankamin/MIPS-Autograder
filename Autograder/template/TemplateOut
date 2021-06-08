@@ -11,3 +11,4 @@
     lw $v0, 4($sp)
     
     jal zzzneaten
+    add $0,$0,$0

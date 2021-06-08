@@ -4,12 +4,14 @@
     "TestGrade": 3.0,
     "ECTestGrade": 0.0,
     "MessageToStudent": "",
-    "BareMode": false,
+    "BareMode": true,
     "RequiresUserInput": false,
     "ShowLevel": 3,
     "Shuffle": false,
     "JsonStyle": 0,
-    "BannedISA": [],
+    "BannedISA": [
+        "mult"
+    ],
     "tests": [
         {
             "name": "Test",
@@ -20,7 +22,7 @@
             "PromptRegex": [
                 "...+",
                 "ian",
-                "kamn"
+                "kam.n"
             ],
             "inputs": [],
             "outputs": []

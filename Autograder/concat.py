@@ -251,7 +251,7 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
     runMips=True
     
     #with open("mipsCreator.json") as j: io=json.load(j)
-
+    output.write(".globl main\n.globl %s\n"%(io.SubroutineName))
     dataSectT,dataSectB,textSect = getSubmission(sfile)
     output.write(dataSectT)
     with open(localDir + 'template/TemplateStaticHeader','r') as h: 
