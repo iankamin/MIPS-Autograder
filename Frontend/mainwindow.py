@@ -133,7 +133,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.rawMipsDock=ResultsWindow("MIPS Output",self)
         self.gradeDock=ResultsWindow("Grade Output",self)
         self.concatAsmDock=ResultsWindow("ASM File",self)
+        self.concatAsmDock.CanSave(True,'.s',['*.s','*.asm','*'])
         self.makefileDock=ResultsWindow("Makefile",self)
+        self.makefileDock.CanSave(True)
         self.errorDock=ResultsWindow("Errors",self)
         self.docks=[self.gradeDock,self.rawMipsDock,self.concatAsmDock,self.makefileDock,self.errorDock]
         for dock in self.docks: self.addDockWidget(QtCore.Qt.RightDockWidgetArea, dock)

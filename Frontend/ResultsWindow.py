@@ -28,6 +28,10 @@ class Header(QtWidgets.QWidget):
         self.Title = QtWidgets.QLabel(self,text=title)
         self.Title.setObjectName("Title")
         self.horizontalLayout.addWidget(self.Title)
+        self.saveBtn = QtWidgets.QToolButton(self, text = "Save File")
+        self.saveBtn.setObjectName("saveBtn")
+        self.saveBtn.setVisible(False)
+        self.horizontalLayout.addWidget(self.saveBtn)
         self.popoutBtn = QtWidgets.QToolButton(self)
         self.popoutBtn.setObjectName("popoutBtn")
         self.horizontalLayout.addWidget(self.popoutBtn)
@@ -68,7 +72,8 @@ class ResultsWindow(QtWidgets.QDockWidget):
         self.lineNum.setAlignment(QtCore.Qt.AlignRight)
        # self.verticalScrollBar.sliderMoved.connect(self.verticalMovement)
         self.isClosed=True
-        self.event
+        self.dialog=None
+        self.header.saveBtn.pressed.connect(self.SaveContents)
 
     @property
     def Title(self):
@@ -92,6 +97,27 @@ class ResultsWindow(QtWidgets.QDockWidget):
         self.setFloating(not self.isFloating())    
     def verticalMovement(self) : 
         self.lineNum.verticalScrollBar().setValue(self.verticalScrollBar.value())
+    
+    def SaveContents(self, DefaultSuffix='*', NameFilters=['Everything (*)']):
+        #savedest=QtWidgets.QFileDialog.getSaveFileName(self,"Save Settings as",self.lastSaveLocation,"*.json")
+        if self.dialog is None : return
+        
+        if self.dialog.exec_() == QtWidgets.QDialog.Accepted:
+            saveDest=self.dialog.selectedFiles()[0]
+            with open(saveDest,'w') as sd: sd.write(self.textBox.toPlainText())
+        else:
+            return
+        
+
+    def CanSave(self,canSave:bool, DefaultSuffix='', NameFilters=['Everything (*)']):
+        self.header.saveBtn.setVisible(canSave)
+        
+        self.dialog = QtWidgets.QFileDialog()
+        self.dialog.setFilter(self.dialog.filter() | QtCore.QDir.Hidden)
+        self.dialog.setDefaultSuffix(DefaultSuffix)
+        self.dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+        self.dialog.setNameFilters(NameFilters)
+
 
  
     #def resizevent(self, event): 
