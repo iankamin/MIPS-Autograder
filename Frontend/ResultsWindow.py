@@ -2,6 +2,173 @@ from PyQt5 import QtCore, QtWidgets,uic,QtGui
 try: from .resources.filepaths import ui 
 except: from resources.filepaths import ui 
 
+def format(color, style=''):
+    """
+    Return a QTextCharFormat with the given attributes.
+    """
+    _color = QtGui.QColor()
+    if type(color) is not str:
+        _color.setRgb(color[0], color[1], color[2])
+    else:
+        _color.setNamedColor(color)
+
+    _format = QtGui.QTextCharFormat()
+    _format.setForeground(_color)
+    if 'bold' in style:
+        _format.setFontWeight(QtGui.QFont.Bold)
+    if 'italic' in style:
+        _format.setFontItalic(True)
+
+    return _format
+
+
+# Syntax styles that can be shared by all languages
+
+STYLES = {
+    'isa': format([34,34,127]),
+    'register': format([206, 103, 16], 'bold'),
+    'brace': format('darkGray'),
+    'label': format('orange', 'bold'),
+    'linenum': format('blue'),
+    'string': format([20, 110, 100]),
+    'string2': format([30, 120, 110]),
+    'comment': format([128, 128, 128]),
+    'self': format([150, 85, 140], 'italic'),
+    'numbers': format([100, 150, 190]),
+}
+
+
+class MIPS_Highlighter(QtGui.QSyntaxHighlighter):
+    """Syntax highlighter for the Python language.
+    """
+    # Python isas
+
+
+    isa = [
+        'lui', 'addi?u?' , 'andi?', 'b(eq|ne)',
+        'j(al|r)?', 'l(bu|hu|l|ui|w|b|h)', 'ori?','nor',
+        'slti?u?', 's(r|l)l', 's(b|c|h|w)' , 'subu?', 'multu?',
+        'mf(hi|lo|c0)', 'divu?', 'sra',
+        'syscall', 'ktext', 'text', 'data', 'kdata','globl','global'
+        ]
+
+    # Python registers
+    registers = [
+        "\\$(0|at|sp|gp|fp|ra)", 
+        "\\$(a|v|t|s|k)[0-9]", 
+        "\\$[0-3]?[0-9]"
+    ]
+
+    # Python braces
+    braces = [
+        '\{', '\}', '\(', '\)', '\[', '\]',
+    ]
+
+    def __init__(self, document):
+        QtGui.QSyntaxHighlighter.__init__(self, document)
+
+        # Multi-line strings (expression, flag, style)
+        # FIXME: The triple-quotes in these two lines will mess up the
+        # syntax highlighting from this point onward
+        self.tri_single = (QtCore.QRegExp("'''"), 1, STYLES['string2'])
+        self.tri_double = (QtCore.QRegExp('"""'), 2, STYLES['string2'])
+
+        rules = []
+
+
+        # All other rules
+        rules += [
+
+            # Double-quoted string, possibly containing escape sequences
+            (r'"[^"\\]*(\\.[^"\\]*)*"', 0, STYLES['string']),
+            # Single-quoted string, possibly containing escape sequences
+            (r"'[^'\\]*(\\.[^'\\]*)*'", 0, STYLES['string']),
+
+            # 'def' followed by an identifier
+            (r'[a-zA-Z0-9]*:', 0, STYLES['label']),
+
+            # From '#' until a newline
+
+            # Numeric literals
+            (r'\b[+-]?[0-9]+[lL]?\b', 0, STYLES['numbers']),
+            (r'\b[+-]?0[xX][0-9A-Fa-f]+[lL]?\b', 0, STYLES['numbers']),
+            (r'\b[+-]?[0-9]+(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\b', 0, STYLES['numbers']),
+            
+            (r'#[^\n]*', 0, STYLES['comment']),
+            (r'line [0-9]+', 0, STYLES['linenum']),
+        ]
+        # Keyword, register, and brace rules
+        rules += [(r'\b%s\b' % w, 0, STYLES['isa'])
+                  for w in MIPS_Highlighter.isa]
+        rules += [(r'%s' % o, 0, STYLES['register'])
+                  for o in MIPS_Highlighter.registers]
+        rules += [(r'%s' % b, 0, STYLES['brace'])
+                  for b in MIPS_Highlighter.braces]
+
+        # Build a QRegExp for each pattern
+        self.rules = [(QtCore.QRegExp(pat), index, fmt)
+                      for (pat, index, fmt) in rules]
+
+    def highlightBlock(self, text):
+        """Apply syntax highlighting to the given block of text.
+        """
+        # Do other syntax formatting
+        for expression, nth, format in self.rules:
+            index = expression.indexIn(text, 0)
+
+            while index >= 0:
+                # We actually want the index of the nth match
+                index = expression.pos(nth)
+                length = len(expression.cap(nth))
+                self.setFormat(index, length, format)
+                index = expression.indexIn(text, index + length)
+
+        self.setCurrentBlockState(0)
+
+        # Do multi-line strings
+        in_multiline = self.match_multiline(text, *self.tri_single)
+        if not in_multiline:
+            in_multiline = self.match_multiline(text, *self.tri_double)
+
+    def match_multiline(self, text, delimiter, in_state, style):
+        """Do highlighting of multi-line strings. ``delimiter`` should be a
+        ``QRegExp`` for triple-single-quotes or triple-double-quotes, and
+        ``in_state`` should be a unique integer to represent the corresponding
+        state changes when inside those strings. Returns True if we're still
+        inside a multi-line string when this function is finished.
+        """
+        # If inside triple-single quotes, start at 0
+        if self.previousBlockState() == in_state:
+            start = 0
+            add = 0
+        # Otherwise, look for the delimiter on this line
+        else:
+            start = delimiter.indexIn(text)
+            # Move past this match
+            add = delimiter.matchedLength()
+
+        # As long as there's a delimiter match on this line...
+        while start >= 0:
+            # Look for the ending delimiter
+            end = delimiter.indexIn(text, start + add)
+            # Ending delimiter on this line?
+            if end >= add:
+                length = end - start + add + delimiter.matchedLength()
+                self.setCurrentBlockState(0)
+            # No; multi-line string
+            else:
+                self.setCurrentBlockState(in_state)
+                length = len(text) - start + add
+            # Apply formatting
+            self.setFormat(start, length, style)
+            # Look for the next match
+            start = delimiter.indexIn(text, start + length)
+
+        # Return True if still inside a multi-line string, False otherwise
+        if self.currentBlockState() == in_state:
+            return True
+        else:
+            return False
 
 class Header(QtWidgets.QWidget):
     def __init__(self,title):
@@ -118,7 +285,8 @@ class ResultsWindow(QtWidgets.QDockWidget):
         self.dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
         self.dialog.setNameFilters(NameFilters)
 
-
+    def SpimSyntax(self):
+        self.highlighter=MIPS_Highlighter(self.textBox.document())
  
     #def resizevent(self, event): 
 #        self.scrollArea.setMinimumWidth(self.width())
@@ -169,4 +337,6 @@ class ResultsWindow(QtWidgets.QDockWidget):
         else: self.lineNum.hide()
         self.show()
         return True
+
+
 

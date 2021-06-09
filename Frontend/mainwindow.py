@@ -102,6 +102,9 @@ class MainWindow(QtWidgets.QMainWindow):
         #self.BareMode.pressed.connect(self.tester) # this was used to vertify sizes of various objects
         self.UI_TabWidget()
         self.UI_ActionMenu()
+        self.PromptPoints.setVisible(False)
+        self.PromptPointsLabel.setVisible(False)
+
     
     def UI_ButtonConnections(self):
         icon = QtGui.QIcon()
@@ -133,6 +136,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.rawMipsDock=ResultsWindow("MIPS Output",self)
         self.gradeDock=ResultsWindow("Grade Output",self)
         self.concatAsmDock=ResultsWindow("ASM File",self)
+        self.concatAsmDock.SpimSyntax()
         self.concatAsmDock.CanSave(True,'.s',['*.s','*.asm','*'])
         self.makefileDock=ResultsWindow("Makefile",self)
         self.makefileDock.CanSave(True)

@@ -49,8 +49,9 @@ def getSubmission(sfile:FileIO) -> (tuple([str,str])):
     submission = submission.replace(".global",'#.global')
     submission = submission.replace("XXFFVV3793","studentGBG") #just in case the unique print marker is used by the student coincidentally used by the student
     submission = submission.split("XXAAXX783908782388289038339")
-    dataSectT,textSect=mergeMemory(submission[0])
-    dataSectB,textSectB=mergeMemory(submission[2])
+    dataSectT,textSect=mergeMemory(submission[0].strip())
+    submission[2]='\n'.join(submission[2].split('\n')[1:])
+    dataSectB,textSectB=mergeMemory(submission[2].strip())
     textSect+=textSectB
 
        
