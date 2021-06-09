@@ -195,8 +195,8 @@ def generateInput():
 
 def mips(concatFile= "concat.s"):
     global io,outputFile
-    subprocess.call("echo \"\" > %s"%outputFile, shell=True)
-    subprocess.call("echo \"\" > %serror.txt"%localDir, shell=True)
+    if os.path.exists("%serror.txt"%localDir): os.remove("%serror.txt"%localDir)
+    if os.path.exists(outputFile): os.remove(outputFile)
     
     try: # PyInstaller creates a temp folder and stores path in _MEIPASS
         SPIM_PATH = os.path.join(sys._MEIPASS,"spim")
@@ -208,7 +208,8 @@ def mips(concatFile= "concat.s"):
         command = os.path.join(SPIM_PATH, "spim.exe")
     else:
         command = 'spim'
-    exceptionPath = os.path.join(SPIM_PATH,"exceptions.s")
+
+    exceptionPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "template","exceptions.s")
 
     userInput = generateInput()
     
@@ -300,6 +301,7 @@ def PrintMipsError(headerErr, lastOutput, SPIMerror, NonAsciiMSG,completionErr,r
     else: 
         autograderResults.write("    None")
     autograderResults.write("\n=============================\n\n")
+    
 
 
 def ShowInput(test):
