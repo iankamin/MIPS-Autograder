@@ -1,25 +1,69 @@
-{   
-    "subroutine_name":"getInput",
-    "PromptGrade":"2",
-    "TestGrade":"2",
-    "tests":[
-        {   
-            "ShowLevel":3,
-            "UserInput":[ "1234+4568" ],
-            "inputs":[ { "reg":"a0", "val":"0x10000300" } ],
-            "outputs":[ { "addr":"0x10000300", "CorrectAnswer": "1234+4568"} ]
+{
+    "subroutine_name": "getInput",
+    "PromptGrade": 0.0,
+    "TestGrade": 2.0,
+    "ECTestGrade": 2.0,
+    "MessageToStudent": "",
+    "BareMode": false,
+    "RequiresUserInput": true,
+    "ShowLevel": 0,
+    "Shuffle": false,
+    "JsonStyle": 0,
+    "BannedISA": [],
+    "tests": [
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 3,
+            "UserInput": [
+                "1234+4568"
+            ],
+            "PromptRegex": [],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 4,
+                    "CorrectAnswer": "1234+4568",
+                    "addr": "0x10000300"
+                }
+            ]
         },
-        {   
-            "ShowLevel":0,
-            "UserInput":[ "12+45" ],
-            "inputs":[ { "reg":"a0", "val":"0x10000400" } ],
-            "outputs":[ { "addr":"0x10000400", "CorrectAnswer": "12+45"} ]
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "12+45"
+            ],
+            "PromptRegex": [],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 4,
+                    "CorrectAnswer": "12+45",
+                    "addr": "0x10000400"
+                }
+            ]
         },
-        {   
-            "ShowLevel":0,
-            "UserInput":[ "12-45" ],
-            "inputs":[ { "reg":"a0", "val":"0x10000500" } ],
-            "outputs":[ { "addr":"0x10000500", "CorrectAnswer": "12-45"} ]
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [
+                "12-45"
+            ],
+            "PromptRegex": [],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 4,
+                    "CorrectAnswer": "12-45",
+                    "addr": "0x10000500"
+                }
+            ]
         }
     ]
 }

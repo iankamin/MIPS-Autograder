@@ -1,6 +1,5 @@
 {
     "subroutine_name": "calculator",
-    "PromptGrade": 2.0,
     "TestGrade": 2.0,
     "ECTestGrade": 0.5,
     "MessageToStudent": "",

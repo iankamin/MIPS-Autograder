@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 import sys,os
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QIcon
 from Frontend.mainwindow import MainWindow
 
 def folderGenerate(dir):
@@ -9,9 +10,11 @@ def folderGenerate(dir):
 
 if __name__ == '__main__':
     #print(sys.platform)
-    folderGenerate("Frontend")
+    #folderGenerate("Frontend")
 
     app = QtWidgets.QApplication(sys.argv)
+    icon = QIcon('icon.ico')
+    app.setWindowIcon(icon)
     #app.setStyle('macintosh')
     #app.setStyle('windows')
     #app.setStyle('windowsvista')
@@ -21,5 +24,6 @@ if __name__ == '__main__':
     font.setPointSize(12)
     app.setFont(font)
     main = MainWindow()
+    main.setWindowIcon(icon)
     main.showMaximized()
     sys.exit(app.exec_())

@@ -46,7 +46,12 @@ UI_tar:
 	-make UI_clean
 	@tar -cf Frontend/grader_data/UI.tar Autograder
 	
+debian:
+	pyinstaller MIPS_Autograder.spec
+	mv dist/MIPS_Autograder dist/MIPS_Autograder.deb
 
+Windows:
+	pyinstaller MIPS_Autograder.spec
 
 
 

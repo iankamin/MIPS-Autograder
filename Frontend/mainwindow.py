@@ -1,7 +1,5 @@
 from typing import List, Tuple
-from types import resolve_bases
 from PyQt5 import QtCore, QtWidgets,uic
-from PyQt5.QtGui import QFont
 from PyQt5 import QtGui
 from PyQt5.QtCore import QObject, QThread
 

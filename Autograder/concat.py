@@ -81,13 +81,12 @@ def mergeMemory(sub):
     sects = sub.split(".data")
     sects:list
     topText=sects.pop(0)
-    if '.text' in topText:
-        textSect.append(topText)
+    textSect.append(topText)
     for sect in sects:
         sect = sect.split(".text")
-        dataSect.append(".data"+sect.pop(0))
+        dataSect.append("\n.data"+sect.pop(0))
         for text in sect:
-            textSect.append(".text"+text)
+            textSect.append("\n.text"+text)
 
     return dataSect,textSect
 
@@ -255,8 +254,6 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
     output.write(".globl main\n.globl %s\n"%(io.SubroutineName))
     dataSectT,dataSectB,textSect = getSubmission(sfile)
     output.write(dataSectT)
-    with open(localDir + 'template/TemplateStaticHeader','r') as h: 
-        output.write('\n'+h.read())
     
     illegalSyntax(dataSectT+dataSectB,textSect,io.BareMode)
 
@@ -279,12 +276,15 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
         allTests+=body
         #print(allTests)
 
-    output.write(memorySect)
 
     S_Trailer=open(localDir + 'template/TemplateStaticTrailer','r')
     output.write(S_Trailer.read().replace("<TRIALS>",allTests))
     output.write(textSect)
     output.write(dataSectB)
+    
+    with open(localDir + 'template/TemplateStaticHeader','r') as h: 
+        output.write('\n'+h.read())
+    output.write(memorySect)
     output.close()
     return runMips
 
