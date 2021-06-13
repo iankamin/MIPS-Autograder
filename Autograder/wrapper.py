@@ -9,18 +9,34 @@ except: from autograder import autograder
 
 
 
-def runGrader(settingsFile="settings.json",submissionFile="submission.s",
-              outputFile="output.txt",concatFile="concat.s",autograderOutput="graderResults.txt",
-              ShowAll=False,printResults=True):
+def runGrader(
+    settingsFile="settings.json",
+    submissionFile="submission.s",
+    outputFile="output.txt",
+    concatFile="concat.s",
+    autograderOutput="graderResults.txt",
+    ShowAll=False,  
+    printResults=True,
+    IO=None):
     try: _ShowAll=sys.argv[1]
     except: _ShowAll=False # overrides json "show" and shows the StudentOutputs of every test
     _ShowAll=_ShowAll or ShowAll
 
-    io=settings(settingsFile)
+    if IO is None: io=settings(settingsFile)
+    else: io=IO
 
-    runMips=concat(IO=io,sfile=submissionFile,concatFile=concatFile)
-    autograder(IO=io,_ShowAll=_ShowAll, runMips=runMips,outputDest=outputFile, concatFile=concatFile,
-    autograderOutput=autograderOutput,printResults=printResults)
+    runMips=concat(
+        IO=io,
+        sfile=submissionFile,
+        concatFile=concatFile)
+    autograder(
+        IO=io,
+        _ShowAll=_ShowAll,
+        runMips=runMips,
+        outputDest=outputFile, 
+        concatFile=concatFile,
+        autograderOutput=autograderOutput,
+        printResults=printResults)
 
 
 if __name__ == "__main__":

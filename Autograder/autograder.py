@@ -173,10 +173,25 @@ def getStudentPromptAndOutputPerTest(output,testNum):
     try: StudentOutput=output[(testNum*3)+1]
     except: StudentOutput = "<NO OUTPUT FOUND>"
     
+    StudentPrompt=RemoveErrorsFromPrompt(StudentPrompt)
     StudentPrompt=StudentPrompt.replace('\n','\n   ')
     while '\n\n' in StudentOutput: StudentOutput = StudentOutput.replace('\n\n','\n')
     StudentOutput = [r.strip() for r in StudentOutput.split('\n')]
     return StudentOutput,StudentPrompt.strip()
+
+def RemoveErrorsFromPrompt(prompt):
+    pattern=r"Exception .* occurred and ignored.*"
+    prompt = re.sub(pattern, '',prompt)
+    pattern=r"\[0x[0-9abcdefABCDEF]{8}\]\t0x[0-9abcdefABCDEF]{8}  jal 0x[0-9abcdefABCDEF]{8} \[.+\] +; [0-9]+: jal .+"
+    prompt = re.sub(pattern, '',prompt)
+    pattern=r"\[0x[0-9abcdefABCDEF]{8}\]\t0x[0-9abcdefABCDEF]{8} [ $,a-zA-Z0-9\t]*\[[a-zA-Z0-9]*\] *;.*$"
+    prompt = re.sub(pattern, '',prompt)
+    pattern=r"Attempt to execute non-instruction at 0x[0-9abcdefABCDEF]{8}.*"
+    prompt = re.sub(pattern, '',prompt)
+    pattern=r"Instruction references undefined symbol at 0x[0-9abcdefABCDEF]{8}.*"
+    prompt = re.sub(pattern, '',prompt)
+    return prompt
+
 
 def generateInput():
     global io
@@ -243,7 +258,7 @@ def GetMipsOutput():
             asc=hex(int.from_bytes(output[s:e],"big"))
             output=output[:s]+bytes('<NON ASCII DATA>( %s )'%asc,'utf-8')+output[e:]
 
-        NoneAsciiMSG = "non ascii characters were printed"
+        NoneAsciiMSG = "Non-Ascii Characters Were Printed"
         #output=re.sub(bytes('[^\x00-\x7F]+','utf-8'),bytes('<NON ASCII DATA>','utf-8'), output)
         output=output.decode('utf-8','replace')
         with open(localDir + 'output2.txt',mode='w') as f: f.write(output)
@@ -253,12 +268,12 @@ def GetMipsOutput():
     
     header_error=output.pop(0)
     header_error=header_error.split('\n',6)     # a JAL instruction is missing a corresponding label
-    header_error=header_error[6].strip() if len(header_error)>=6 else ""
+    header_error=header_error[6].strip() if len(header_error)>6 else ""
     
     return output,header_error,NoneAsciiMSG
 
 def PrintMipsError(headerErr, lastOutput, SPIMerror, NonAsciiMSG,completionErr,runMips):
-    autograderResults.write("\nthe following errors occurred\n")
+    autograderResults.write("\nThe Following Errors Occurred\n")
     autograderResults.write("=============================\n")
     allErrors=""
     # errors/Warnings that occurred while concatenating the submission
@@ -287,8 +302,8 @@ def PrintMipsError(headerErr, lastOutput, SPIMerror, NonAsciiMSG,completionErr,r
     if(runMips):
         with open(localDir + 'error.txt', 'r') as f:  
             MIPSerr = f.read().strip()
-    else: MIPSerr = "program was never run due to the use of an illegal instruction"
-    if len(MIPSerr)>0:  allErrors += "runtime error:\n   %s\n"%MIPSerr
+    else: MIPSerr = "program was never run due to issues during setup"
+    if len(MIPSerr)>0:  allErrors += "Runtime Errors:\n    %s\n"%MIPSerr
     if ("Attempt to execute non-instruction" in MIPSerr):
         allErrors += "   ^^^ Your subroutine must terminate with a JUMP RETURN\n\n"
     elif len(MIPSerr)>0: allErrors+='\n'

@@ -43,7 +43,7 @@ class Test(Autograder.Test):
         self.testName   = kwargs.get("testName","Test")
         self.ExtraCredit= kwargs.get("ExtraCredit",False) 
         self.OutOf      = kwargs.get("OutOf", 0)
-        if self.OutOf==0:self.OutOf=self.parent.ECTestGrade if self.ExtraCredit else self.parent.TestGrade
+        if self.OutOf==0: self.OutOf=self.parent.ECTestGrade if self.ExtraCredit else self.parent.TestGrade
         
         self.UserInput  = []
         self.MemInputs=[]

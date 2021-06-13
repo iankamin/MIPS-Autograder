@@ -25,7 +25,6 @@ main:
     syscall
 
 # modifications above this line will be ignored on autograder
-#XXAAXX783908782388289038339B do not modify or duplicate this line
 
 #your code begins here
 

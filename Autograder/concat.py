@@ -13,6 +13,7 @@ StorageDir=localDir
 '''
 splits student submission 
 '''    
+runMips=True
 def getSubmission(sfile:FileIO) -> (tuple([str,str])):
     """[summary]
 
@@ -22,13 +23,13 @@ def getSubmission(sfile:FileIO) -> (tuple([str,str])):
     Returns:
         (data,text) (str,str): returns the data and text sections of the student submission 
     """
-    with open(localDir + "concatErrors.txt",'w') as f: f.write('\n') 
+    global runMips
+    errors = open(localDir + "concatErrors.txt",'w')
+    errors.write('\n') 
     try:
-        with open(sfile,'r') as f: 
-            submission=f.read()
+        with open(sfile,'r') as f: submission=f.read()
     except:
-        with open(sfile,'rb') as f: 
-            submission=f.read()
+        with open(sfile,'rb') as f: submission=f.read()
         
         probIndices=[(m.start(0),m.end(0)) for m in re.finditer(bytes('[^\x00-\x7F]+','utf-8'),submission)]
         
@@ -40,7 +41,7 @@ def getSubmission(sfile:FileIO) -> (tuple([str,str])):
             linestart,lineend=submission[:s].rfind('\n')+1,submission[e:].find('\n')+e
             sub=submission[linestart:s]+'X'*(e-s)+submission[e:lineend]
             problems+=sub+'\n'
-        with open (localDir + "concatErrors.txt",'a+') as f: f.write("NON ASCII CHARACTER was found in your program\nAttempting to fix but may cause additional issues\nplease check your code and remove potential problems\nPotential Problems denoted with \'X\' :\n%s\n"%problems)
+        errors.write("NON ASCII CHARACTER was found in your program\nAttempting to fix but may cause additional issues\nplease check your code and remove potential problems\nPotential Problems denoted with \'X\' :\n%s\n"%problems)
     
     submission = removeComments(submission)
     submission = AddLineNumbers(submission)
@@ -49,11 +50,18 @@ def getSubmission(sfile:FileIO) -> (tuple([str,str])):
     submission = submission.replace(".global",'#.global')
     submission = submission.replace("XXFFVV3793","studentGBG") #just in case the unique print marker is used by the student coincidentally used by the student
     submission = submission.split("XXAAXX783908782388289038339")
+
+    if len(submission) != 3:
+        errors.writelines("Unable to find Skeleton Code. \nI Give Up.\n")
+        runMips=False
+        errors.close()
+        return None,None,None
+
+    errors.close()  
     dataSectT,textSect=mergeMemory(submission[0].strip())
     submission[2]='\n'.join(submission[2].split('\n')[1:])
     dataSectB,textSectB=mergeMemory(submission[2].strip())
     textSect+=textSectB
-
        
     #print(submission)
     return '\n'.join(dataSectT),'\n'.join(dataSectB),'\n'.join(textSect)
@@ -238,7 +246,6 @@ def createSkeletonCode(io:settings,destFile=localDir+"Skeleton.s"):
     with open(destFile,'w') as f: f.write(output)
     return output
 
-
 def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
     global inputs,io
     global runMips,output,S_Header,S_Trailer
@@ -253,6 +260,9 @@ def concat(IO=None,sfile="submission.s",concatFile="concat.s", skeleton=False):
     #with open("mipsCreator.json") as j: io=json.load(j)
     output.write(".globl main\n.globl %s\n"%(io.SubroutineName))
     dataSectT,dataSectB,textSect = getSubmission(sfile)
+
+    if runMips==False: return False
+    
     output.write(dataSectT)
     
     illegalSyntax(dataSectT+dataSectB,textSect,io.BareMode)
