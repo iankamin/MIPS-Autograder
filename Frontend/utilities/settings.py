@@ -15,6 +15,7 @@ class settings(Autograder.settings):
         self.io=None
         self.SubroutineName=kwargs.get("subroutine_name")
         self.PromptGrade=kwargs.get("PromptGrade",0)
+        self.PromptGrade=0
         self.TestGrade=kwargs.get("TestGrade",0)
         self.ECTestGrade=kwargs.get("ECTestGrade",self.TestGrade)
         self.MessageToStudent=kwargs.get("MessageToStudent","")

@@ -40,6 +40,7 @@ class settings():
 
         self.SubroutineName=io["subroutine_name"].strip()
         self.PromptGrade=float(io.get("PromptGrade",0))
+        self.PromptGrade=0
         self.TestGrade=float(io.get("TestGrade",1))
         self.ECTestGrade=float(io.get("ECTestGrade",self.TestGrade))
         self.ShowLevel=Show(io.get("ShowLevel",0))

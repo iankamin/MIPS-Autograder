@@ -27,9 +27,11 @@ def getSubmission(sfile:FileIO) -> (tuple([str,str])):
     errors = open(localDir + "concatErrors.txt",'w')
     errors.write('\n') 
     try:
-        with open(sfile,'r') as f: submission=f.read()
+        with open(sfile,'r') as f: 
+            submission=f.read()
     except:
-        with open(sfile,'rb') as f: submission=f.read()
+        with open(sfile,'rb') as f:
+            submission=f.read()
         
         probIndices=[(m.start(0),m.end(0)) for m in re.finditer(bytes('[^\x00-\x7F]+','utf-8'),submission)]
         
@@ -65,7 +67,7 @@ def getSubmission(sfile:FileIO) -> (tuple([str,str])):
        
     #print(submission)
     return '\n'.join(dataSectT),'\n'.join(dataSectB),'\n'.join(textSect)
-def AddLineNumbers(submission):
+def AddLineNumbers(submission:str):
     out=''
     for i,line in enumerate(submission.split('\n')):
         if line.strip() == "": 
@@ -81,7 +83,7 @@ def AddLineNumbers(submission):
 If the student places .data at the bottom of the code this will move it to the top 
 (hopefully this should preserve the location of data in memory)
 '''
-def mergeMemory(sub):
+def mergeMemory(sub:str):
     dataConcat = ""#".global main\n"
     dataSect=[]
     textSect=[]
@@ -102,7 +104,7 @@ def mergeMemory(sub):
 
 
 
-def bareModeIllegalSyntax(data, text, errors):
+def bareModeIllegalSyntax(data:str, text:str, errors:FileIO):
     global runMips
     pseudo_list = ['li ', 'la ', 'move ', 'mov ', 'blt ', 'ble ','bgt ','bge ' ] 
 
@@ -116,12 +118,13 @@ def bareModeIllegalSyntax(data, text, errors):
                     runMips=False
     errors.writelines(used_inst)
 
-def bannedISA_SyntaxChecks(text,errors:FileIO):
+def bannedISA_SyntaxChecks(text:str,errors:FileIO):
     global runMips
     pseudo_list = io.BannedISA
     
     used_inst=[]
     for inst in pseudo_list:
+        inst:str
         inst=inst.lower()
         inst=inst.strip()+' '
         for line in text.split('\n'):
@@ -136,7 +139,7 @@ def bannedISA_SyntaxChecks(text,errors:FileIO):
 
 
 
-def illegalSyscalls(line, syscode):
+def illegalSyscalls(line:str, syscode:str):
         if "$v0" not in line: return False
 
         while '0x0' in line: line= line.replace('0x0','0x')
@@ -147,7 +150,7 @@ def illegalSyscalls(line, syscode):
             if "addi" in line and notComment(line,"addi"): return True
         return False
 
-def illegalSyntax(data, text, bareMode):
+def illegalSyntax(data:str, text:str, bareMode:bool):
     global io
     global runMips
     errors=open(localDir + "concatErrors.txt","a+")
@@ -161,13 +164,12 @@ def illegalSyntax(data, text, bareMode):
             if notComment(linelow, io.SubroutineName):
                 errors.writelines("   The Required Subroutine \"%s\" cannot be used as a label in the data section -> %s\n"%(io.SubroutineName, line.strip()))
 
-
     if io.SubroutineName not in text:
         errors.writelines("   The Required Subroutine \"%s\" was not found in the text section\n"%io.SubroutineName)
 
     illegalLines=[]
-    bannedLines=[]
     for line in text.split('\n'):
+        line:str
         line = line + ' '
         line = line.replace('#', ' #')
         
@@ -311,14 +313,14 @@ def CreateAllInputs(test:Test):
 
     return inputs,memory
         
-def CreateAllOutputs(test):
+def CreateAllOutputs(test:Test):
     outputs=""
 
     for out in test.Output: 
         outputs+=createOutput(out)
     return outputs
 
-def createInputMem(_addr,_data,_type):
+def createInputMem(_addr:str,_data:str,_type:str):
     _type='.'+_type.replace(".",'')
     with open(localDir + "template/TemplateInitMemory",'r') as f:
         contents=f.read()
@@ -327,7 +329,7 @@ def createInputMem(_addr,_data,_type):
         contents=contents.replace("<data>",_data)
         return contents
 
-def createInputReg(_reg,_val):
+def createInputReg(_reg:str,_val:str):
     _reg='$'+_reg.replace('$','')
     if '0x' in _val.strip():
         _val= '0x'+_val[2:].zfill(8)
@@ -345,7 +347,7 @@ def createInputReg(_reg,_val):
         
         return contents
 
-def createOutput(out):
+def createOutput(out:Test.__Output__):
     with open(localDir + "template/TemplateOut",'r') as f:
         contents=f.read()
         contents=contents.replace("<upper_addr>",out.upper_addr)

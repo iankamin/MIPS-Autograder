@@ -166,7 +166,7 @@ def CheckPromptForRegex(prompt:str,regexArr:List[str]):
             matchPairs.append((regex,None))
     return total,matchPairs
 
-def getStudentPromptAndOutputPerTest(output,testNum):
+def getStudentPromptAndOutputPerTest(output,testNum:List[str]):
     # Split and clean MIPS results
     try: StudentPrompt=output[testNum*3].strip()
     except: StudentPrompt = "<NO PROMPT FOUND>"
@@ -182,14 +182,13 @@ def getStudentPromptAndOutputPerTest(output,testNum):
 def RemoveErrorsFromPrompt(prompt):
     pattern=r"Exception .* occurred and ignored.*"
     prompt = re.sub(pattern, '',prompt)
-    pattern=r"\[0x[0-9abcdefABCDEF]{8}\]\t0x[0-9abcdefABCDEF]{8}  jal 0x[0-9abcdefABCDEF]{8} \[.+\] +; [0-9]+: jal .+"
-    prompt = re.sub(pattern, '',prompt)
     pattern=r"\[0x[0-9abcdefABCDEF]{8}\]\t0x[0-9abcdefABCDEF]{8} [ $,a-zA-Z0-9\t]*\[[a-zA-Z0-9]*\] *;.*$"
     prompt = re.sub(pattern, '',prompt)
     pattern=r"Attempt to execute non-instruction at 0x[0-9abcdefABCDEF]{8}.*"
     prompt = re.sub(pattern, '',prompt)
     pattern=r"Instruction references undefined symbol at 0x[0-9abcdefABCDEF]{8}.*"
     prompt = re.sub(pattern, '',prompt)
+    if len(prompt.strip()) == 0: prompt = "<NO PROMPT FOUND>"
     return prompt
 
 
@@ -272,7 +271,7 @@ def GetMipsOutput():
     
     return output,header_error,NoneAsciiMSG
 
-def PrintMipsError(headerErr, lastOutput, SPIMerror, NonAsciiMSG,completionErr,runMips):
+def PrintMipsError(headerErr:str, lastOutput, SPIMerror, NonAsciiMSG,completionErr,runMips):
     autograderResults.write("\nThe Following Errors Occurred\n")
     autograderResults.write("=============================\n")
     allErrors=""
@@ -368,18 +367,18 @@ def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=N
     autograderResults.write("%s %i"%(test.testName,test.testNumber))
 
 
-def PrintMemInputs(test):    
+def PrintMemInputs(test:Test):    
     if len(test.MemInputs)>0: autograderResults.write("\nInitial Data in Memory -->\n")   
     for inp in test.MemInputs:
         autograderResults.write("   addr(%s) =  %s \"%s\""%(inp.addr,inp.type,inp.data))
 
-def PrintRegInputs(test):
+def PrintRegInputs(test:Test):
     if len(test.RegInputs): autograderResults.write("\nRegister Input Values -->\n")   
     for inp in test.RegInputs:
         val = GetHexAndDecOrString(inp.value)
         autograderResults.write("   reg: %s = %s\n"%(inp.reg,val))
 
-def PrintStudentPrompt(StudentPrompt):
+def PrintStudentPrompt(StudentPrompt:str):
     if StudentPrompt != None:
         autograderResults.write("\nYour Prompt -->\n")
         if len(StudentPrompt.strip())<2: 
@@ -397,13 +396,13 @@ def PrintRegexChecks(regMatches):
             autograderResults.write("   regex: %s \n"  %(regex))
             autograderResults.write("   match: %s \n\n"%(match))
 
-def printUserInput(test):
+def printUserInput(test:Test):
     fl = test.UserInput
     if len(fl)>0: autograderResults.write("\nUser Input -->\n")   
     for line in fl:
         autograderResults.write("   %s\n"%line)
 
-def printOutput(test:Test, StudentOutput, _printHeader:bool):    
+def printOutput(test:Test, StudentOutput:List[str], _printHeader:bool):    
     if len(test.Output)==0: return
     if _printHeader: 
         autograderResults.write("\nOutput -->\n")
