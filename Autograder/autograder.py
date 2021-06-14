@@ -335,25 +335,19 @@ def ShowAll(test,StudentOutput,StudentPrompt,RegexChecks,):
         
 
 def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=None):
-    global io
-
     printHeader=("%s %i "%(test.testName,test.testNumber))
     if test.ExtraCredit:printHeader+='(Extra Credit) '
     
-
     autograderResults.write("---------------------------------------------------\n%s"%(printHeader))
     if test.getShowLevel()==Show.HIDE: 
         return
-
-    if test.getShowLevel()==Show.INPUT:
+    elif test.getShowLevel()==Show.INPUT:
         autograderResults.write("(Input Only)\n")
         ShowInput(test)
         autograderResults.write("\n")
-    
     elif test.getShowLevel()==Show.OUTPUT:
         autograderResults.write("(Output Only)\n")
         ShowOutput(test,StudentOutput, StudentPrompt,RegexChecks)
-    
     elif test.getShowLevel()==Show.ALL:
         autograderResults.write('\n')
         ShowAll(test,StudentOutput,StudentPrompt,RegexChecks)
@@ -403,7 +397,7 @@ def printUserInput(test:Test):
 def printOutput(test:Test, StudentOutput:List[str], _printHeader:bool):    
     if len(test.Output)==0: return
     if _printHeader: 
-        autograderResults.write("\nOutput -->\n")
+        autograderResults.write("Output -->\n")
     for i, Eoutput in enumerate(test.Output):
         if Eoutput.addr is None:
             ExAns = GetHexAndDecOrString(test.ExpectedAnswers[i], int(Eoutput.type))
