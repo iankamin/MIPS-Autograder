@@ -64,21 +64,18 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
         regMatches=None
         if io.PromptGrade > 0 or len(RegexChecks)>0:
             for line in prevUserInput: StudentPrompt = StudentPrompt.replace(line,"")    # removes user input if they decided to print it out
-            if ("<NON ASCII DATA>" in StudentPrompt): 
-                autograderResults.write("\nNon-Ascii characters were found in your prompt credit cannot be given \n")
-            else: 
-                if io.PromptGrade >0 and ("<NO PROMPT FOUND>" in StudentPrompt): None
-                # if the Prompt Points are empty Then any regex expressions will be graded as part of the Test
-                else: 
-                    promptPoints[testNum],regMatches=GradePrompt(StudentPrompt,RegexChecks)
+            if ("<NON ASCII DATA>" in StudentPrompt) or ("<NO PROMPT FOUND>" in StudentPrompt):  
+                None
+            elif io.PromptGrade == 0: 
+                promptPoints[testNum],regMatches=GradePrompt(StudentPrompt,RegexChecks)
             dispStudentPrompt=StudentPrompt
         else :
             dispStudentPrompt=None
         
-        if io.PromptGrade == 0: testPoints[testNum]=(promptPoints[testNum]*len(RegexChecks)) * (test.OutOf / numOfrequiredAns)
+        if io.PromptGrade == 0: 
+            testPoints[testNum]=(promptPoints[testNum]*len(RegexChecks)) * (test.OutOf / numOfrequiredAns)
 
-        if io.PromptGrade > 0: ShowDetails(testNum+1,test,StudentOutput,dispStudentPrompt,regMatches)
-        else:                  ShowDetails(testNum+1,test,StudentOutput,dispStudentPrompt,regMatches)
+        ShowDetails(testNum+1,test,StudentOutput,dispStudentPrompt,regMatches)
 
         for i,line in enumerate(StudentOutput):
             try:    ea=expectedAns[i]
@@ -98,7 +95,6 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
                 temp=0
 
         autograderResults.write(" - %.3f out of %s\n"%(testPoints[testNum],test.OutOf))
-        autograderResults.write("............................................\n")
         testPoints[testNum]=temp
     
     simpleGrade=True
@@ -190,7 +186,6 @@ def RemoveErrorsFromPrompt(prompt):
     prompt = re.sub(pattern, '',prompt)
     if len(prompt.strip()) == 0: prompt = "<NO PROMPT FOUND>"
     return prompt
-
 
 def generateInput():
     global io
@@ -302,9 +297,9 @@ def PrintMipsError(headerErr:str, lastOutput, SPIMerror, NonAsciiMSG,completionE
         with open(localDir + 'error.txt', 'r') as f:  
             MIPSerr = f.read().strip()
     else: MIPSerr = "program was never run due to issues during setup"
-    if len(MIPSerr)>0:  allErrors += "Runtime Errors:\n    %s\n"%MIPSerr
+    if len(MIPSerr)>0:  allErrors += "Errors From SPIM:\n    %s\n"%MIPSerr.replace('\n','\n    ')
     if ("Attempt to execute non-instruction" in MIPSerr):
-        allErrors += "   ^^^ Your subroutine must terminate with a JUMP RETURN\n\n"
+        allErrors += "    ^^^ Your subroutine must terminate with a JUMP RETURN\n\n"
     elif len(MIPSerr)>0: allErrors+='\n'
 
     # prints out the last section of mips output will be empty if ran successfully
@@ -316,8 +311,6 @@ def PrintMipsError(headerErr:str, lastOutput, SPIMerror, NonAsciiMSG,completionE
         autograderResults.write("    None")
     autograderResults.write("\n=============================\n\n")
     
-
-
 def ShowInput(test):
     PrintMemInputs(test)
     PrintRegInputs(test)
@@ -343,32 +336,35 @@ def ShowAll(test,StudentOutput,StudentPrompt,RegexChecks,):
 
 def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=None):
     global io
-    if io.ShowLevel!=Show.ALL: autograderResults.write("%s %i "%(test.testName,test.testNumber))
+
+    printHeader=("%s %i "%(test.testName,test.testNumber))
+    if test.ExtraCredit:printHeader+='(Extra Credit) '
     
-    if test.ExtraCredit: autograderResults.write( '(Extra Credit) ')
-    T=test.ShowLevel
-    I=io.ShowLevel
-    if test.ShowLevel == Show.NONE: return
 
-    if io.ShowLevel==Show.ALL: autograderResults.write("=========== %s%i ==========\n"%(test.testName,test.testNumber))
-    else: autograderResults.write("\nSample Output\n==============\n")
+    autograderResults.write("---------------------------------------------------\n%s"%(printHeader))
+    if test.getShowLevel()==Show.HIDE: 
+        return
 
-    if test.ShowLevel==Show.INPUT:
+    if test.getShowLevel()==Show.INPUT:
         autograderResults.write("(Input Only)\n")
         ShowInput(test)
+        autograderResults.write("\n")
     
-    if test.ShowLevel==Show.OUTPUT:
+    elif test.getShowLevel()==Show.OUTPUT:
         autograderResults.write("(Output Only)\n")
         ShowOutput(test,StudentOutput, StudentPrompt,RegexChecks)
     
-    if test.ShowLevel==Show.ALL:
+    elif test.getShowLevel()==Show.ALL:
+        autograderResults.write('\n')
         ShowAll(test,StudentOutput,StudentPrompt,RegexChecks)
+    
 
     autograderResults.write("%s %i"%(test.testName,test.testNumber))
 
 
 def PrintMemInputs(test:Test):    
-    if len(test.MemInputs)>0: autograderResults.write("\nInitial Data in Memory -->\n")   
+    if len(test.MemInputs)>0: 
+        autograderResults.write("\nInitial Data in Memory -->\n")   
     for inp in test.MemInputs:
         autograderResults.write("   addr(%s) =  %s \"%s\""%(inp.addr,inp.type,inp.data))
 
@@ -381,7 +377,9 @@ def PrintRegInputs(test:Test):
 def PrintStudentPrompt(StudentPrompt:str):
     if StudentPrompt != None:
         autograderResults.write("\nYour Prompt -->\n")
-        if len(StudentPrompt.strip())<2: 
+        if ("<NON ASCII DATA>" in StudentPrompt):  
+            autograderResults.write("\nNon-Ascii characters were found in your prompt credit cannot be given \n")
+        elif len(StudentPrompt.strip())<2: 
             autograderResults.write("   <NO PROMPT WAS FOUND>\n")
         else: 
             autograderResults.write("   %s\n"%StudentPrompt)

@@ -8,11 +8,14 @@ class Show(Enum):
     INPUT=1
     OUTPUT=2
     ALL=3
+    HIDE=4
 
-    def __gt__(self,other): return self.value>other.value
-    def __ge__(self,other): return self.value>=other.value
-    def __lt__(self,other): return self.value<other.value
-    def __le__(self,other): return self.value<=other.value
+    def __gt__(self,other): return int(self)>int(other)
+    def __ge__(self,other): return int(self)>=int(other)
+    def __lt__(self,other): return int(self)<int(other)
+    def __le__(self,other): return int(self)<=int(other)
+    def __int__(self): return self.value
+    
 
 
 #TODO MAX points need to account for individual tests
@@ -43,7 +46,7 @@ class settings():
         self.PromptGrade=0
         self.TestGrade=float(io.get("TestGrade",1))
         self.ECTestGrade=float(io.get("ECTestGrade",self.TestGrade))
-        self.ShowLevel=Show(io.get("ShowLevel",0))
+        self.ShowLevel=Show(io.get("ShowLevel",Show.HIDE))
         self.MessageToStudent=io.get("MessageToStudent","").strip()
         self.BareMode = io.get("BareMode",False)
         self.Shuffle = io.get("Shuffle",False)
@@ -110,7 +113,7 @@ class settings():
         io["MessageToStudent"]=self.MessageToStudent
         io["BareMode"]=self.BareMode
         io["RequiresUserInput"]=self.RequiresUserInput
-        io["ShowLevel"]=self.ShowLevel.value
+        io["ShowLevel"]=int(self.ShowLevel)
         io["Shuffle"]=self.Shuffle
         io["JsonStyle"]=self.JsonStyle
         io["BannedISA"]=self.BannedISA
@@ -127,7 +130,7 @@ class Test():
             self.empty(**kwargs)
             return
 
-        self.ShowLevel =  max(Show(testjs.get("ShowLevel",0)) , parent.ShowLevel )
+        self.ShowLevel =  Show(testjs.get("ShowLevel",Show.NONE))
         self.testName   = testjs.get("name","Test").strip()
         self.testNumber = testNumber   
         self.ExtraCredit= testjs.get("ExtraCredit",False) 
@@ -153,6 +156,15 @@ class Test():
         self.RegInputs=[]
         self.Output=[]
     
+    def getShowLevel(self):
+        if self.ShowLevel==Show.NONE:
+            if self.parent.ShowLevel == Show.NONE: 
+                return Show.HIDE
+            else: return self.parent.ShowLevel
+
+        else: 
+            return self.ShowLevel
+    
     def ToDict(self):
         testjs={}
         testjs["name"]=self.testName
@@ -160,7 +172,7 @@ class Test():
         if self.OutOf==(self.parent.ECTestGrade if self.ExtraCredit else self.parent.TestGrade):
             testjs["OutOf"]=0
         else: testjs["OutOf"]=self.OutOf 
-        testjs["ShowLevel"]=Show.NONE.value if self.ShowLevel == self.parent.ShowLevel else self.ShowLevel.value
+        testjs["ShowLevel"]=int(self.ShowLevel)
         testjs["UserInput"]=self.UserInput
         testjs["PromptRegex"]=self.PromptRegex
         testjs["inputs"]=[i.ToDict() for i in self.MemInputs]

@@ -40,7 +40,7 @@ class Test(Autograder.Test):
         super().__init__(parent,testjs,testNumber)
 
     def head_init(self,**kwargs):
-        self.ShowLevel = max(Autograder.Show(kwargs.get("ShowLevel",0)),self.parent.ShowLevel)
+        self.ShowLevel = Autograder.Show(kwargs.get("ShowLevel",Autograder.Show.NONE))
         self.testName   = kwargs.get("testName","Test")
         self.ExtraCredit= kwargs.get("ExtraCredit",False) 
         self.OutOf      = kwargs.get("OutOf", 0)
