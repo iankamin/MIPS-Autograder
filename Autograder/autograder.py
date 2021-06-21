@@ -8,9 +8,6 @@ try: from .settings import settings,Test,Show
 except: from settings import settings,Test,Show
 
 localDir = os.path.dirname(__file__)+"/"
-#TODO: add point distribution to test components
-#TODO: add grade out of Total to end of autograder results
-#TODO: add validity Checks to addresses if they are invalid the program will run but nothing will be in memory
 
 #os.chdir(os.getcwd()+"/"+os.path.dirname(sys.argv[0])) # ensures proper initial directory
 def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
