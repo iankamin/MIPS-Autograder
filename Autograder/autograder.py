@@ -384,7 +384,7 @@ def PrintRegexChecks(regMatches):
     if regMatches != None:
         autograderResults.write("\n\nSearching Prompt for Regex Expressions -->")
         for regex,match in regMatches:
-            if match == None: match = "no match was not found"
+            if match == None: match = "no match was found"
             autograderResults.write("\n   regex: %s "  %(regex))
             autograderResults.write("\n   match: %s \n"%(match))
 
