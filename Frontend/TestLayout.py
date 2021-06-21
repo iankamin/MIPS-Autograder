@@ -117,42 +117,43 @@ class Test(QtWidgets.QWidget):
 
     def deleteSelf(self): self.parent.deleteTest(self)
 
-    def validateEmpty(self) -> (Tuple[bool,str,List[Row]]):
-        out=''
+    def validateEmpty(self) -> (Tuple[bool,List[str],List[str],List[Row]]):
+        itemsAUI = self.allUserInput.getContents()
+        itemsDI = self.DataInput.getContents()
+        itemsIR = self.InputRegisters.getContents()
+        itemsOR = self.Outputs.getContents()
+        itemsRC = self.RegexChecks.getContents()
 
         # ensure program has INPUTS
-        items = []
-        items = items + self.allUserInput.getContents()
-        items = items + self.DataInput.getContents()
-        items = items + self.InputRegisters.getContents()
-        items = items + self.RegexChecks.getContents()
-        v1=True
+        items = itemsAUI+itemsDI+itemsIR
+        warnings=[]
+        errors=[]
         if len(items)==0:
-            out+="(WARNING) \n - {title} has no inputs".format(title=self.title)
-            self.ExpandAndCollapseAll(expand=True)
-            v1=False
+            warnings.append("\"{title}\": has no inputs".format(title=self.title))
 
         # ensure program has OUPUTS
         v2=True
-        itemsO = self.Outputs.getContents()
+
+        itemsO=itemsOR+itemsRC
         if len(itemsO)==0:
-            out+="(WARNING) \n - {title} has no outputs".format(title=self.title)
+            errors.append("\"{title}\": has neither Regex Checks not Output Variables".format(title=self.title))
             self.ExpandAndCollapseAll(expand=True)
             v2= False
         items=items+itemsO
-        return (v1 and v2), out, items
+        return v2, errors, warnings, items
 
-    def validate(self) -> (Tuple[bool,str]):
-        _,outputString,items=self.validateEmpty()
+    def validate(self) -> (Tuple[bool,str,str]):
+        noMissingRequirements,errors,warnings,items=self.validateEmpty()
         #verify that every input and output is filled in completely
-        blankBoxes=True    
+        allBoxesAreFilled=True    
         for item in items:
-            blankBoxes = item.validate() and blankBoxes
-        if not blankBoxes:
-            outputString+="\n - {title} has empty textboxs".format(title=self.title)
+            item:Test
+            allBoxesAreFilled = item.validate() and allBoxesAreFilled
+        if not allBoxesAreFilled:
+            errors.append("\"{title}\": has empty textboxs".format(title=self.title))
             self.ExpandAndCollapseAll(expand=True)
         
-        return blankBoxes,outputString
+        return allBoxesAreFilled and noMissingRequirements,errors,warnings
 
     def validRow(self,item) -> (bool):
         if item is UserInputRow: return True

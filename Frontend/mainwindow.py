@@ -313,13 +313,13 @@ class MainWindow(QtWidgets.QMainWindow):
         items = [lay.itemAt(i).widget() for i in range(lay.count()) if lay.itemAt(i).widget()is not None ]
         return items
 
-    def validateWindow(self) -> (Tuple[bool,str]):
+    def validateWindow(self) -> (Tuple[bool,List[str]]):
         valid=True
-        output=""
+        output=[]
 
         if self.subroutine_name.text()=="": 
             self.subroutine_name.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
-            output+="\n - Subroutine Name is required"
+            output.append("Subroutine Name is required")
             valid = False
         else: 
             self.subroutine_name.setStyleSheet("background-color: rgb(255, 255, 255);")
@@ -329,43 +329,75 @@ class MainWindow(QtWidgets.QMainWindow):
         
         if self.TestPoints.value()==0:
             self.TestPoints.setStyleSheet("border: 1px solid red;background-color: rgb(255, 255, 255);")
-            output+="\n - Test Points Cannot be zero"
+            output.append("Test Points Cannot be zero")
             valid = False
         else: 
             self.TestPoints.setStyleSheet("background-color: rgb(255, 255, 255);")
             valid= valid and True
-        
         return valid,output
-    def validateTests(self) -> (Tuple[bool,str]):
-        output=""
+
+    def validateTests(self) -> (Tuple[bool,List[str],List[str]]):
+        """Check if all tests are valid
+
+        Returns:
+            [isValid,Errors,Warnings]
+        """
+        errors=[]
+        warnings=[]
         valid = True
         
         if self.currentNumberOfTests == 0: 
-            output+="\n\n - No Tests to Run"
+            errors.append("No Tests to Run")
             valid = False
-            return valid,output
+            return valid,errors,warnings
        
         test:Test
         tests = self.getTests(self.AllGradedTests)
         for test in tests:  
-            v, out=test.validate()
-            if not v:
-                valid = False
-                output+='\n'+out
-        return valid,output
+            v, err,warn=test.validate()
+            if warn: warnings+=warn
+            if err: errors+=err
+            if not v: valid = False
+
+        return valid,errors,warnings
+
     def validate(self) -> (bool):
-        validWind,outputWind=self.validateWindow()
-        validTests,outputTests=self.validateTests()
-        valid = validWind and validTests
-    
+        settingsAreValid,settingErrors=self.validateWindow()
+        testsAreValid,testErrors,testWarnings=self.validateTests()
+        valid = settingsAreValid and testsAreValid
+
+        marker="  *  "
+        if settingErrors: 
+            settingErrors=[marker+msg for msg in settingErrors if msg]
+        if testErrors:
+            testErrors=[marker+msg for msg in testErrors if msg]
+        if testWarnings:
+            testWarnings=[marker+msg for msg in testWarnings if msg]
+
+        output=["\nCompiler Results:",
+                   "-----------------"]
+        if valid: 
+            output.append("    Compilation Successful")
+        else: 
+            output.append("    Failed To Compile")
+        output.append("\n")
+
+        if testWarnings:
+            output.append("Warnings Do Not Need To be Fix To Compile")
+            output.append("======================================")
+            output+=testWarnings
+            if not valid: output.append("\n")
+
         if not valid: 
-            self.outputHidden=False
-            self.toggleOutputBtn.show()
-            output="\n cannot proceed until the following issues are corrected\n===============================================\n"
-            output+=outputWind+outputTests
-            errorDisplay(self,output)
-        else:
-            errorDisplay(self,"")
+            output.append("The Following Errors Must Be Fixed in Order to Compile")
+            output.append("======================================")
+            output+=settingErrors
+            output+=testErrors
+
+        output="\n".join(output)
+        self.outputHidden=False
+        self.toggleOutputBtn.show()
+        errorDisplay(self,output)
             
         return valid
 

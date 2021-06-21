@@ -8,6 +8,9 @@ try: from .settings import settings,Test,Show
 except: from settings import settings,Test,Show
 
 localDir = os.path.dirname(__file__)+"/"
+#TODO: add point distribution to test components
+#TODO: add grade out of Total to end of autograder results
+#TODO: add validity Checks to addresses if they are invalid the program will run but nothing will be in memory
 
 #os.chdir(os.getcwd()+"/"+os.path.dirname(sys.argv[0])) # ensures proper initial directory
 def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
@@ -260,9 +263,12 @@ def GetMipsOutput():
 
     output=[o.strip() for o in output]
     
-    header_error=output.pop(0)
-    header_error=header_error.split('\n',6)     # a JAL instruction is missing a corresponding label
-    header_error=header_error[6].strip() if len(header_error)>6 else ""
+    header=output.pop(0)
+    header_error=re.search("Loaded(.|\n)*",header)
+    header_error=header_error.group(0)
+    header_error=header_error.split('\n',1)
+    try: header_error=header_error[1]
+    except: header_error=""
     
     return output,header_error,NoneAsciiMSG
 
@@ -342,60 +348,55 @@ def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=N
     if test.getShowLevel()==Show.HIDE: 
         return
     elif test.getShowLevel()==Show.INPUT:
-        autograderResults.write("(Input Only)\n")
+        autograderResults.write("(Input Only)")
         ShowInput(test)
-        autograderResults.write("\n")
     elif test.getShowLevel()==Show.OUTPUT:
-        autograderResults.write("(Output Only)\n")
+        autograderResults.write("(Output Only)")
         ShowOutput(test,StudentOutput, StudentPrompt,RegexChecks)
     elif test.getShowLevel()==Show.ALL:
-        autograderResults.write('\n')
         ShowAll(test,StudentOutput,StudentPrompt,RegexChecks)
-    
-
     autograderResults.write("%s %i"%(test.testName,test.testNumber))
 
 
 def PrintMemInputs(test:Test):    
     if len(test.MemInputs)>0: 
-        autograderResults.write("\nInitial Data in Memory -->\n")   
+        autograderResults.write("\n\nInitial Data in Memory -->")   
     for inp in test.MemInputs:
-        autograderResults.write("   addr(%s) =  %s \"%s\""%(inp.addr,inp.type,inp.data))
+        autograderResults.write("\n   addr(%s) =  %s %s"%(inp.addr,inp.type,inp.data))
 
 def PrintRegInputs(test:Test):
-    if len(test.RegInputs): autograderResults.write("\nRegister Input Values -->\n")   
+    if len(test.RegInputs): autograderResults.write("\n\nRegister Input Values -->")   
     for inp in test.RegInputs:
         val = GetHexAndDecOrString(inp.value)
-        autograderResults.write("   reg: %s = %s\n"%(inp.reg,val))
+        autograderResults.write("\n   reg: %s = %s"%(inp.reg,val))
 
 def PrintStudentPrompt(StudentPrompt:str):
     if StudentPrompt != None:
-        autograderResults.write("\nYour Prompt -->\n")
+        autograderResults.write("\n\nYour Prompt -->")
         if ("<NON ASCII DATA>" in StudentPrompt):  
-            autograderResults.write("\nNon-Ascii characters were found in your prompt credit cannot be given \n")
+            autograderResults.write("\nNon-Ascii characters were found in your prompt credit cannot be given ")
         elif len(StudentPrompt.strip())<2: 
-            autograderResults.write("   <NO PROMPT WAS FOUND>\n")
+            autograderResults.write("\n   <NO PROMPT WAS FOUND>")
         else: 
-            autograderResults.write("   %s\n"%StudentPrompt)
+            autograderResults.write("\n   %s"%StudentPrompt)
 
 def PrintRegexChecks(regMatches):
     if regMatches != None:
-        autograderResults.write("\nSearching Prompt for Regex Expressions -->\n")
+        autograderResults.write("\n\nSearching Prompt for Regex Expressions -->")
         for regex,match in regMatches:
             if match == None: match = "no match was not found"
-
-
-            autograderResults.write("   regex: %s \n"  %(regex))
-            autograderResults.write("   match: %s \n\n"%(match))
+            autograderResults.write("\n   regex: %s "  %(regex))
+            autograderResults.write("\n   match: %s \n"%(match))
 
 def printUserInput(test:Test):
     fl = test.UserInput
-    if len(fl)>0: autograderResults.write("\nUser Input -->\n")   
+    if len(fl)>0: autograderResults.write("\n\nUser Input -->")   
     for line in fl:
-        autograderResults.write("   %s\n"%line)
+        autograderResults.write("\n   %s"%line)
 
 def printOutput(test:Test, StudentOutput:List[str], _printHeader:bool):    
     if len(test.Output)==0: return
+    autograderResults.write("\n\n")
     if _printHeader: 
         autograderResults.write("Output -->\n")
     for i, Eoutput in enumerate(test.Output):
@@ -412,27 +413,31 @@ def printOutput(test:Test, StudentOutput:List[str], _printHeader:bool):
                     autograderResults.write(StudentOutput[i])
                 except:
                     if ("<NO OUTPUT FOUND>") in StudentOutput:
-                        autograderResults.write("   Actual   %s = %s\n\n"%(Eoutput.reg,studentAns))
+                        autograderResults.write("   Actual   %s = <FAILED TO RETRIEVE STUDENT OUTPUT>\n\n"%(Eoutput.reg))
                     else:
-                        autograderResults.write(StudentOutput)
+                        #autograderResults.write(StudentOutput) #uncomment to see what happened This is the most edgy of edge cases
+                        autograderResults.write("\n\n!!!!! SOMETHING WENT HORRIBLY WRONG !!!!!\n If you are a student please inform an administrator of this bug so that they can report the issue \n\n")
             continue
         else: 
             autograderResults.write(" Expected   %s at address %s\n"%(test.ExpectedAnswers[i],Eoutput.addr))
             try:
                 r=StudentOutput[i]
-                if len(r.strip())==0:
-                    r = "NO STRING WAS FOUND" 
+                if len(r.strip())==0: r="<FAILED TO RETRIEVE DATA>"
                 autograderResults.write("   Actual   %s at address %s\n\n"%(r,Eoutput.addr))
             except:
                 try: 
                     StudentOutput[i] # test for value before printing anything
-                    autograderResults.write("   FAILED TO PROPERLY RETRIEVE STUDENT OUTPUT\n")
+                    autograderResults.write("   <FAILED TO PROPERLY RETRIEVE STUDENT OUTPUT>\n")
                     autograderResults.write(StudentOutput[i])
                 except: 
                     if ("<NO OUTPUT FOUND>") in StudentOutput:
+                        r="<FAILED TO RETRIEVE DATA>"
                         autograderResults.write("   Actual   %s at address %s\n\n"%(r,Eoutput.addr))
                     else:
-                        autograderResults.write(StudentOutput)
+                        #autograderResults.write(StudentOutput) #uncomment to see what happened This is the most edgy of edge cases
+                        #autograderResults.write("\n\n!!!!! SOMETHING WENT HORRIBLY WRONG !!!!!\n If you are a student please inform an administrator of this bug so that they can report the issue \n\n")
+                        r="<FAILED TO RETRIEVE DATA>"
+                        autograderResults.write("   Actual   %s at address %s\n\n"%(r,Eoutput.addr))
             continue
 
 def Is_int(s):
