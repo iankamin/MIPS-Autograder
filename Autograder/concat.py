@@ -145,7 +145,7 @@ def illegalSyscalls(line:str, syscode:str):
         while '0x0' in line: line= line.replace('0x0','0x')
         
         hexcode=hex(syscode).replace('0x','')
-        if " %s "%syscode in line or ',%s '%syscode in line or '0x%s '%hexcode.lower in line:
+        if " %s "%syscode in line or ',%s '%syscode in line or '0x%s '%hexcode.lower() in line:
             if "li" in line and notComment(line,"li"): return True
             if "addi" in line and notComment(line,"addi"): return True
         return False
@@ -175,6 +175,7 @@ def illegalSyntax(data:str, text:str, bareMode:bool):
         
         linelow=line.lower()
         if illegalSyscalls(linelow, 10): errors.writelines("your program is a subroutine it must not terminate with syscall 10 -> %s\n"%line)
+        if illegalSyscalls(linelow, 11): errors.writelines("using syscall 11 \"read char\" may cause issues with autograder. please change it to read string -> %s\n"%line)
 
         if not io.RequiresUserInput:
             if illegalSyscalls(linelow, 5) or illegalSyscalls(linelow, 6) or illegalSyscalls(linelow, 7) or illegalSyscalls(linelow, 8) or illegalSyscalls(linelow, 12) : 
