@@ -63,7 +63,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
         # grades student prompt
         regMatches=None
         if io.PromptGrade > 0 or len(RegexChecks)>0:
-            for line in prevUserInput: StudentPrompt = StudentPrompt.replace(line,"")    # removes user input if they decided to print it out
+            #for line in prevUserInput: StudentPrompt = StudentPrompt.replace(line,"")    # removes user input if they decided to print it out
             if ("<NON ASCII DATA>" in StudentPrompt) or ("<NO PROMPT FOUND>" in StudentPrompt):  
                 None
             elif io.PromptGrade == 0: 
@@ -153,11 +153,11 @@ def CheckPromptForRegex(prompt:str,regexArr:List[str]):
 
     for regex in regexArr:
         i=1+1
-        r = re.compile(regex,re.IGNORECASE)
+        r = re.compile(regex,re.IGNORECASE|re.MULTILINE)
         match=r.search(prompt)
         if match:
             total=total+value
-            matchPairs.append((regex,match.group(0)))
+            matchPairs.append((regex,match.group(0).strip()))
         else:
             matchPairs.append((regex,None))
     return total,matchPairs
