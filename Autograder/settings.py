@@ -59,10 +59,12 @@ class settings():
         if type(self.RequiresUserInput) is str: self.RequiresUserInput = self.RequiresUserInput.lower()=="true"
         
         self.NumberOfRegularTests=0
+        self.total=0
         self.AllTests=self.CreateTests(io["tests"],io)
 
     def empty(self,**kwargs):
         self.io=None
+        self.total=0
         self.SubroutineName=None
         self.PromptGrade=None
         self.TestGrade=None
@@ -143,6 +145,8 @@ class Test():
         # Get Inputs and Outputs
         self.MemInputs,self.RegInputs = self.setInputs(testjs.get("inputs",[]))
         self.ExpectedAnswers,self.Output=self.setOutputs(testjs["outputs"])
+        parent.total+=self.OutOf
+    
     def empty(self,**kwargs):
         self.testName = "Test"
     

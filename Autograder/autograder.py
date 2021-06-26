@@ -100,6 +100,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     simpleGrade=True
     scores={}
     Prompt=0
+    total=0
     if io.PromptGrade > 0:
         pp=sum(promptPoints)
         if pp>=io.NumberOfRegularTests: Prompt = io.PromptGrade
@@ -109,7 +110,6 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
     if io.JsonStyle==0:
         total=Prompt
     if io.JsonStyle==1 or io.JsonStyle==2:
-        total=0
         if io.PromptGrade > 0:
             scores["Prompt"]=Prompt
 
@@ -122,13 +122,15 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
 
     if io.JsonStyle==2:   
         test:Test
+        total+=sum(testPoints[:io.NumberOfRegularTests])
         for i in range(0,TotalNumTests):
             test=AllTests[i]
-            scores["%s%i"%(test.testName,test.testNumber)]=testPoints[i]
+            scores["%i"%(test.testNumber)]=testPoints[i]
     
-    JSONscores= {'scores':scores}
 
     autograderResults.write('\n\n======== RESULTS ========\n')
+    autograderResults.write("    {grade} out of {total}\n\n\n".format(grade=total,total=io.total))
+    JSONscores= {'scores':scores}
     autograderResults.write(json.dumps(JSONscores))
 
     autograderResults.close()
@@ -344,7 +346,7 @@ def ShowAll(test,StudentOutput,StudentPrompt,RegexChecks,):
         
 
 def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=None):
-    printHeader=("%s %i "%(test.testName,test.testNumber))
+    printHeader="{number}. {name}".format(name=test.testName,number=test.testNumber)
     if test.ExtraCredit:printHeader+='(Extra Credit) '
     
     autograderResults.write("---------------------------------------------------\n%s"%(printHeader))
@@ -358,7 +360,7 @@ def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=N
         ShowOutput(test,StudentOutput, StudentPrompt,RegexChecks)
     elif test.getShowLevel()==Show.ALL:
         ShowAll(test,StudentOutput,StudentPrompt,RegexChecks)
-    autograderResults.write("%s %i"%(test.testName,test.testNumber))
+    autograderResults.write(printHeader)
 
 
 def PrintMemInputs(test:Test):    
