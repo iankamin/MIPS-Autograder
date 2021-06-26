@@ -100,6 +100,11 @@ class settings():
         for test in self.getTests(canShuffle):
             for line in test.UserInput:
                 yield line
+    def getUserInputbyTest(self,canShuffle=True):
+        ret = []
+        for test in self.getTests(canShuffle):
+            ret.append(test.UserInput)
+        return ret
 
     def printHeader(self,WriteFile):
         msg="\nREQUIRED ROUTINE: %s\n"%self.SubroutineName
