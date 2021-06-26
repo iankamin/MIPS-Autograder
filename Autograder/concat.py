@@ -175,7 +175,7 @@ def illegalSyntax(data:str, text:str, bareMode:bool):
         
         linelow=line.lower()
         if illegalSyscalls(linelow, 10): errors.writelines("your program is a subroutine it must not terminate with syscall 10 -> %s\n"%line)
-        if illegalSyscalls(linelow, 11): errors.writelines("using syscall 11 \"read char\" may cause issues with autograder. please change it to read string -> %s\n"%line)
+        if illegalSyscalls(linelow, 12): errors.writelines("using syscall 12 \"read char\" may cause issues with autograder. please change it to read string -> %s\n"%line)
 
         if not io.RequiresUserInput:
             if illegalSyscalls(linelow, 5) or illegalSyscalls(linelow, 6) or illegalSyscalls(linelow, 7) or illegalSyscalls(linelow, 8) or illegalSyscalls(linelow, 12) : 
