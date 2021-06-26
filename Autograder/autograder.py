@@ -300,10 +300,16 @@ def PrintMipsError(headerErr:str, lastOutput, SPIMerror, NonAsciiMSG,completionE
         with open(localDir + 'error.txt', 'r') as f:  
             MIPSerr = f.read().strip()
     else: MIPSerr = "program was never run due to issues during setup"
-    if len(MIPSerr)>0:  allErrors += "Errors From SPIM:\n    %s\n"%MIPSerr.replace('\n','\n    ')
-    if ("Attempt to execute non-instruction" in MIPSerr):
-        allErrors += "    ^^^ Your subroutine must terminate with a JUMP RETURN\n\n"
-    elif len(MIPSerr)>0: allErrors+='\n'
+    
+    if len(MIPSerr)>0:  
+        if ("Attempt to execute non-instruction" in MIPSerr):
+            if 'syntax error' in MIPSerr: 
+                pattern=r"Attempt to execute non-instruction at 0x[0-9abcdefABCDEF]{8}.*" 
+                MIPSerr = re.sub(pattern, '',MIPSerr)
+            else:
+                MIPSerr += "\n^^^ Your subroutine must terminate with a JUMP RETURN\n\n"
+        allErrors += "Errors From SPIM:\n    %s\n"%MIPSerr.replace('\n','\n    ')
+        allErrors+='\n'
 
     # prints out the last section of mips output will be empty if ran successfully
     if len(lastOutput)>0: allErrors+=lastOutput.strip() + "\n\n" 
