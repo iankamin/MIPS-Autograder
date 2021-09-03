@@ -23,8 +23,8 @@ However this program can be used as a testbench for MIPS code as well.
 
 ## Known Bugs
 
-
 1. *Bug:* Read Character (Syscall 12) does not function correctly.
+   
    *fix:* Have the students always use read string (See bug 2 for more details) 
 
 2. *Bug:* Read String requires and additional character for the input buffer.
@@ -56,6 +56,8 @@ However this program can be used as a testbench for MIPS code as well.
   
   **FIX:** have the students always use a fixed buffer size larger than the number of input characters.
   If the largest input will be 4 characters have the student set $a1 to 16
+
+
 
 
 
