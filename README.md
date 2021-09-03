@@ -29,7 +29,7 @@ However this program can be used as a testbench for MIPS code as well.
 
 2. *Bug:* Read String requires and additional character for the input buffer.
         For example:
-~~~
+  ~~~
   la $a0, userinput1
   li $a1, 3
   li $v0, 8
@@ -39,18 +39,18 @@ However this program can be used as a testbench for MIPS code as well.
   li $a1, 3
   li $v0, 8
   syscall
-~~~
+  ~~~
   if the student were to input *'aaa'* followed by *'bbb'* 
   this would work correctly on the local machine resulting in
-~~~
+  ~~~
   userinput1: 'aaa'
   userinput2: 'bbb'
-~~~
+  ~~~
   however Autograder would result in the following
-~~~
+  ~~~
   userinput1: 'aaa'
   userinput2: ''
-~~~
+  ~~~
   
   **CAUSE:** The autograder requires space for a newline character after the string is input
   
