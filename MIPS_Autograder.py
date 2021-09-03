@@ -3,6 +3,7 @@ import sys,os
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
 from Frontend.mainwindow import MainWindow
+from Frontend.resources.filepaths import resource_path
 
 def folderGenerate(dir):
     if not os.path.exists(dir):
@@ -11,10 +12,13 @@ def folderGenerate(dir):
 if __name__ == '__main__':
     #print(sys.platform)
     #folderGenerate("Frontend")
-
+    #os.system("ls")
     app = QtWidgets.QApplication(sys.argv)
-    icon = QIcon('icon.ico')
+    iconpath=resource_path('icon.ico')
+    print(iconpath)
+    icon = QIcon(iconpath)
     app.setWindowIcon(icon)
+
     #app.setStyle('macintosh')
     #app.setStyle('windows')
     #app.setStyle('windowsvista')
