@@ -9,7 +9,7 @@ This Program was intended for use by teachers and was designed to be used with [
 ## Table of Contents
 - [MIPS Autograder](#mips-autograder)
   - [Table of Contents](#table-of-contents)
-- [Known Bugs](#known-bugs)
+  - [Known Bugs](#known-bugs)
 - [**Installation**](#installation)
   - [Mac](#mac)
   - [Windows](#windows)
@@ -28,34 +28,34 @@ However this program can be used as a testbench for MIPS code as well.
    *fix:* Have the students always use read string (See bug 2 for more details) 
 
 2. *Bug:* Read String requires and additional character for the input buffer.
-        For example:
-  ~~~
-  la $a0, userinput1
-  li $a1, 3
-  li $v0, 8
-  syscall
+        
+    For example:
+      ~~~
+      la $a0, userinput1
+      li $a1, 3
+      li $v0, 8
+      syscall
+      
+      la $a0, userinput2
+      li $a1, 3
+      li $v0, 8
+      syscall
+      ~~~
+    if the student were to input *'aaa'* followed by *'bbb'*. This would work correctly on the local machine resulting in
+      ~~~ 
+      userinput1: 'aaa'
+      userinput2: 'bbb'
+      ~~~
+    however Autograder would result in the following
+      ~~~
+      userinput1: 'aaa'
+      userinput2: ''
+      ~~~
   
-  la $a0, userinput2
-  li $a1, 3
-  li $v0, 8
-  syscall
-  ~~~
-  if the student were to input *'aaa'* followed by *'bbb'* 
-  this would work correctly on the local machine resulting in
-  ~~~
-  userinput1: 'aaa'
-  userinput2: 'bbb'
-  ~~~
-  however Autograder would result in the following
-  ~~~
-  userinput1: 'aaa'
-  userinput2: ''
-  ~~~
+    **CAUSE:** The autograder requires space for a newline character after the string is input
   
-  **CAUSE:** The autograder requires space for a newline character after the string is input
-  
-  **FIX:** have the students always use a fixed buffer size larger than the number of input characters.
-  If the largest input will be 4 characters have the student set $a1 to 16
+    **FIX:** have the students always use a fixed buffer size larger than the number of input characters.
+    If the largest input will be 4 characters have the student set $a1 to 16
 
 
 
@@ -64,7 +64,7 @@ However this program can be used as a testbench for MIPS code as well.
 # **Installation**
 
 ## Mac
-Currently There is no executable for mac
+Currently there is no executable for mac
 1. Clone The Repo
    ~~~
    git clone https://github.com/iankamin/MIPS-Autograder
@@ -99,8 +99,6 @@ Currently There is no executable for mac
     ~~~
 2. Download latest .bin release file here https://github.com/iankamin/MIPS-Autograder/releases
    
-
-
 ### Build Instructions
 Instructions for setup and execution without Executable 
 
