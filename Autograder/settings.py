@@ -279,6 +279,10 @@ class Test():
             if self.addr is not None: d["addr"]=self.addr
             if self.reg is not None: d["reg"]=self.reg.replace("$","")
             return d
+
+
+
+            
     
     parent:settings
     ShowLevel:int

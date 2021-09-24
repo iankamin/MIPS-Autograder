@@ -1,0 +1,63 @@
+{
+    "subroutine_name": "HexOut",
+    "PromptGrade": 0,
+    "TestGrade": 5.0,
+    "ECTestGrade": 0.0,
+    "MessageToStudent": "",
+    "BareMode": true,
+    "RequiresUserInput": false,
+    "ShowLevel": 3,
+    "Shuffle": false,
+    "JsonStyle": 0,
+    "BannedISA": [],
+    "tests": [
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [],
+            "PromptRegex": [],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "-18",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [],
+            "PromptRegex": [],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "0xFFFFFFEE",
+                    "reg": "v0"
+                }
+            ]
+        },
+        {
+            "name": "Test",
+            "ExtraCredit": false,
+            "OutOf": 0,
+            "ShowLevel": 0,
+            "UserInput": [],
+            "PromptRegex": [],
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": 1,
+                    "CorrectAnswer": "0x00000012",
+                    "reg": "v0"
+                }
+            ]
+        }
+    ]
+}

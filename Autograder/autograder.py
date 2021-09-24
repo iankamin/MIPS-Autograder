@@ -44,7 +44,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
         test=AllTests[testNum]
         expectedAns=test.ExpectedAnswers
         
-        StudentOutput,StudentPrompt= getStudentPromptAndOutputPerTest(output,testNum)
+        StudentOutput,StudentPrompt = getStudentPromptAndOutputPerTest(output,testNum)
 
         RegexChecks=test.PromptRegex
         if len(test.UserInput)>0:
@@ -80,6 +80,8 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
         for i,line in enumerate(StudentOutput):
             try:    ea=expectedAns[i]
             except: ea="garbage_sdakfjlkasdjlfk" #if student Output is longer than actual output the current expected answer doesnt exist
+            
+            if ea[0:2] == "0x": ea=to_int(ea,nbits=32)
 
             if line == ea:
                 testPoints[testNum] += test.OutOf / numOfrequiredAns
@@ -315,7 +317,7 @@ def PrintMipsError(headerErr:str, lastOutput, SPIMerror, NonAsciiMSG,completionE
 
     # prints out the last section of mips output will be empty if ran successfully
     if len(lastOutput)>0: allErrors+=lastOutput.strip() + "\n\n" 
-    
+
     if len(allErrors)>0: 
         autograderResults.write(allErrors.strip())
     else: 
@@ -455,13 +457,20 @@ def to_hex(val, nbits=32):
     val=int(val)
     return hex((val + (1 << nbits)) % (1 << nbits))
 
+def to_int(val, nbits=32):
+    val=int(val,16)
+    low=1<<nbits
+    if val < low: return val
+    return val-low
+
+
 def GetHexAndDecOrString(s, type=0):
     s=s.strip()
     if type == 11 and len(s)==1:  return " %s ( \'%s\' )"%(to_hex(ord(s)),s)
-
+    
     if Is_int(s): return "%s ( %s )"%(s, to_hex(s))
     
-    if s[0:1] == '0x': return "%s ( %i )"%(int(s[2:],16), s)
+    if s[0:2] == '0x': return "%s ( %s )"%(int(s[2:],16), s.lower())
     
     return s
 

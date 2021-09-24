@@ -325,10 +325,6 @@ class OutputRow(Row):
                     'Integer':1,    'Float':2,    'Double':3,    'String':4,     'Character':11 }[type]
     def getKwargs(self):
         i=self.type.currentText()
-        if i=="Integer":
-            if self.CorrectAnswer.text().strip()[0:2]=='0x': 
-                text=str(int(self.CorrectAnswer.text(),16))
-                self.CorrectAnswer.setText(text)
         if i=="String": return { 'type':self.getSyscall(i), 'addr':self.address.text(), 'CorrectAnswer':self.CorrectAnswer.text() }
         else:	return { 'type':self.getSyscall(i), 'reg':self.reg.text(), 'CorrectAnswer':self.CorrectAnswer.text() } 
     
