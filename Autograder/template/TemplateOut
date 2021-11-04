@@ -3,7 +3,7 @@
     sw $v0, 4($sp)
     
     lui <lui_reg>, <upper_addr>
-    addi $a0, <reg>, <lower_addr>
+    ori $a0, <reg>, <lower_addr>
     addi $v0, $0, <type>
     syscall
     
