@@ -30,4 +30,9 @@ if __name__ == '__main__':
     main = MainWindow()
     main.setWindowIcon(icon)
     main.showMaximized()
+    QtWidgets.qApp.processEvents()
+    # testing code
+    #thread = main.LoadSettings(filePath="/home/kamian/MIPS_Autograder/Tests/Task4/part4J.json")  
+    #thread.finished.connect(lambda: main.RunMips(submissionPath="/home/kamian/MIPS_Autograder/Tests/Task4/part4.s"))
+    
     sys.exit(app.exec_())

@@ -231,17 +231,85 @@ def mips(concatFile= "concat.s"):
     errorpath=localDir+'error.txt'
     if concatFile == "concat.s": concatpath=localDir+'concat.s'
     else: concatpath = concatFile
-    instruction="{command} {baremode} -exception_file {exceptionPath} -file {concat} {userinput} >> {output} 2>> {error}".format(
+    instruction="{command} {baremode} -exception_file {exceptionPath} -file {concat} >> {output} 2>> {error}".format(
         command=command, baremode=BareMode, exceptionPath=exceptionPath,
         concat=concatpath,    error=errorpath,
-        userinput=userInput,  output=outputFile )
+        output=outputFile ) # done for testing purposes
+        #userinput=userInput,  output=outputFile )
+        #userinput="",  
+    
     try:
-        subprocess.call(instruction,shell=True,timeout=3)
-    except subprocess.TimeoutExpired: 
-        return '    Your Program Timed Out due to an infinite loop in MIPS\n'
-    except:
-        return "    UH-OH your program failed to run for an unknown reason\n"
+        return RunMipsSubprocess(instruction,outputFile)
+        pass
+        #subprocess.call(instruction,shell=True,timeout=3)
     return ""
+
+def RunMipsSubprocess(instruction,outputFile):
+    """
+        Interactively runs the MIPS subprocess. checks for SPIM response after each character.
+        TODO: start using modified version of spim emulator. 
+              that will print out a message when any READ syscall is used so that the 
+              autograder can differentiate read syscalls without needing the student 
+              to output to console
+        TODO: in output.txt differentiate between Test and section splits
+    Args:
+        instruction ([str]): [The Terminal command to run SPIM] 
+        outputFile ([type]): [The desitination file for the output of the MIPS program]
+
+    Returns:
+        [str]: [an error message if the program detect an issue with how much user input the program requested] 
+    """
+    import time
+    outmsg=""
+    UserInput=io.getUserInputbyTest()
+    try:
+        process = subprocess.Popen(instruction,shell=True,stdin=subprocess.PIPE)
+        time.sleep(0.1)
+
+        with open(outputFile,'r') as f:
+            processResponse = "\n".join(f.read().split('\n')[7:])
+        diff = processResponse
+        for i,test in enumerate(UserInput):
+            if i!=0: diff=""
+            for line in test:
+                if "XXFFVV3793" in diff:   # This is in case the MIPS code is requesting less user input than the test requires. program will skip any test inputs 
+                    outmsg += "Test {i} was unable to input all seperate User Inputs before subroutine completion\n".format(i=i)
+                    break                  #    it will seperate the tests a bit so a student can potentially get more credit for a future test
+                with open(outputFile,'r') as f:
+                    lastProcessResponse = f.read()
+                for char in line:
+                    print(char)
+                    process.stdin.write(char.encode())
+                    process.stdin.flush()
+                    time.sleep(0.1)
+                    with open(outputFile,'r') as f:
+                        processResponse = f.read()
+                    diff = processResponse.replace(lastProcessResponse,"")
+                    if diff != "":
+                        outmsg += "An input for Test {i} was cutoff early.\n".format(i=i)
+                        break
+                lastProcessResponse = processResponse
+                if diff == "":
+                    print('\\n')
+                    process.stdin.write('\n'.encode())
+                    process.stdin.flush()
+                    time.sleep(0.1)
+                    
+                    with open(outputFile,'r') as f:
+                        processResponse = f.read()
+                    diff = processResponse.replace(lastProcessResponse,"")
+            
+            if "XXFFVV3793" not in diff: 
+                outmsg+="ERROR!!!\nMIPS Code may have requested more user input for test {i} than was required for test, grading unable to continue\n".format(i=i)
+            
+        process.stdin.close()
+        process.wait(timeout=3)
+    except subprocess.TimeoutExpired: 
+        outmsg+='    Your Program Timed Out due to an infinite loop in MIPS\n'
+    except:
+        outmsg+= "    UH-OH your program failed to run for an unknown reason\n"
+    return outmsg
+
     
 def GetMipsOutput():
     global outputFile

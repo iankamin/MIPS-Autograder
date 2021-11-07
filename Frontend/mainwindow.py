@@ -454,24 +454,28 @@ class MainWindow(QtWidgets.QMainWindow):
         worker=self.workers[-1]
         worker.moveToThread(thread)
         thread.started.connect(workerFunction)
+
         for f in onfinish:
             worker.finished.connect(f)
+        worker.finished.connect(lambda: print("Worker Finished"))
         worker.finished.connect(thread.quit)
-        worker.finished.connect(worker.deleteLater)
+        worker.finished.connect(thread.exit)
+        thread.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
         thread.start()
+        return thread
 
-    def LoadSettings(self):
+    def LoadSettings(self,filePath=None):
         self.tabWidget.setCurrentIndex(1)
-        filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json")[0] #file needs to exist
+        if filePath is None: filePath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Settings JSON", self.lastSaveLocation,"*.json")[0] #file needs to exist
         if not filePath: return
         self.lastSaveLocation=os.path.split(filePath)[0]+'/'
        # filePath=["/home/kamian/MIPS_Autograder/Tests/part4/part4.json"]
         self.DeleteAllTests()
 
         worker=settingsWorker(file=filePath)
-        self.createThread(worker,worker.get,self.LoadSettings_2)
-
+        thread=self.createThread(worker,worker.get,self.LoadSettings_2)
+        return thread
         #set=settings(filePath)
     def LoadSettings_2(self,set:settings):
         self.subroutine_name.setText( set.SubroutineName)
@@ -513,7 +517,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.concatAsmDock.setContents(code,showLineNumbers=True)
         self.concatAsmDock.raise_()
 
-    def RunMips(self):
+    def RunMips(self,submissionPath=None):
         self.tabWidget.setCurrentIndex(1)
         self.outputHidden=False
         self.toggleOutputBtn.show()
@@ -525,7 +529,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if not success: return
         
         
-        submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
+        if submissionPath is None: submissionPath=QtWidgets.QFileDialog.getOpenFileName(self,"Select Assembly file", self.lastSaveLocation,"Assembly Files (*.s *.asm)")[0] #file needs to exist
         if not submissionPath: return
         # submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/part4.s"
         # submissionPath="/home/kamian/MIPS_Autograder/Tests/part4/iankamin@buffalo.edu_30_handin.s"

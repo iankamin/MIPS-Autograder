@@ -1,6 +1,6 @@
 {
     "subroutine_name": "calculator",
-    "PromptGrade": 2.0,
+    "PromptGrade": 0,
     "TestGrade": 2.0,
     "ECTestGrade": 0.5,
     "MessageToStudent": "",
@@ -9,9 +9,7 @@
     "ShowLevel": 3,
     "Shuffle": false,
     "JsonStyle": 1,
-    "BannedISA": [
-        "add"
-    ],
+    "BannedISA": [],
     "tests": [
         {
             "name": "Test",
@@ -21,11 +19,7 @@
             "UserInput": [
                 "0001*0000"
             ],
-            "PromptRegex": [
-                "11",
-                "ds",
-                "ffgf"
-            ],
+            "PromptRegex": [],
             "inputs": [],
             "outputs": [
                 {

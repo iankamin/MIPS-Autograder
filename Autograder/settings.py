@@ -93,14 +93,35 @@ class settings():
         return self.AllTests
    
     def getTests(self, canShuffle=True):
+        """
+        Provides array of all tests
+        Args:
+            canShuffle (bool, optional): [If false will always return tests in order of creation. If true will returned results will be shuffled if "Shuffle" setting is True]. Defaults to True.
+
+        Returns:
+            [List]: [returns all tests shuffled or unshuffled]
+        """
         if canShuffle: return self.reg+self.ec
         else: return self.AllTests
 
     def getAllUserInputLines(self,canShuffle=True):
+        """ 
+        Args:
+            canShuffle (bool, optional): [If false will access tests in order of creation. If true will returned results will be shuffled if "Shuffle" setting is True]. Defaults to True.
+
+        Returns:
+            [List]: An array of user input lines aggregated into singular array
+        """
         for test in self.getTests(canShuffle):
             for line in test.UserInput:
                 yield line
     def getUserInputbyTest(self,canShuffle=True):
+        """ 
+        Args:
+            canShuffle (bool, optional): [If false will always return tests in order of creation. If true will returned results will be shuffled if "Shuffle" setting is True]. Defaults to True.
+        Returns:
+            [List of Lists]: An array of user input by seperated by test
+        """
         ret = []
         for test in self.getTests(canShuffle):
             ret.append(test.UserInput)
