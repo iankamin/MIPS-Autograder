@@ -5,6 +5,7 @@ import Autograder
 
 
 
+#TODO: add error penalty to user interface
 
 class settings(Autograder.settings):
     def __init__(self, file=None,**kwargs):
@@ -23,6 +24,7 @@ class settings(Autograder.settings):
         self.ShowLevel = Autograder.Show(kwargs.get("ShowLevel"))
         self.BareMode = kwargs.get("BareMode")
         self.RequiresUserInput = kwargs.get("RequiresUserInput")
+        self.ErrorPenalty = .5
         self.Shuffle = kwargs.get("Shuffle",False)
         self.BannedISA = kwargs.get("BannedISA",[])
         self.AllTests = []

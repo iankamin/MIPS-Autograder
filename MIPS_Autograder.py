@@ -32,7 +32,8 @@ if __name__ == '__main__':
     main.showMaximized()
     QtWidgets.qApp.processEvents()
     # testing code
-    #thread = main.LoadSettings(filePath="/home/kamian/MIPS_Autograder/Tests/Task4/part4J.json")  
-    #thread.finished.connect(lambda: main.RunMips(submissionPath="/home/kamian/MIPS_Autograder/Tests/Task4/part4.s"))
+    #folder="/home/kamian/MIPS_Autograder/Tests/Task1"
+    #thread = main.LoadSettings(filePath="{folder}/part1.json".format(folder=folder)) 
+    #thread.finished.connect(lambda: main.RunMips(submissionPath="{folder}/part1.s".format(folder=folder)))
     
     sys.exit(app.exec_())

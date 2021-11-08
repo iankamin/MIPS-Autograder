@@ -44,7 +44,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
         test=AllTests[testNum]
         expectedAns=test.ExpectedAnswers
         
-        StudentOutput,StudentPrompt = getStudentPromptAndOutputPerTest(output,testNum)
+        StudentOutput,StudentPrompt,StudentPromptWithErrors,ErrorInPrompt = getStudentPromptAndOutputPerTest(output,testNum)
 
         RegexChecks=test.PromptRegex
         if len(test.UserInput)>0:
@@ -54,7 +54,7 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
             prevUserInput.reverse()
         else: UserInput=[]
 
-        # check if test it extra credit
+        # check if test is extra credit
         EC_Points[testNum] = test.ExtraCredit
         
         numOfrequiredAns=len(expectedAns)
@@ -68,14 +68,14 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
                 None
             elif io.PromptGrade == 0: 
                 promptPoints[testNum],regMatches=GradePrompt(StudentPrompt,RegexChecks)
-            dispStudentPrompt=StudentPrompt
+            dispStudentPrompt=StudentPromptWithErrors
         else :
             dispStudentPrompt=None
         
         if io.PromptGrade == 0: 
             testPoints[testNum]=(promptPoints[testNum]*len(RegexChecks)) * (test.OutOf / numOfrequiredAns)
 
-        ShowDetails(testNum+1,test,StudentOutput,dispStudentPrompt,regMatches)
+        ShowDetails(testNum+1,test,StudentOutput,dispStudentPrompt,regMatches,ErrorInPrompt)
 
         for i,line in enumerate(StudentOutput):
             try:    ea=expectedAns[i]
@@ -92,7 +92,8 @@ def autograder(IO = None, _ShowAll=False, runMips=True, printResults=True,
                 ind = expectedAns.index(line)
                 expectedAns[ind]="garbage_sdakfjlkasdjlfk"
         temp=testPoints[testNum]
-        if test.ExtraCredit and ( testPoints[testNum] < test.OutOf ):
+        if ErrorInPrompt: temp=temp*io.ErrorPenalty
+        if test.ExtraCredit and ( testPoints[testNum] < test.OutOf ) and not ErrorInPrompt:
                 autograderResults.write("\nExtra Credit must work fully to receive credit\noriginal score ")
                 temp=0
 
@@ -168,28 +169,40 @@ def CheckPromptForRegex(prompt:str,regexArr:List[str]):
 
 def getStudentPromptAndOutputPerTest(output,testNum:List[str]):
     # Split and clean MIPS results
-    try: StudentPrompt=output[testNum*3].strip()
-    except: StudentPrompt = "<NO PROMPT FOUND>"
+    try: StudentPromptRegex=output[testNum*3].strip()
+    except: StudentPromptRegex = "<NO PROMPT FOUND>"
     try: StudentOutput=output[(testNum*3)+1]
     except: StudentOutput = "<NO OUTPUT FOUND>"
     
-    StudentPrompt=RemoveErrorsFromPrompt(StudentPrompt)
-    StudentPrompt=StudentPrompt.replace('\n','\n   ')
+    StudentPromptRegex,StudentPromptWithErrors,hasError=RemoveErrorsFromPrompt(StudentPromptRegex)
+    StudentPromptRegex=StudentPromptRegex.replace('\n','\n   ')
+    StudentPromptWithErrors=StudentPromptWithErrors.replace('\n','\n   ')
     while '\n\n' in StudentOutput: StudentOutput = StudentOutput.replace('\n\n','\n')
     StudentOutput = [r.strip() for r in StudentOutput.split('\n')]
-    return StudentOutput,StudentPrompt.strip()
+    return StudentOutput,StudentPromptRegex,StudentPromptWithErrors,hasError
 
 def RemoveErrorsFromPrompt(prompt):
-    pattern=r"Exception .* occurred and ignored.*"
-    prompt = re.sub(pattern, '',prompt)
-    pattern=r"\[0x[0-9abcdefABCDEF]{8}\]\t0x[0-9abcdefABCDEF]{8} [ $,a-zA-Z0-9\t]*\[[a-zA-Z0-9]*\] *;.*$"
-    prompt = re.sub(pattern, '',prompt)
+    error=False
     pattern=r"Attempt to execute non-instruction at 0x[0-9abcdefABCDEF]{8}.*"
     prompt = re.sub(pattern, '',prompt)
     pattern=r"Instruction references undefined symbol at 0x[0-9abcdefABCDEF]{8}.*"
     prompt = re.sub(pattern, '',prompt)
-    if len(prompt.strip()) == 0: prompt = "<NO PROMPT FOUND>"
-    return prompt
+    pattern=r"\[0x[0-9abcdefABCDEF]{8}\]\t0x[0-9abcdefABCDEF]{8} [ $,a-zA-Z0-9\t]*\[[a-zA-Z0-9]*\] *;.*$"
+    prompt = re.sub(pattern, '',prompt)
+    promptDisplay=None
+    if len(prompt.strip()) == 0: 
+        prompt = "<NO PROMPT FOUND>"
+    else:
+        pattern=r"(?m)(\s*Exception.*ignored$(\n)?)"
+        search = re.search(pattern, prompt)
+        if search is not None:
+            error=True 
+            promptWithError=CleanMipsOutput(prompt,2)[0]
+            promptDisplay=promptWithError
+            pattern=r"(?m)(\s*Exception.*ignored$(\n)?)"
+            prompt = re.sub(pattern, '',prompt)
+            
+    return prompt.strip(),promptDisplay.strip() if promptDisplay else prompt.strip(),error
 
 def generateInput():
     global io
@@ -228,23 +241,20 @@ def mips(concatFile= "concat.s"):
     
     if io.BareMode: BareMode = "-bare "
     else: BareMode = ""
-    errorpath=localDir+'error.txt'
+    localError=localDir+'error.txt'
+    localOutput=localDir + 'output.txt'
     if concatFile == "concat.s": concatpath=localDir+'concat.s'
     else: concatpath = concatFile
     instruction="{command} {baremode} -exception_file {exceptionPath} -file {concat} >> {output} 2>> {error}".format(
         command=command, baremode=BareMode, exceptionPath=exceptionPath,
-        concat=concatpath,    error=errorpath,
-        output=outputFile ) # done for testing purposes
+        concat=concatpath,    error=localError,
+        output=localOutput ) # done for testing purposes
         #userinput=userInput,  output=outputFile )
         #userinput="",  
     
-    try:
-        return RunMipsSubprocess(instruction,outputFile)
-        pass
-        #subprocess.call(instruction,shell=True,timeout=3)
-    return ""
+    return RunMipsSubprocess(instruction,localOutput)
 
-def RunMipsSubprocess(instruction,outputFile):
+def RunMipsSubprocess(instruction,outputFile,sleepTime=0.05):
     """
         Interactively runs the MIPS subprocess. checks for SPIM response after each character.
         TODO: start using modified version of spim emulator. 
@@ -255,82 +265,107 @@ def RunMipsSubprocess(instruction,outputFile):
     Args:
         instruction ([str]): [The Terminal command to run SPIM] 
         outputFile ([type]): [The desitination file for the output of the MIPS program]
+        sleepTime ([type], optional): [The time to sleep between each character. Defaults to 0.05].
 
     Returns:
         [str]: [an error message if the program detect an issue with how much user input the program requested] 
     """
     import time
+    
+    if not io.RequiresUserInput:   
+        try:
+            subprocess.call(instruction,shell=True,timeout=3)
+            return ""
+        except subprocess.TimeoutExpired: 
+            return '    Your Program Timed Out due to an infinite loop in MIPS\n'
+        except:
+            return "    UH-OH your program failed for an unknown reason\n"
+    
     outmsg=""
     UserInput=io.getUserInputbyTest()
-    try:
-        process = subprocess.Popen(instruction,shell=True,stdin=subprocess.PIPE)
-        time.sleep(0.1)
+    process = subprocess.Popen(instruction,shell=True,stdin=subprocess.PIPE)
+    
+    time.sleep(0.2)
+    with open(outputFile,'r') as f: processResponse = f.read()
+    
+    diff = "\n".join(processResponse.split('\n')[7:])
+    sleep=.001
+    for i,test in enumerate(UserInput):
+        if i!=0: diff=""
+        for line in test:
+            if "XXFFVV3793" in diff:   # This is in case the MIPS code is requesting less user input than the test requires. program will skip any test inputs 
+                outmsg += "Test {i} was unable to input all seperate User Inputs before subroutine completion\n".format(i=i)
+                break                  #    it will seperate the tests a bit so a student can potentially get more credit for a future test
+            
+            with open(outputFile,'r') as f:
+                lastProcessResponse = f.read()
 
-        with open(outputFile,'r') as f:
-            processResponse = "\n".join(f.read().split('\n')[7:])
-        diff = processResponse
-        for i,test in enumerate(UserInput):
-            if i!=0: diff=""
-            for line in test:
-                if "XXFFVV3793" in diff:   # This is in case the MIPS code is requesting less user input than the test requires. program will skip any test inputs 
-                    outmsg += "Test {i} was unable to input all seperate User Inputs before subroutine completion\n".format(i=i)
-                    break                  #    it will seperate the tests a bit so a student can potentially get more credit for a future test
-                with open(outputFile,'r') as f:
-                    lastProcessResponse = f.read()
-                for char in line:
-                    print(char)
+            for char in line:
+                #print(char)
+                try:
                     process.stdin.write(char.encode())
                     process.stdin.flush()
-                    time.sleep(0.1)
-                    with open(outputFile,'r') as f:
-                        processResponse = f.read()
-                    diff = processResponse.replace(lastProcessResponse,"")
-                    if diff != "":
-                        outmsg += "An input for Test {i} was cutoff early.\n".format(i=i)
-                        break
-                lastProcessResponse = processResponse
-                if diff == "":
-                    print('\\n')
+                    time.sleep(sleep)
+                except:
+                    outmsg += "Was unable to write char during Test {i}".format(i=i)
+                with open(outputFile,'r') as f:
+                    processResponse = f.read()
+                diff = processResponse.replace(lastProcessResponse,"")
+                if diff != "":
+                    outmsg += "An input for Test {i} was cutoff early.\n".format(i=i)
+                    break
+            lastProcessResponse = processResponse
+            if diff == "":
+                try:
                     process.stdin.write('\n'.encode())
                     process.stdin.flush()
-                    time.sleep(0.1)
-                    
-                    with open(outputFile,'r') as f:
-                        processResponse = f.read()
-                    diff = processResponse.replace(lastProcessResponse,"")
-            
-            if "XXFFVV3793" not in diff: 
-                outmsg+="ERROR!!!\nMIPS Code may have requested more user input for test {i} than was required for test, grading unable to continue\n".format(i=i)
-            
+                    time.sleep(sleep)
+                except:
+                    outmsg += "Was unable to write newline during test{i}".format(i=i)
+                
+                with open(outputFile,'r') as f:
+                    processResponse = f.read()
+                diff = processResponse.replace(lastProcessResponse,"")
+        
+        if "XXFFVV3793" not in diff: 
+            outmsg+="ERROR!!!: Grading Terminated early. During Test {i} subroutine never returned\n".format(i=i)
+            break
+    try:
         process.stdin.close()
-        process.wait(timeout=3)
+        process.wait(timeout=3) 
     except subprocess.TimeoutExpired: 
-        outmsg+='    Your Program Timed Out due to an infinite loop in MIPS\n'
+        #process.kill()
+        process.terminate()
+        outmsg+='    Your Program Timed Out due to an infinite loop in MIPS or an extra User Input Request\n'
     except:
-        outmsg+= "    UH-OH your program failed to run for an unknown reason\n"
+        #process.kill()
+        process.terminate()
+        outmsg+= "    UH-OH your program failed to complete for an unknown reason\n"
     return outmsg
-
     
 def GetMipsOutput():
     global outputFile
-    NoneAsciiMSG=""
+    NonAsciiMSG=""
+    localOutput=localDir + 'output.txt'
     try:
-        with open(outputFile,mode='r' ) as f: output=f.read()
+        with open(localOutput,mode='r' ) as f: output=f.read()
     except:
-        with open(outputFile,mode='rb') as f: output=f.read()
+        with open(localOutput,mode='rb') as f: output=f.read()
 
         probIndices=reversed([(m.start(0),m.end(0)) for m in re.finditer(bytes('[^\x00-\x7F]+','utf-8'),output)])
         for (s,e) in probIndices:
             asc=hex(int.from_bytes(output[s:e],"big"))
             output=output[:s]+bytes('<NON ASCII DATA>( %s )'%asc,'utf-8')+output[e:]
 
-        NoneAsciiMSG = "Non-Ascii Characters Were Printed"
+        NonAsciiMSG = "Non-Ascii Characters Were Printed"
         #output=re.sub(bytes('[^\x00-\x7F]+','utf-8'),bytes('<NON ASCII DATA>','utf-8'), output)
         output=output.decode('utf-8','replace')
-        with open(localDir + 'output2.txt',mode='w') as f: f.write(output)
-    output = output.split('\nXXFFVV3793\n')
-
-    output=[o.strip() for o in output]
+        with open(localOutput,mode='w') as f: f.write(output)
+    
+    output,output_with_message=CleanMipsOutput(output)
+    with open(outputFile,mode='w') as f: f.write(output_with_message if output_with_message else output)
+    #with open(localDir + 'output.txt',mode='w') as f: f.write(output)
+    output=[o.strip() for o in output.split('\nXXFFVV3793\n')]
     
     header=output.pop(0)
     header_error=re.search("Loaded(.|\n)*",header)
@@ -339,47 +374,78 @@ def GetMipsOutput():
     try: header_error=header_error[1]
     except: header_error=""
     
-    return output,header_error,NoneAsciiMSG
+    return output,header_error,NonAsciiMSG
+def CleanMipsOutput(output:str,exceptionCount=10):
+    """
+        Cleans the output of the MIPS program to remove extraneous information. 
+        Current just removes excessive instances of 'Exception occurred and ignored'.
+    Args:
+        output ([str]): [The output of the MIPS program]
+        exceptionCount ([int])(default:10): [The number of times the exception message is allowed to appear in a row]
+
+    Returns:
+        [str]: [The cleaned output]
+        [str]: [The cleaned output with a message where a crop occurred]
+    """
+    ect=str(exceptionCount)
+    ect1=str(exceptionCount+1)
+    cropMessage = "       .......\n       message was cropped to reduce space"
+    pattern=r"(?m)((^|\s)\s*Exception.*ignored$(\n)?)"
+    exceptionOccurred=re.search(pattern+"{"+ect+"}",output)
+    errorFound=exceptionOccurred is not None
+    removeExtraExceptions=re.search(pattern+"{"+(ect1)+",}",output)
+    output_with_message=output
+    while removeExtraExceptions is not None:
+        output_with_message=output[0:removeExtraExceptions.span(0)[0]]+exceptionOccurred.group(0)+cropMessage+output[removeExtraExceptions.span(0)[1]:]
+        output=output[0:removeExtraExceptions.span(0)[0]]+exceptionOccurred.group(0)+output[removeExtraExceptions.span(0)[1]:]
+        exceptionOccurred=re.search(pattern+"{"+ect+"}",output)
+        removeExtraExceptions=re.search(pattern+"{"+(ect1)+",}",output)
+    if errorFound:
+        return output,output_with_message
+    else:
+        return output,""
+
+def CleanMipsError(errorMsg:str):
+    if ("Attempt to execute non-instruction" in errorMsg):
+        if 'syntax error' in errorMsg: 
+            pattern=r"Attempt to execute non-instruction at 0x[0-9abcdefABCDEF]{8}.*" 
+            errorMsg = re.sub(pattern, '',errorMsg)
+        else:
+            errorMsg += "\n^^^ Your subroutine must terminate with a JUMP RETURN\n\n"
+    cropMessage = "\n        .......\n     spim error was cropped to reduce space"
+    if len(errorMsg.splitlines())>30:  errorMsg="\n".join(errorMsg.splitlines()[:30])+cropMessage
+    return errorMsg
 
 def PrintMipsError(headerErr:str, lastOutput, SPIMerror, NonAsciiMSG,completionErr,runMips):
     autograderResults.write("\nThe Following Errors Occurred\n")
     autograderResults.write("=============================\n")
     allErrors=""
     # errors/Warnings that occurred while concatenating the submission
-    with open(localDir + 'concatErrors.txt', 'r') as f:  
-        concatErr = f.read().strip()
-    if len(concatErr)>0: 
-        allErrors+=concatErr+"\n\n"
+    with open(localDir + 'concatErrors.txt', 'r') as f:  concatErr = f.read().strip()
+    if len(concatErr)>0: allErrors+=concatErr+"\n\n"
 
     # States that the program terminated early
-    if len(completionErr)>0: 
-        allErrors+=completionErr+"\n\n"
+    if len(completionErr)>0: allErrors+=completionErr+"\n\n"
 
     # SPIM was force quit due to infinite loop
-    if len(SPIMerror)>0: 
-        allErrors+=SPIMerror+"\n\n" 
+    if len(SPIMerror)>0: allErrors+=SPIMerror+"\n\n" 
 
     # problem occurred while reading output such as non ascii data
-    if len(NonAsciiMSG)>0: 
-        allErrors+=NonAsciiMSG+"\n\n"
+    if len(NonAsciiMSG)>0: allErrors+=NonAsciiMSG+"\n\n"
 
-    # prints out the MIPS HEADER section excluding The emulator header - will be empty if ran successfully
-    if len(headerErr)>0: 
-        allErrors+=headerErr.strip()+"\n\n"
+    # prints out the MIPS HEADER section excluding the emulator header - will be empty if ran successfully
+    if len(headerErr)>0: allErrors+=headerErr.strip()+"\n\n"
     
-    # Any errors generated by while running mips program such as syntax errors etc
+    # Any errors generated while running mips program such as syntax errors etc
     if(runMips):
         with open(localDir + 'error.txt', 'r') as f:  
             MIPSerr = f.read().strip()
-    else: MIPSerr = "program was never run due to issues during setup"
+    else: 
+        MIPSerr = "program was never run due to issues during setup"
     
     if len(MIPSerr)>0:  
-        if ("Attempt to execute non-instruction" in MIPSerr):
-            if 'syntax error' in MIPSerr: 
-                pattern=r"Attempt to execute non-instruction at 0x[0-9abcdefABCDEF]{8}.*" 
-                MIPSerr = re.sub(pattern, '',MIPSerr)
-            else:
-                MIPSerr += "\n^^^ Your subroutine must terminate with a JUMP RETURN\n\n"
+        MIPSerr= CleanMipsError(MIPSerr)
+        
         allErrors += "Errors From SPIM:\n    %s\n"%MIPSerr.replace('\n','\n    ')
         allErrors+='\n'
 
@@ -411,11 +477,7 @@ def ShowAll(test,StudentOutput,StudentPrompt,RegexChecks,):
     printUserInput(test)
     printOutput(test,StudentOutput, True)
 
-
-
-        
-
-def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=None):
+def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=None,ErrorInPrompt=False):
     printHeader="{number}. {name}".format(name=test.testName,number=test.testNumber)
     if test.ExtraCredit:printHeader+='(Extra Credit) '
     
@@ -430,57 +492,60 @@ def ShowDetails(testNum,test:Test,StudentOutput,StudentPrompt=None,RegexChecks=N
         ShowOutput(test,StudentOutput, StudentPrompt,RegexChecks)
     elif test.getShowLevel()==Show.ALL:
         ShowAll(test,StudentOutput,StudentPrompt,RegexChecks)
+    if ErrorInPrompt:
+        autograderResults.write("\nNOTICE:\n  An Exception occurred during the run.\n  A penalty of {penalty}% has been applied\n".format(penalty=io.ErrorPenalty*100))
+        
+    autograderResults.write("\n")
     autograderResults.write(printHeader)
-
 
 def PrintMemInputs(test:Test):    
     if len(test.MemInputs)>0: 
-        autograderResults.write("\n\nInitial Data in Memory -->")   
+        autograderResults.write("\nInitial Data in Memory -->\n")   
     for inp in test.MemInputs:
-        autograderResults.write("\n   addr(%s) =  %s %s"%(inp.addr,inp.type,inp.data))
+        autograderResults.write("   addr(%s) =  %s %s\n"%(inp.addr,inp.type,inp.data))
 
 def PrintRegInputs(test:Test):
-    if len(test.RegInputs): autograderResults.write("\n\nRegister Input Values -->")   
+    if len(test.RegInputs): autograderResults.write("\nRegister Input Values -->\n")   
     for inp in test.RegInputs:
         val = GetHexAndDecOrString(inp.value)
-        autograderResults.write("\n   reg: %s = %s"%(inp.reg,val))
+        autograderResults.write("   reg: %s = %s\n"%(inp.reg,val))
 
 def PrintStudentPrompt(StudentPrompt:str):
     if StudentPrompt != None:
-        autograderResults.write("\n\nYour Prompt -->")
+        autograderResults.write("\nYour Prompt -->\n")
         if ("<NON ASCII DATA>" in StudentPrompt):  
-            autograderResults.write("\nNon-Ascii characters were found in your prompt credit cannot be given ")
+            autograderResults.write("Non-Ascii characters were found in your prompt credit cannot be given \n")
         elif len(StudentPrompt.strip())<2: 
-            autograderResults.write("\n   <NO PROMPT WAS FOUND>")
+            autograderResults.write("   <NO PROMPT WAS FOUND>\n")
         else: 
-            autograderResults.write("\n   %s"%StudentPrompt)
+            autograderResults.write("   %s\n"%StudentPrompt)
 
 def PrintRegexChecks(regMatches):
     if regMatches != None:
-        autograderResults.write("\n\nSearching Prompt for Regex Expressions -->")
+        autograderResults.write("\nSearching Prompt for Regex Expressions -->")
         for regex,match in regMatches:
             if match == None: match = "no match was found"
-            autograderResults.write("\n   regex: %s "  %(regex))
-            autograderResults.write("\n   match: %s \n"%(match))
+            autograderResults.write("\n   regex: %s \n"  %(regex))
+            autograderResults.write(  "   match: %s \n"%(match))
 
 def printUserInput(test:Test):
     fl = test.UserInput
-    if len(fl)>0: autograderResults.write("\n\nUser Input -->")   
+    if len(fl)>0: autograderResults.write("\nUser Input -->\n")   
     for line in fl:
-        autograderResults.write("\n   %s"%line)
+        autograderResults.write("   %s\n"%line)
 
 def printOutput(test:Test, StudentOutput:List[str], _printHeader:bool):    
     if len(test.Output)==0: return
-    autograderResults.write("\n\n")
+    autograderResults.write("\n")
     if _printHeader: 
-        autograderResults.write("Output -->\n")
+        autograderResults.write("Output -->")
     for i, Eoutput in enumerate(test.Output):
         if Eoutput.addr is None:
             ExAns = GetHexAndDecOrString(test.ExpectedAnswers[i], int(Eoutput.type))
-            autograderResults.write(" Expected   %s = %s\n"%(Eoutput.reg,ExAns))
+            autograderResults.write("\n Expected   %s = %s\n"%(Eoutput.reg,ExAns))
             try:
                 studentAns = GetHexAndDecOrString(StudentOutput[i],int(Eoutput.type))
-                autograderResults.write("   Actual   %s = %s\n\n"%(Eoutput.reg,studentAns))
+                autograderResults.write("   Actual   %s = %s\n"%(Eoutput.reg,studentAns))
             except:
                 try: 
                     StudentOutput[i] # test for value before printing anything
@@ -488,17 +553,17 @@ def printOutput(test:Test, StudentOutput:List[str], _printHeader:bool):
                     autograderResults.write(StudentOutput[i])
                 except:
                     if ("<NO OUTPUT FOUND>") in StudentOutput:
-                        autograderResults.write("   Actual   %s = <FAILED TO RETRIEVE STUDENT OUTPUT>\n\n"%(Eoutput.reg))
+                        autograderResults.write("   Actual   %s = <FAILED TO RETRIEVE STUDENT OUTPUT>\n"%(Eoutput.reg))
                     else:
                         #autograderResults.write(StudentOutput) #uncomment to see what happened This is the most edgy of edge cases
-                        autograderResults.write("\n\n!!!!! SOMETHING WENT HORRIBLY WRONG !!!!!\n If you are a student please inform an administrator of this bug so that they can report the issue \n\n")
+                        autograderResults.write("\n\n!!!!! SOMETHING WENT HORRIBLY WRONG !!!!!\n Please report this bug to an administrator \n\n")
             continue
         else: 
-            autograderResults.write(" Expected   %s at address %s\n"%(test.ExpectedAnswers[i],Eoutput.addr))
+            autograderResults.write("\n Expected   %s at address %s\n"%(test.ExpectedAnswers[i],Eoutput.addr))
             try:
                 r=StudentOutput[i]
                 if len(r.strip())==0: r="<FAILED TO RETRIEVE DATA>"
-                autograderResults.write("   Actual   %s at address %s\n\n"%(r,Eoutput.addr))
+                autograderResults.write("   Actual   %s at address %s\n"%(r,Eoutput.addr))
             except:
                 try: 
                     StudentOutput[i] # test for value before printing anything
@@ -507,12 +572,12 @@ def printOutput(test:Test, StudentOutput:List[str], _printHeader:bool):
                 except: 
                     if ("<NO OUTPUT FOUND>") in StudentOutput:
                         r="<FAILED TO RETRIEVE DATA>"
-                        autograderResults.write("   Actual   %s at address %s\n\n"%(r,Eoutput.addr))
+                        autograderResults.write("   Actual   %s at address %s\n"%(r,Eoutput.addr))
                     else:
                         #autograderResults.write(StudentOutput) #uncomment to see what happened This is the most edgy of edge cases
                         #autograderResults.write("\n\n!!!!! SOMETHING WENT HORRIBLY WRONG !!!!!\n If you are a student please inform an administrator of this bug so that they can report the issue \n\n")
                         r="<FAILED TO RETRIEVE DATA>"
-                        autograderResults.write("   Actual   %s at address %s\n\n"%(r,Eoutput.addr))
+                        autograderResults.write("   Actual   %s at address %s\n"%(r,Eoutput.addr))
             continue
 
 def Is_int(s):

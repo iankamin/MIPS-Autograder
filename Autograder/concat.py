@@ -4,8 +4,8 @@ import os, sys
 import re
 from typing import List, Tuple
 
-try: from .settings import settings,Test,Show
-except: from settings import settings,Test,Show
+try: from settings import settings,Test,Show
+except: from .settings import settings,Test,Show
 
 localDir = os.path.dirname(__file__)+"/"
 StorageDir=localDir

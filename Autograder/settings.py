@@ -18,9 +18,6 @@ class Show(Enum):
     
 
 
-#TODO MAX points need to account for individual tests
-#TODO Prompt Points must ignore extra credit
-#TODO seperate Regular Tests and extra credit Tests
 class settings():
     SubroutineName:str
     PromptGrade:int
@@ -32,6 +29,7 @@ class settings():
     Shuffle:bool
     JsonStyle:int
     RequiresUserInput:bool
+    ErrorPenalty:int # percentage penalty for each test if runs but throws errors rare but can happen
 
     def __init__(self, file=None,**kwargs):
         if file is None:
@@ -53,6 +51,7 @@ class settings():
         self.JsonStyle = io.get("JsonStyle",0)
         self.RequiresUserInput = io.get("RequiresUserInput",False)
         self.BannedISA = io.get("BannedISA",[])
+        self.ErrorPenalty = io.get("ErrorPenalty",.5)
         
         if type(self.BareMode) is str: self.BareMode = self.BareMode.lower()=="true"
         if type(self.Shuffle)  is str: self.Shuffle  = self.Shuffle.lower() =="true"
@@ -75,6 +74,7 @@ class settings():
         self.RequiresUserInput = False
         self.BannedISA=[]
         self.AllTests=[]
+        self.ErrorPenalty = .5
 
     def CreateTests(self,alltests_json,io):
         reg,ec=[],[]
@@ -138,6 +138,7 @@ class settings():
         io["PromptGrade"]=self.PromptGrade
         io["TestGrade"]=self.TestGrade
         io["ECTestGrade"]=self.ECTestGrade
+        io["ErrorPenalty"] = self.ErrorPenalty
         io["MessageToStudent"]=self.MessageToStudent
         io["BareMode"]=self.BareMode
         io["RequiresUserInput"]=self.RequiresUserInput
