@@ -1,36 +1,17 @@
 {
     "subroutine_name": "calculator",
+    "PromptGrade": 0,
     "TestGrade": 2.0,
     "ECTestGrade": 0.5,
+    "ErrorPenalty": 0.5,
     "MessageToStudent": "",
     "BareMode": false,
     "RequiresUserInput": true,
     "ShowLevel": 3,
     "Shuffle": false,
     "JsonStyle": 1,
+    "BannedISA": [],
     "tests": [
-        {
-            "name": "Test",
-            "ExtraCredit": false,
-            "OutOf": 0,
-            "ShowLevel": 0,
-            "UserInput": [
-                "0001*0000"
-            ],
-            "PromptRegex": [
-                "as",
-                "ds",
-                "ffgf"
-            ],
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": 1,
-                    "CorrectAnswer": "0",
-                    "reg": "v0"
-                }
-            ]
-        },
         {
             "name": "Test",
             "ExtraCredit": false,

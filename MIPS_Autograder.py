@@ -32,8 +32,18 @@ if __name__ == '__main__':
     main.showMaximized()
     QtWidgets.qApp.processEvents()
     # testing code
-    #folder="/home/kamian/MIPS_Autograder/Tests/Task1"
-    #thread = main.LoadSettings(filePath="{folder}/part1.json".format(folder=folder)) 
-    #thread.finished.connect(lambda: main.RunMips(submissionPath="{folder}/part1.s".format(folder=folder)))
+
+    partNum = "4"  
+    settingsFile ="part%s.json"%partNum
+    submissionFile ="part%s.s"%partNum
+
+    all_tests_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"Tests")
+    test_dir = os.path.join(all_tests_dir,"Task%s"%partNum)
+    
+    settingsPath = os.path.join(test_dir,settingsFile)
+    submissionPath = os.path.join(test_dir,submissionFile)
+
+    thread = main.LoadSettings(filePath=settingsPath) 
+    thread.finished.connect(lambda: main.RunMips(submissionPath=submissionPath))
     
     sys.exit(app.exec_())

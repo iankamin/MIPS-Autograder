@@ -285,11 +285,42 @@ def RunMipsSubprocess(instruction,outputFile,sleepTime=0.05):
     UserInput=io.getUserInputbyTest()
     process = subprocess.Popen(instruction,shell=True,stdin=subprocess.PIPE)
     
-    time.sleep(0.2)
-    with open(outputFile,'r') as f: processResponse = f.read()
+    end_time = time.time() + 3
+    while not os.path.exists(outputFile):
+        if (time.time()>end_time) or ( process.poll() is not None):
+            return "     CPU Error: SPIM subprocess timeout occurred before SPIM could be initialized.\n PC specs may be too slow for Emulator to run"
+
+
+    processResponse=""
+    end_time = time.time() + 5
+    runtime= 0
+    lpr=""
+    lasttime=time.time()
+    # This servers 2 purposes
+    # 1 it is used to ensure that spim is ready for user input
+    # 2 it figures out what speed will properly send and receive data from the emulator
+    #   sleep is called in between stdin to allow time for a response to stdout
+    while  "XXFFVV3793" not in processResponse :
+        with open(outputFile,'r') as f: processResponse = f.read()
+        diff = processResponse.replace(lpr,"")
+        if diff!="":
+            if lpr!="":
+                runtime=(runtime+(time.time()-lasttime))/(1 if runtime==0 else 2)
+            lasttime=time.time()
+            lpr=processResponse
+        if (time.time()>end_time) or ( process.poll() is not None):
+            return "     CPU Error: SPIM subprocess timeout occurred before initial SPIM handshake. PC specs may be too slow for Emulator to run\n"
+    
+    if runtime == 0:
+        runtime = time.time()-lasttime
     
     diff = "\n".join(processResponse.split('\n')[7:])
-    sleep=.001
+    sleepInterval=runtime
+    print(runtime)
+    if runtime>.5:
+        outmsg += "     Setup took a long time.emulator running in slow mode"
+        sleepInterval = .5
+
     for i,test in enumerate(UserInput):
         if i!=0: diff=""
         for line in test:
@@ -297,7 +328,7 @@ def RunMipsSubprocess(instruction,outputFile,sleepTime=0.05):
                 outmsg += "Test {i} was unable to input all seperate User Inputs before subroutine completion\n".format(i=i)
                 break                  #    it will seperate the tests a bit so a student can potentially get more credit for a future test
             
-            with open(outputFile,'r') as f:
+            with open(outputFile,'r') as f: 
                 lastProcessResponse = f.read()
 
             for char in line:
@@ -305,26 +336,26 @@ def RunMipsSubprocess(instruction,outputFile,sleepTime=0.05):
                 try:
                     process.stdin.write(char.encode())
                     process.stdin.flush()
-                    time.sleep(sleep)
                 except:
                     outmsg += "Was unable to write char during Test {i}".format(i=i)
-                with open(outputFile,'r') as f:
-                    processResponse = f.read()
+                
+                time.sleep(sleepInterval)
+                with open(outputFile,'r') as f: processResponse = f.read()
                 diff = processResponse.replace(lastProcessResponse,"")
                 if diff != "":
                     outmsg += "An input for Test {i} was cutoff early.\n".format(i=i)
                     break
+            
             lastProcessResponse = processResponse
             if diff == "":
                 try:
                     process.stdin.write('\n'.encode())
                     process.stdin.flush()
-                    time.sleep(sleep)
                 except:
                     outmsg += "Was unable to write newline during test{i}".format(i=i)
                 
-                with open(outputFile,'r') as f:
-                    processResponse = f.read()
+                time.sleep(sleepInterval)
+                with open(outputFile,'r') as f: processResponse = f.read()
                 diff = processResponse.replace(lastProcessResponse,"")
         
         if "XXFFVV3793" not in diff: 

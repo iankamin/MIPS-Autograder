@@ -17,13 +17,26 @@ def runGrader(
     autograderOutput="graderResults.txt",
     ShowAll=False,  
     printResults=True,
-    IO=None):
+    IO=None,
+    makeclean=True):
     try: _ShowAll=sys.argv[1]
     except: _ShowAll=False # overrides json "show" and shows the StudentOutputs of every test
     _ShowAll=_ShowAll or ShowAll
 
     if IO is None: io=settings(settingsFile)
     else: io=IO
+
+    if makeclean: 
+        PreRunCleanUp( outputFile, concatFile, autograderOutput)
+        cur_dir_path=os.path.dirname(os.path.abspath(__file__))
+        cur_dir = os.listdir(cur_dir_path)
+        txt_files = [ os.path.join(cur_dir_path,f) for f in cur_dir if f.endswith(".txt")]
+        PreRunCleanUp(*txt_files)
+        
+
+
+
+
 
     runMips=concat(
         IO=io,
@@ -37,6 +50,15 @@ def runGrader(
         concatFile=concatFile,
         autograderOutput=autograderOutput,
         printResults=printResults)
+
+
+def PreRunCleanUp(*filepaths):
+    for f in filepaths:
+        if (os.path.exists(f)): 
+            os.remove(f)
+
+
+
 
 
 if __name__ == "__main__":
